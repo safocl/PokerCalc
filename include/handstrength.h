@@ -19,10 +19,13 @@ struct HandStrength
     
     strength getCurrStrength() const;
     
-    strength checkCurrStrength(const Hand &hand, const vector<Card> &board);
+    strength checkCurrStrength(const Hand &hand, const vector<Card> &board) const;
     
 private:
     strength curr_strength;
+    bool match_straitflash(const vector<Card> &combo) const;
+    bool match_kare(const vector<Card> &combo) const;
+    bool match_fullhouse(const vector<Card> &combo) const;
     bool match_flash(const vector<Card> &combo) const;
     bool match_strait(const vector<Card> &combo) const;
 };
