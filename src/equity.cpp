@@ -19,7 +19,7 @@ void genOneBoardCard(vector<Card> & board, Deck & deck, const Hand hero_h, const
     }
 }
 //---------------------------------------------------------------------------------------------------------------------------
-void parallel1_genOneBoardCard(vector<Card> & board, Deck & deck, const Hand hero_h, const Hand opp_h,
+void parallel1_genOneBoardCard(vector<Card> &&board, Deck&& deck, const Hand hero_h, const Hand opp_h,
                                unsigned long long & hight, unsigned long long & pair, unsigned long long & twopair,
                                unsigned long long & set, unsigned long long & strait, unsigned long long & flash, 
                                unsigned long long & fullhouse, unsigned long long & kare, unsigned long long & straitflash)
@@ -39,7 +39,10 @@ void parallel1_genOneBoardCard(vector<Card> & board, Deck & deck, const Hand her
     }
 }
 //---------------------------------------------------------------------------------------------------------------------------
-void parallel2_genOneBoardCard(vector<Card> & board, Deck & deck, const Hand hero_h, const Hand opp_h, std::function<void()> f_action)
+void parallel2_genOneBoardCard(vector<Card> && board, Deck && deck, const Hand hero_h, const Hand opp_h,
+                               unsigned long long & hight, unsigned long long & pair, unsigned long long & twopair,
+                               unsigned long long & set, unsigned long long & strait, unsigned long long & flash, 
+                               unsigned long long & fullhouse, unsigned long long & kare, unsigned long long & straitflash)
 {
     deck.Refrash(board,hero_h,opp_h);
     auto sizeArr = deck.size() / 4;
@@ -48,14 +51,17 @@ void parallel2_genOneBoardCard(vector<Card> & board, Deck & deck, const Hand her
         if (pushNewCardToBoard(board, hero_h, opp_h, deck.getDeckArr().at(count)))
         {
 
-            f_action();
+            sumHandStrength(hero_h, board, hight, pair, twopair, set, strait, flash, fullhouse, kare, straitflash);
             board.erase(board.end() - 1);
             deck.Refrash(board ,hero_h, opp_h);
         }
     }
 }
 //---------------------------------------------------------------------------------------------------------------------------
-void parallel3_genOneBoardCard(vector<Card> & board, Deck & deck, const Hand hero_h, const Hand opp_h, std::function<void()> f_action)
+void parallel3_genOneBoardCard(vector<Card> && board, Deck && deck, const Hand hero_h, const Hand opp_h,
+                               unsigned long long & hight, unsigned long long & pair, unsigned long long & twopair,
+                               unsigned long long & set, unsigned long long & strait, unsigned long long & flash, 
+                               unsigned long long & fullhouse, unsigned long long & kare, unsigned long long & straitflash)
 {
     deck.Refrash(board,hero_h,opp_h);
     auto sizeArr = deck.size() / 4;
@@ -65,14 +71,17 @@ void parallel3_genOneBoardCard(vector<Card> & board, Deck & deck, const Hand her
         if (pushNewCardToBoard(board, hero_h, opp_h, deck.getDeckArr().at(count)))
         {
 
-            f_action();
+            sumHandStrength(hero_h, board, hight, pair, twopair, set, strait, flash, fullhouse, kare, straitflash);
             board.erase(board.end() - 1);
             deck.Refrash(board ,hero_h, opp_h);
         }
     }
 }
 //---------------------------------------------------------------------------------------------------------------------------
-void parallel4_genOneBoardCard(vector<Card> & board, Deck & deck, const Hand hero_h, const Hand opp_h, std::function<void()> f_action)
+void parallel4_genOneBoardCard(vector<Card> && board, Deck && deck, const Hand hero_h, const Hand opp_h,
+                               unsigned long long & hight, unsigned long long & pair, unsigned long long & twopair,
+                               unsigned long long & set, unsigned long long & strait, unsigned long long & flash, 
+                               unsigned long long & fullhouse, unsigned long long & kare, unsigned long long & straitflash)
 {
     deck.Refrash(board,hero_h,opp_h);
     auto sizeArr = deck.size() / 4;
@@ -82,7 +91,7 @@ void parallel4_genOneBoardCard(vector<Card> & board, Deck & deck, const Hand her
         if (pushNewCardToBoard(board, hero_h, opp_h, deck.getDeckArr().at(count)))
         {
 
-            f_action();
+            sumHandStrength(hero_h, board, hight, pair, twopair, set, strait, flash, fullhouse, kare, straitflash);
             board.erase(board.end() - 1);
             deck.Refrash(board ,hero_h, opp_h);
         }
@@ -90,13 +99,42 @@ void parallel4_genOneBoardCard(vector<Card> & board, Deck & deck, const Hand her
 }
 
 //---------------------------------------------------------------------------------------------------------------------------
-void genFlop(vector<Card> & board, Deck & deck, const Hand hero_h, const Hand opp_h, std::function<void()> f_action)
+void genFlop(vector<Card> & board, Deck & deck, const Hand hero_h, const Hand opp_h,
+             unsigned long long & hight, unsigned long long & pair, unsigned long long & twopair,
+             unsigned long long & set, unsigned long long & strait, unsigned long long & flash, 
+             unsigned long long & fullhouse, unsigned long long & kare, unsigned long long & straitflash)
 {
     genOneBoardCard(board, deck, hero_h, opp_h, [&](){
         genOneBoardCard(board, deck, hero_h, opp_h, [&](){
-            genOneBoardCard(board, deck, hero_h, opp_h, [&](){
-                f_action();
-            });
+//            parallel1_genOneBoardCard( board, deck, hero_h, hero_h, 
+//                           ref(hight), ref(pair), ref(twopair),ref(set),ref(strait),
+//                           ref(flash),ref(fullhouse),ref(kare),ref(straitflash));
+//            parallel2_genOneBoardCard( board, deck, hero_h, hero_h, 
+//                           ref(hight), ref(pair), ref(twopair),ref(set),ref(strait),
+//                           ref(flash),ref(fullhouse),ref(kare),ref(straitflash));
+//            parallel3_genOneBoardCard( board, deck, hero_h, hero_h, 
+//                           ref(hight), ref(pair), ref(twopair),ref(set),ref(strait),
+//                           ref(flash),ref(fullhouse),ref(kare),ref(straitflash));
+//            parallel4_genOneBoardCard( board, deck, hero_h, hero_h, 
+//                           ref(hight), ref(pair), ref(twopair),ref(set),ref(strait),
+//                           ref(flash),ref(fullhouse),ref(kare),ref(straitflash));
+            
+            thread thread1(parallel1_genOneBoardCard, board, deck, hero_h, hero_h, 
+                           ref(hight), ref(pair), ref(twopair),ref(set),ref(strait),
+                           ref(flash),ref(fullhouse),ref(kare),ref(straitflash));
+            thread thread2(parallel2_genOneBoardCard, board, deck, hero_h, hero_h, 
+                           ref(hight), ref(pair), ref(twopair),ref(set),ref(strait),
+                           ref(flash),ref(fullhouse),ref(kare),ref(straitflash));
+            thread thread3(parallel3_genOneBoardCard, board, deck, hero_h, hero_h, 
+                           ref(hight), ref(pair), ref(twopair),ref(set),ref(strait),
+                           ref(flash),ref(fullhouse),ref(kare),ref(straitflash));
+            thread thread4(parallel4_genOneBoardCard, board, deck, hero_h, hero_h, 
+                           ref(hight), ref(pair), ref(twopair),ref(set),ref(strait),
+                           ref(flash),ref(fullhouse),ref(kare),ref(straitflash));
+            thread1.join();
+            thread2.join();
+            thread3.join();
+            thread4.join();
         });
     });
 }
