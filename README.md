@@ -1,1 +1,3 @@
 # PokerCalc
+
+LICENSE GPLv3
