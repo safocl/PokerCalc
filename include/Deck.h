@@ -1,30 +1,32 @@
-#pragma once
+//#pragma once
+#ifndef _DECK_H_
+#define _DECK_H_
 
 
 #include <vector>
 #include "Card.h"
 #include "Hand.h"
-#include "Board.h"
+//#include "Board.h"
 #include "defines.h"
 
 using namespace std;
 
 
-class Deck
+struct Deck final
 {
-public:
-    Deck();
-    ~Deck();
+    void Refrash(const vector<Card> &board, const Hand &heroHand, const Hand &oppHand);
 
-    static void Refrash(vector<Card> &board, const Hand &heroHand, const Hand &oppHand);
-
-    static void DeckPrint();
+    const size_num & capacity() const;
     
-    static size_num capacity();
+    unsigned long size() const;
     
-    static const vector<Card> & getDeckArr();
+    const vector<Card> & getDeckArr() const;
 
 private:
-    static vector<Card> deckArr;
-    static const size_num SIZE_DeckArr = 52;
+    vector<Card> deckArr;
+    const size_num SIZE_DeckArr = 52;
 };
+
+
+
+#endif // _DECK_H_

@@ -7,11 +7,16 @@ SHELL = /bin/sh
 .SUFFIXES: .cpp .o .a .so
 
 
+#export CXX = /bin/clang++
 export CXX = /bin/g++
-export CXXFLAGS += -Wall -Wextra -Wfatal-errors -Werror -std=c++17
+
+export CXXFLAGS += -march=sandybridge -mno-aes -fstack-protector-strong
+export CXXFLAGS += -Wall -Wextra -Wfatal-errors -Werror -std=c++17 -pipe -O2
 CXXFLAGS += -g
 CXXFLAGS += -I$(incdir)
-export LDFLAGS +=
+CXXFLAGS += -fopenmp
+
+export LDFLAGS += -fopenmp
 export LDPATH +=
 SRC_DIR = $(srcdir)/src
 export AR = ar

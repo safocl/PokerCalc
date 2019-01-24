@@ -1,26 +1,21 @@
 #pragma once
 
-
-
 #include <vector>
 #include "Card.h"
 #include "Hand.h"
 #include "Board.h"
-#include "Deck.h"
 #include "defines.h"
 
 using namespace std;
 
 
-struct HandStrength
+struct HandStrength final
 {
     HandStrength(const Hand &hand, const vector<Card> &board);
-    
-    enum strength {HIGHT, PAIR, TWO_PAIRS, SET, STRAIT, FLASH, FULL_HOUSE, CARE, STRAIT_FLASH, ROYAL_FLASH};
-    
-    strength getCurrStrength() const;
-    
-
+    enum class strength {HIGHT, PAIR, TWO_PAIRS, SET, STRAIT, FLASH, FULL_HOUSE, KARE, STRAIT_FLASH 
+//                         ,ROYAL_FLASH
+                        };
+    const strength & getCurrStrength() const;
     
 private:
     strength curr_strength;

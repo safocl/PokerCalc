@@ -1,12 +1,8 @@
 #include "Card.h"
 
-
-Card::Card ()
-{
-    numValueCard = 0;
-    numSuitCard = 0;
-}
-
+//---------------------------------------------------------------------------------------------------------------------------
+Card::Card (){}
+//---------------------------------------------------------------------------------------------------------------------------
 Card::Card (const size_num numValueCard,
             const size_num numSuitCard)
 {
@@ -20,16 +16,16 @@ Card::Card (const size_num numValueCard,
     else
         this->numSuitCard = numSuitCard;
 }
-
+//---------------------------------------------------------------------------------------------------------------------------
 // Конструктор копирования карты в создаваемый объект типа Card
 Card::Card(const Card &other)
 {
     this->numValueCard = other.numValueCard;
     this->numSuitCard = other.numSuitCard;
 }
-
+//---------------------------------------------------------------------------------------------------------------------------
 Card::~Card(){}
-
+//---------------------------------------------------------------------------------------------------------------------------
 void Card::SetCard(const char SetValueCard, const char SetSuitCard)
 {
     while (numValueCard < sizeValueCardArr)
@@ -60,13 +56,13 @@ void Card::SetCard(const char SetValueCard, const char SetSuitCard)
         }
     }
 }
-
+//---------------------------------------------------------------------------------------------------------------------------
 void Card::SetCard(const size_num numValueCard, const size_num numSuitCard)
 {
     SetValueCardNum(numValueCard);
     SetSuitCardNum(numSuitCard);
 }
-
+//---------------------------------------------------------------------------------------------------------------------------
 void Card::SetSuitCardNum(const size_num numSuitCard)
 {
     if (numSuitCard >= sizeSuitCardArr)
@@ -83,47 +79,35 @@ void Card::SetValueCardNum(const size_num numValueCard)
     else
         this->numValueCard = numValueCard;
 }
-
+//---------------------------------------------------------------------------------------------------------------------------
 // Возвращает масть карты
-char Card::GetSuitCard() const
-{
-    return SuitCardArr[numSuitCard];
-}
-
+const char & Card::GetSuitCard() const {return SuitCardArr[numSuitCard];}
+//---------------------------------------------------------------------------------------------------------------------------
 // Возвращает значение карты
-char Card::GetValueCard() const
-{
-    return ValueCardArr[numValueCard];
-}
-
+const char & Card::GetValueCard() const {return ValueCardArr[numValueCard];}
+//---------------------------------------------------------------------------------------------------------------------------
 // Возвращает индекс массива масти карты
-size_num Card::GetSuitCardNum() const
-{
-    return numSuitCard;
-}
-
+const size_num & Card::GetSuitCardNum() const {return numSuitCard;}
+//---------------------------------------------------------------------------------------------------------------------------
 // Возвращает индекс массива значений карты
-size_num Card::GetValueCardNum() const {return this->numValueCard;}
-
-bool Card::operator== (const Card &other) const
-{
+const size_num & Card::GetValueCardNum() const {return numValueCard;}
+//---------------------------------------------------------------------------------------------------------------------------
+bool Card::operator== (const Card &other) const {
     return (this->numSuitCard == other.numSuitCard && this->numValueCard == other.numValueCard);
 }
-
-bool Card::operator!=(const Card &other) const
-{
+//---------------------------------------------------------------------------------------------------------------------------
+bool Card::operator!=(const Card &other) const {
     return !(this->numSuitCard == other.numSuitCard && this->numValueCard == other.numValueCard);
 }
-
-Card & Card::operator= (const Card &other)
-{
+//---------------------------------------------------------------------------------------------------------------------------
+const Card & Card::operator= (const Card &other) {
     this->SetCard(other.numValueCard, other.numSuitCard);
     return *this;
 }
-
+//---------------------------------------------------------------------------------------------------------------------------
 bool Card::operator< (const Card &other) const {return (this->GetValueCardNum() < other.GetValueCardNum());}
-
+//---------------------------------------------------------------------------------------------------------------------------
 bool Card::operator> (const Card &other) const {return (this->GetValueCardNum() > other.GetValueCardNum());}
-
+//---------------------------------------------------------------------------------------------------------------------------
 const char Card::ValueCardArr[Card::sizeValueCardArr] = {'2','3','4','5','6','7','8','9','T','J','Q','K','A'};
 const char Card::SuitCardArr[Card::sizeSuitCardArr] = {'d','s','c','h'};

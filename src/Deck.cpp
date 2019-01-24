@@ -1,34 +1,28 @@
 #include "Deck.h"
+#include "Board.h"
 
-Deck::Deck()
+//---------------------------------------------------------------------------------------------------------------------------
+const vector<Card> & Deck::getDeckArr() const {return deckArr;}
+//---------------------------------------------------------------------------------------------------------------------------
+unsigned long Deck::size() const {return deckArr.size();}
+//---------------------------------------------------------------------------------------------------------------------------
+const size_num & Deck::capacity() const {return SIZE_DeckArr;}
+//---------------------------------------------------------------------------------------------------------------------------
+void Deck::Refrash(const vector<Card> &board, const Hand &heroHand, const Hand &oppHand)
 {
-    //ctor
-}
-
-Deck::~Deck()
-{
-    //dtor
-}
-
-const vector<Card> & Deck::getDeckArr(){return deckArr;}
-
-size_num Deck::capacity(){return SIZE_DeckArr;}
-
-void Deck::Refrash(vector<Card> &board, const Hand &heroHand, const Hand &oppHand)
-{
-    Deck::deckArr.reserve(SIZE_DeckArr);
+    deckArr.reserve(SIZE_DeckArr);
     
     if (!deckArr.empty())
         deckArr.clear();
     
     Card card;
-
-    for (size_num numValueCard = 0; numValueCard < Card::sizeValueCardArr; numValueCard++)
+    
+    for (size_num numValueCard = 0; numValueCard < Card::sizeValueCardArr; ++numValueCard)
     {
-        for (size_num numSuitCard = 0; numSuitCard < Card::sizeSuitCardArr; numSuitCard++)
+        for (size_num numSuitCard = 0; numSuitCard < Card::sizeSuitCardArr; ++numSuitCard)
         {
-            card.SetCard(numValueCard, numSuitCard);
-            
+           card.SetCard(numValueCard, numSuitCard);
+           
            if (card != heroHand.getCard1() && 
                 card != heroHand.getCard2() && 
                 card != oppHand.getCard1() && 
@@ -40,20 +34,3 @@ void Deck::Refrash(vector<Card> &board, const Hand &heroHand, const Hand &oppHan
         }
     }
 }
-
-//void Deck::DeckPrint()
-//{
-//    for (auto el : deckArr)
-//    {
-//        cout << el.GetValueCard() << el.GetSuitCard() << endl;
-//    }
-//}
-
-//Card & Deck::GetCard(const size_num indexCard)
-//{
-//
-//}
-
-
-vector<Card> Deck::deckArr = {};
-

@@ -1,72 +1,39 @@
 #pragma once
 
 
-
 #include "Card.h"
 #include "defines.h"
 
-
-
-
 //using namespace std;
 
-
-
-class Card
+struct Card final
 {
-public:
-
-    Card ();
-
-    Card (const size_num numValueCard,
-		  const size_num numSuitCard);
-
-    // Конструктор копирования карты в создаваемый объект типа Card
-    Card(const Card &other);
-
+    Card();
+    Card(const size_num numValueCard,
+		 const size_num numSuitCard);
+    Card(const Card &other); // Конструктор копирования карты в создаваемый объект типа Card
     ~Card();
 
-	// Устанавливает значение и масть карты
-	void SetCard(const char SetValueCard, const char SetSuitCard);
-
+	void SetCard(const char SetValueCard, const char SetSuitCard);	// Устанавливает значение и масть карты
 	void SetCard(const size_num numValueCard, const size_num numSuitCard);
-
-    // Устанавливает индекс масти карты
-	void SetSuitCardNum(const size_num numSuitCard);
-
-    // Устанавливает индекс значения карты
-    void SetValueCardNum(const size_num numValueCard);
-
-    // Возвращает масть карты
-    char GetSuitCard(void) const;
-
-    // Возвращает значение карты
-    char GetValueCard(void) const;
-
-    // Возвращает индекс массива масти карты
-    size_num GetSuitCardNum() const;
-
-    // Возвращает индекс массива значений карты
-    size_num GetValueCardNum() const;
-
+	void SetSuitCardNum(const size_num numSuitCard);    // Устанавливает индекс масти карты
+    void SetValueCardNum(const size_num numValueCard);    // Устанавливает индекс значения карты
+    const char & GetSuitCard(void) const;    // Возвращает масть карты
+    const char & GetValueCard(void) const;    // Возвращает значение карты
+    const size_num & GetSuitCardNum() const;    // Возвращает индекс массива масти карты
+    const size_num & GetValueCardNum() const;    // Возвращает индекс массива значений карты
     bool operator == (const Card &other) const;
-
     bool operator !=(const Card &other) const;
+    const Card & operator = (const Card &other);
+    bool operator < (const Card &other) const;
+    bool operator > (const Card &other) const;
 
-    Card & operator = (const Card &other);
-    
-    bool operator< (const Card &other) const;
-    
-    bool operator> (const Card &other) const;
-
-    static const size_num sizeValueCardArr = 13;
-    static const size_num sizeSuitCardArr = 4;
+    static constexpr size_num sizeValueCardArr = 13;
+    static constexpr size_num sizeSuitCardArr = 4;
 
 private:
-
 	size_num numValueCard, numSuitCard;
 
     static const char ValueCardArr[sizeValueCardArr];
 	static const char SuitCardArr[sizeSuitCardArr];
-
 };

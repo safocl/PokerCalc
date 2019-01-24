@@ -1,12 +1,13 @@
 #include "handstrength.h"
 
+//---------------------------------------------------------------------------------------------------------------------------
 HandStrength::HandStrength(const Hand &hand, const vector<Card> &board)
 {
     curr_strength = checkCurrStrength(hand, board);
 }
-
-HandStrength::strength HandStrength::getCurrStrength() const {return curr_strength;}
-
+//---------------------------------------------------------------------------------------------------------------------------
+const HandStrength::strength & HandStrength::getCurrStrength() const {return curr_strength;}
+//---------------------------------------------------------------------------------------------------------------------------
 HandStrength::strength HandStrength::checkCurrStrength(const Hand &hand, const vector<Card> &board) const
 {
     if (board.empty())
@@ -14,7 +15,7 @@ HandStrength::strength HandStrength::checkCurrStrength(const Hand &hand, const v
         // проверка на пару, если борд пуст
         if (hand.getCard1().GetValueCardNum() == hand.getCard2().GetValueCardNum())
         {
-            return HandStrength::PAIR;
+            return HandStrength::strength::PAIR;
         }
     }// проверка на пару, если борд пуст
     else //проверка, если борд не пуст
@@ -28,31 +29,31 @@ HandStrength::strength HandStrength::checkCurrStrength(const Hand &hand, const v
         
         // проверка на стрит-флеш
         if (match_straitflash(combo))
-            return HandStrength::STRAIT_FLASH;
+            return HandStrength::strength::STRAIT_FLASH;
         
         // проверка на карэ
         if (match_kare(combo))
-            return HandStrength::CARE;
+            return HandStrength::strength::KARE;
         
         // проверка на фулл-хаус
         if (match_fullhouse(combo))
-            return HandStrength::FULL_HOUSE;
+            return HandStrength::strength::FULL_HOUSE;
         
         // проверка на флеш
         if (match_flash(combo))
-            return HandStrength::FLASH;
+            return HandStrength::strength::FLASH;
         
         // проверка на стрит
         if (match_strait(combo))
-            return HandStrength::STRAIT;
+            return HandStrength::strength::STRAIT;
         
         // проверка на сет
         if (match_set(combo))
-            return HandStrength::SET;
+            return HandStrength::strength::SET;
         
         // проверка на две пары
         if (match_twopairs(combo))
-            return HandStrength::TWO_PAIRS;
+            return HandStrength::strength::TWO_PAIRS;
         
         // проверка на пару
         if ([&board, &hand](){
@@ -68,22 +69,57 @@ HandStrength::strength HandStrength::checkCurrStrength(const Hand &hand, const v
             }()
             || hand.getCard1().GetValueCardNum() == hand.getCard2().GetValueCardNum())
         {
-            return HandStrength::PAIR;
+            return HandStrength::strength::PAIR;
         }// проверка на пару
     }//проверка, если борд не пуст
             
-    return HandStrength::HIGHT;
+    return HandStrength::strength::HIGHT;
 }
-
+//---------------------------------------------------------------------------------------------------------------------------
 // проверка на стрит-флеш
 bool HandStrength::match_straitflash(const vector<Card> &combo) const
 {
-    if (match_flash(combo) && match_strait(combo))
-        return true;
-    
+    if (combo.size() < 5)
+        return false;
+    else
+    {
+        vector<Card> temp_arr;
+        temp_arr.reserve(combo.size());
+        for (size_num match_num = 0; (combo.size() - match_num) > 4; ++match_num)
+        {
+            temp_arr.clear();
+            temp_arr.push_back(combo.at(match_num));
+            for (size_num match_subnum = match_num + 1; match_subnum < combo.size(); ++match_subnum)
+            {
+                if (combo.at(match_num).GetSuitCardNum() == combo.at(match_subnum).GetSuitCardNum())
+                    temp_arr.push_back(combo.at(match_subnum));
+            }
+        }
+        if (temp_arr.size() > 4)
+        {
+            auto temp = sort_cards(temp_arr);
+            
+            for (size_num match_num = 0; (combo.size() - match_num) >= 5; ++match_num)
+            {
+                if ((temp.at(match_num).GetValueCardNum() + 1 == temp.at(match_num + 1).GetValueCardNum()) &&
+                    (temp.at(match_num).GetValueCardNum() + 2 == temp.at(match_num + 2).GetValueCardNum()) &&
+                    (temp.at(match_num).GetValueCardNum() + 3 == temp.at(match_num + 3).GetValueCardNum()) &&
+                    (temp.at(match_num).GetValueCardNum() + 4 == temp.at(match_num + 4).GetValueCardNum()))
+                    return true;
+                else if (temp.at(match_num).GetValueCardNum() == 0)
+                {
+                    if ((temp.at(match_num).GetValueCardNum() + 1 == temp.at(match_num + 1).GetValueCardNum()) &&
+                        (temp.at(match_num).GetValueCardNum() + 2 == temp.at(match_num + 2).GetValueCardNum()) &&
+                        (temp.at(match_num).GetValueCardNum() + 3 == temp.at(match_num + 3).GetValueCardNum()) &&
+                        (temp.at(match_num).GetValueCardNum() + 12 == temp.back().GetValueCardNum()))
+                        return true;
+                }
+            }
+        }
+    }
     return false;
 }
-
+//---------------------------------------------------------------------------------------------------------------------------
 //проверка на карэ
 bool HandStrength::match_kare(const vector<Card> &combo) const
 {
@@ -105,7 +141,7 @@ bool HandStrength::match_kare(const vector<Card> &combo) const
     
     return false;
 }
-
+//---------------------------------------------------------------------------------------------------------------------------
 // проверка на фулл-хаус
 bool HandStrength::match_fullhouse(const vector<Card> &combo) const
 {
@@ -127,7 +163,7 @@ bool HandStrength::match_fullhouse(const vector<Card> &combo) const
     
     return false;
 }
-
+//---------------------------------------------------------------------------------------------------------------------------
 // проверка на флеш
 bool HandStrength::match_flash(const vector<Card> &combo) const
 {
@@ -135,7 +171,7 @@ bool HandStrength::match_flash(const vector<Card> &combo) const
         return false;
     else
     {
-        for (size_num match_num = 0; match_num < combo.size(); ++match_num)
+        for (size_num match_num = 0; (combo.size() - match_num) > 4; ++match_num)
         {
             size_num match_true = 0, match_false = 0;
             for (size_num match_subnum = match_num + 1; match_subnum < combo.size(); ++match_subnum)
@@ -149,14 +185,14 @@ bool HandStrength::match_flash(const vector<Card> &combo) const
                 }
             }
             
-            if (match_true >= 4)
+            if (match_true > 3)
                 return true;
         }
     }
 
     return false;
 }
-
+//---------------------------------------------------------------------------------------------------------------------------
 // проверка на стрит
 bool HandStrength::match_strait(const vector<Card> &combo) const
 {
@@ -172,12 +208,20 @@ bool HandStrength::match_strait(const vector<Card> &combo) const
                 (temp.at(match_num).GetValueCardNum() + 3 == temp.at(match_num + 3).GetValueCardNum()) &&
                 (temp.at(match_num).GetValueCardNum() + 4 == temp.at(match_num + 4).GetValueCardNum()))
                 return true;
+            else if (temp.at(match_num).GetValueCardNum() == 0)
+            {
+                if ((temp.at(match_num + 1).GetValueCardNum() == 1) &&
+                    (temp.at(match_num + 2).GetValueCardNum() == 2) &&
+                    (temp.at(match_num + 3).GetValueCardNum() == 3) &&
+                    (temp.back().GetValueCardNum() == 12))
+                    return true;
+            }
         }
     }
     
     return false;
 }
-
+//---------------------------------------------------------------------------------------------------------------------------
 // проверка на сет
 bool HandStrength::match_set(const vector<Card> &combo) const
 {
@@ -192,7 +236,7 @@ bool HandStrength::match_set(const vector<Card> &combo) const
     
     return false;
 }
-
+//---------------------------------------------------------------------------------------------------------------------------
 // проверка на две пары
 bool HandStrength::match_twopairs(const vector<Card> &combo) const
 {
@@ -213,7 +257,7 @@ bool HandStrength::match_twopairs(const vector<Card> &combo) const
     
     return false;
 }
-
+//---------------------------------------------------------------------------------------------------------------------------
 vector<Card> sort_cards(const vector<Card> &combo)
 {
     vector<Card> temp_arr = combo;

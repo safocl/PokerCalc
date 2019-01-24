@@ -1,7 +1,6 @@
 #pragma once
 
 
-#include <iostream>
 #include <vector>
 #include "Card.h"
 #include "defines.h"
@@ -11,12 +10,9 @@
 
 using namespace std;
 
-class Hand
+struct Hand final
 {
-public:
-
     Hand();
-
     Hand(const size_num numValueCard1,
          const size_num numSuitCard1,
          const size_num numValueCard2,
@@ -39,15 +35,10 @@ public:
 
 	// Получение значения руки в переменные типа char
     void GetHand(char &valueCard1Link, char &suitCard1Link, char &valueCard2Link, char &suitCard2Link) const;
-
     void GetCards(Card &card1, Card &card2) const;
-    
     const Card & getCard1 () const;
-    
     const Card & getCard2 () const;
-
     bool operator== (const Hand &other) const;
-
     bool operator!= (const Hand &other) const;
 
 private:
