@@ -29,66 +29,16 @@ int main()
 //                if (hero_h1_s != hero_h2_s)
 //                {
     Hand hero_h{hero_h1_v, hero_h1_s, hero_h2_v, hero_h2_s};
-//    thread thread1(parallel1_genOneBoardCard, board, deck, hero_h, hero_h, 
-//                   ref(hight), ref(pair), ref(twopair),ref(set),ref(strait),
-//                   ref(flash),ref(fullhouse),ref(kare),ref(straitflash));
-//    thread thread2(parallel2_genOneBoardCard, board, deck, hero_h, hero_h, 
-//                   ref(hight), ref(pair), ref(twopair),ref(set),ref(strait),
-//                   ref(flash),ref(fullhouse),ref(kare),ref(straitflash));
-//    thread thread3(parallel3_genOneBoardCard, board, deck, hero_h, hero_h, 
-//                   ref(hight), ref(pair), ref(twopair),ref(set),ref(strait),
-//                   ref(flash),ref(fullhouse),ref(kare),ref(straitflash));
-//    thread thread4(parallel4_genOneBoardCard, board, deck, hero_h, hero_h, 
-//                   ref(hight), ref(pair), ref(twopair),ref(set),ref(strait),
-//                   ref(flash),ref(fullhouse),ref(kare),ref(straitflash));
-//    thread1.join();
-//    thread2.join();
-//    thread3.join();
-//    thread4.join();
-    
     
     genFlop(board, deck, hero_h, hero_h, 
-            hight, pair, twopair,set,strait,
-            flash,fullhouse,kare,straitflash);
+            hight, pair, twopair, set, strait,
+            flash, fullhouse, kare, straitflash);
     
-//    parallel1_genOneBoardCard( board, deck, hero_h, hero_h, 
-//                               ref(hight), ref(pair), ref(twopair),ref(set),ref(strait),
-//                               ref(flash),ref(fullhouse),ref(kare),ref(straitflash));
-//    parallel2_genOneBoardCard( board, deck, hero_h, hero_h, 
-//                               ref(hight), ref(pair), ref(twopair),ref(set),ref(strait),
-//                               ref(flash),ref(fullhouse),ref(kare),ref(straitflash));
-//    parallel3_genOneBoardCard( board, deck, hero_h, hero_h, 
-//                               ref(hight), ref(pair), ref(twopair),ref(set),ref(strait),
-//                               ref(flash),ref(fullhouse),ref(kare),ref(straitflash));
-//    parallel4_genOneBoardCard( board, deck, hero_h, hero_h, 
-//                               ref(hight), ref(pair), ref(twopair),ref(set),ref(strait),
-//                               ref(flash),ref(fullhouse),ref(kare),ref(straitflash));
-//    thread thread1(parallel1_genOneBoardCard, board, deck, hero_h, hero_h, 
-//                   ref(hight), ref(pair), ref(twopair),ref(set),ref(strait),
-//                   ref(flash),ref(fullhouse),ref(kare),ref(straitflash));
-//    thread thread2(parallel2_genOneBoardCard, board, deck, hero_h, hero_h, 
-//                   ref(hight), ref(pair), ref(twopair),ref(set),ref(strait),
-//                   ref(flash),ref(fullhouse),ref(kare),ref(straitflash));
-//    thread thread3(parallel3_genOneBoardCard, board, deck, hero_h, hero_h, 
-//                   ref(hight), ref(pair), ref(twopair),ref(set),ref(strait),
-//                   ref(flash),ref(fullhouse),ref(kare),ref(straitflash));
-//    thread thread4(parallel4_genOneBoardCard, board, deck, hero_h, hero_h, 
-//                   ref(hight), ref(pair), ref(twopair),ref(set),ref(strait),
-//                   ref(flash),ref(fullhouse),ref(kare),ref(straitflash));
-    
-//    thread thread1(parallel1_genOneBoardCard, board, deck, hero_h, hero_h, 
-//                   hight,pair, twopair,set,strait,
-//                   flash,fullhouse,kare,straitflash);
-    
-//    thread1.join();
-//    thread2.join();
-//    thread3.join();
-//    thread4.join();
-
 //                }
 //            }
 //        }
-        cout << "sum_cycle : " << sum_cycle << endl;
+        sum_cycle = hight+pair+set+twopair+strait+flash+fullhouse+straitflash+kare;
+        
         cout << "hi : " << hight << endl;
         cout << "pairs : " << pair << endl;
         cout << "sets : " << set << endl;
@@ -98,6 +48,7 @@ int main()
         cout << "fullhouses : " << fullhouse << endl;
         cout << "straitflashes : " << straitflash << endl;
         cout << "kares : " << kare << endl;
+        cout << "sum_cycle : " << sum_cycle << endl;
     }
     catch (const exception & __exc){cout << __exc.what() << endl;}
     catch (const char *str){cout << str << endl;}
