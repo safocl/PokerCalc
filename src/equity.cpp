@@ -3,7 +3,8 @@
 #include <mutex>
 #include <equity.h>
 #include "handstrength.h"
-//mutex mt1;
+
+
 //---------------------------------------------------------------------------------------------------------------------------
 void genOneBoardCard(vector<Card> & board, Deck & deck, const Hand hero_h, const Hand opp_h, std::function<void()> f_action)
 {
@@ -29,9 +30,7 @@ void parallel_genOneBoardCard(vector<Card> board, Deck deck, const Hand hero_h, 
     {
         if (pushNewCardToBoard(board, hero_h, opp_h, deck.getDeckArr().at(count)))
         {
-//            mt1.lock();
             sumHandStrength(hero_h, board, hight, pair, twopair, set, strait, flash, fullhouse, kare, straitflash);
-//            mt1.unlock();
             board.erase(board.end() - 1);
             deck.gen(board ,hero_h, opp_h);
         }
@@ -81,8 +80,6 @@ void sumHandStrength(const Hand & hero_h, const vector<Card> & board,
                      std::atomic<unsigned long long> & set, std::atomic<unsigned long long> & strait, std::atomic<unsigned long long> & flash, 
                      std::atomic<unsigned long long> & fullhouse, std::atomic<unsigned long long> & kare, std::atomic<unsigned long long> & straitflash)
 {
-//    std::mutex mt1;
-//    mt1.lock();
     HandStrength pl_strangth{hero_h, board};
     switch (pl_strangth.getCurrStrength()) {
     case HandStrength::strength::HIGHT : hight.operator++(); return;
@@ -94,15 +91,5 @@ void sumHandStrength(const Hand & hero_h, const vector<Card> & board,
     case HandStrength::strength::FULL_HOUSE : ++fullhouse;return;
     case HandStrength::strength::STRAIT_FLASH : ++straitflash;return;
     case HandStrength::strength::KARE : ++kare;return;
-    
-//    case HandStrength::strength::HIGHT : mt1.lock(); ++hight;mt1.unlock(); return;
-//    case HandStrength::strength::PAIR : mt1.lock(); ++pair;mt1.unlock(); return;
-//    case HandStrength::strength::SET : mt1.lock(); ++set;mt1.unlock(); return;
-//    case HandStrength::strength::TWO_PAIRS : mt1.lock(); ++twopair;mt1.unlock(); return;
-//    case HandStrength::strength::STRAIT : mt1.lock(); ++strait;mt1.unlock(); return;
-//    case HandStrength::strength::FLASH : mt1.lock(); ++flash;mt1.unlock(); return;
-//    case HandStrength::strength::FULL_HOUSE : mt1.lock(); ++fullhouse;mt1.unlock(); return;
-//    case HandStrength::strength::STRAIT_FLASH : mt1.lock(); ++straitflash;mt1.unlock(); return;
-//    case HandStrength::strength::KARE : mt1.lock(); ++kare;mt1.unlock(); return;
     }
 }
