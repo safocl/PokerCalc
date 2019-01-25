@@ -13,6 +13,7 @@ using namespace std;
 struct Hand final
 {
     Hand();
+    Hand(const Hand & other);
     Hand(const size_num numValueCard1,
          const size_num numSuitCard1,
          const size_num numValueCard2,

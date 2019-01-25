@@ -9,7 +9,7 @@ bool pushNewCardToBoard(vector<Card> &board, const Hand &heroHand, const Hand &o
         if (brute_force_matching_cards(board, card))
             return false;
     }
-//    deck.Refrash(board, heroHand, oppHand);
+//    deck.gen(board, heroHand, oppHand);
     if (card != heroHand.getCard1() && 
         card != heroHand.getCard2() && 
         card != oppHand.getCard1() && 

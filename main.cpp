@@ -7,7 +7,7 @@
 #include "handstrength.h"
 #include <string>
 #include "equity.h"
-#include <thread>
+
 
 
 int main()

@@ -14,7 +14,9 @@ using namespace std;
 
 struct Deck final
 {
-    void Refrash(const vector<Card> &board, const Hand &heroHand, const Hand &oppHand);
+    Deck();
+    Deck(const Deck & other);
+    void gen(const vector<Card> &board, const Hand &heroHand, const Hand &oppHand);
 
     const size_num & capacity() const;
     

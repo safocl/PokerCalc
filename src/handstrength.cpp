@@ -1,5 +1,7 @@
 #include "handstrength.h"
 
+
+HandStrength::HandStrength(const HandStrength & other){this->curr_strength = other.curr_strength;};
 //---------------------------------------------------------------------------------------------------------------------------
 HandStrength::HandStrength(const Hand &hand, const vector<Card> &board)
 {

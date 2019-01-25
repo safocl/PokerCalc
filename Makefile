@@ -14,7 +14,7 @@ export CXXFLAGS += -march=sandybridge -mno-aes -fstack-protector-strong
 export CXXFLAGS += -Wall -Wextra -Wfatal-errors -Werror -std=c++17 -pipe -O2
 CXXFLAGS += -g
 CXXFLAGS += -I$(incdir)
-CXXFLAGS += -fopenmp
+#CXXFLAGS += -fopenmp
 
 export LDFLAGS += -fopenmp
 export LDPATH +=
