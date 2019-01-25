@@ -1,8 +1,9 @@
+#include <iostream>
 #include <thread>
 #include <mutex>
 #include <equity.h>
 #include "handstrength.h"
-
+//mutex mt1;
 //---------------------------------------------------------------------------------------------------------------------------
 void genOneBoardCard(vector<Card> & board, Deck & deck, const Hand hero_h, const Hand opp_h, std::function<void()> f_action)
 {
@@ -20,15 +21,17 @@ void genOneBoardCard(vector<Card> & board, Deck & deck, const Hand hero_h, const
 //---------------------------------------------------------------------------------------------------------------------------
 void parallel_genOneBoardCard(vector<Card> board, Deck deck, const Hand hero_h, const Hand opp_h, 
                               const unsigned long & min_pos, const unsigned long & max_pos,
-                               unsigned long long & hight, unsigned long long & pair, unsigned long long & twopair,
-                               unsigned long long & set, unsigned long long & strait, unsigned long long & flash, 
-                               unsigned long long & fullhouse, unsigned long long & kare, unsigned long long & straitflash)
+                               std::atomic<unsigned long long> & hight, std::atomic<unsigned long long> & pair, std::atomic<unsigned long long> & twopair,
+                               std::atomic<unsigned long long> & set, std::atomic<unsigned long long> & strait, std::atomic<unsigned long long> & flash, 
+                               std::atomic<unsigned long long> & fullhouse, std::atomic<unsigned long long> & kare, std::atomic<unsigned long long> & straitflash)
 {
     for (unsigned long count = min_pos; count < max_pos; ++count)
     {
         if (pushNewCardToBoard(board, hero_h, opp_h, deck.getDeckArr().at(count)))
         {
+//            mt1.lock();
             sumHandStrength(hero_h, board, hight, pair, twopair, set, strait, flash, fullhouse, kare, straitflash);
+//            mt1.unlock();
             board.erase(board.end() - 1);
             deck.gen(board ,hero_h, opp_h);
         }
@@ -36,9 +39,9 @@ void parallel_genOneBoardCard(vector<Card> board, Deck deck, const Hand hero_h, 
 }
 //---------------------------------------------------------------------------------------------------------------------------
 void genFlop(vector<Card> & board, Deck & deck, const Hand hero_h, const Hand opp_h,
-             unsigned long long & hight, unsigned long long & pair, unsigned long long & twopair,
-             unsigned long long & set, unsigned long long & strait, unsigned long long & flash, 
-             unsigned long long & fullhouse, unsigned long long & kare, unsigned long long & straitflash)
+             std::atomic<unsigned long long> & hight, std::atomic<unsigned long long> & pair, std::atomic<unsigned long long> & twopair,
+             std::atomic<unsigned long long> & set, std::atomic<unsigned long long> & strait, std::atomic<unsigned long long> & flash, 
+             std::atomic<unsigned long long> & fullhouse, std::atomic<unsigned long long> & kare, std::atomic<unsigned long long> & straitflash)
 {
     genOneBoardCard(board, deck, hero_h, opp_h, [&](){
         genOneBoardCard(board, deck, hero_h, opp_h, [&](){
@@ -74,21 +77,32 @@ void genFlop(vector<Card> & board, Deck & deck, const Hand hero_h, const Hand op
 }
 //---------------------------------------------------------------------------------------------------------------------------
 void sumHandStrength(const Hand & hero_h, const vector<Card> & board,
-                     unsigned long long & hight, unsigned long long & pair, unsigned long long & twopair,
-                     unsigned long long & set, unsigned long long & strait, unsigned long long & flash, 
-                     unsigned long long & fullhouse, unsigned long long & kare, unsigned long long & straitflash)
+                     std::atomic<unsigned long long> & hight, std::atomic<unsigned long long> & pair, std::atomic<unsigned long long> & twopair,
+                     std::atomic<unsigned long long> & set, std::atomic<unsigned long long> & strait, std::atomic<unsigned long long> & flash, 
+                     std::atomic<unsigned long long> & fullhouse, std::atomic<unsigned long long> & kare, std::atomic<unsigned long long> & straitflash)
 {
-    std::mutex mt1;
+//    std::mutex mt1;
+//    mt1.lock();
     HandStrength pl_strangth{hero_h, board};
     switch (pl_strangth.getCurrStrength()) {
-    case HandStrength::strength::HIGHT : while(true){if (mt1.try_lock()){ ++hight;mt1.unlock(); return;}}
-    case HandStrength::strength::PAIR : while(true){if (mt1.try_lock()){ ++pair;mt1.unlock(); return;}}
-    case HandStrength::strength::SET : while(true){if (mt1.try_lock()){ ++set;mt1.unlock(); return;}}
-    case HandStrength::strength::TWO_PAIRS : while(true){if (mt1.try_lock()){ ++twopair;mt1.unlock(); return;}}
-    case HandStrength::strength::STRAIT : while(true){if (mt1.try_lock()){ ++strait;mt1.unlock(); return;}}
-    case HandStrength::strength::FLASH : while(true){if (mt1.try_lock()){ ++flash;mt1.unlock(); return;}}
-    case HandStrength::strength::FULL_HOUSE : while(true){if (mt1.try_lock()){ ++fullhouse;mt1.unlock(); return;}}
-    case HandStrength::strength::STRAIT_FLASH : while(true){if (mt1.try_lock()){ ++straitflash;mt1.unlock(); return;}}
-    case HandStrength::strength::KARE : while(true){if (mt1.try_lock()){ ++kare;mt1.unlock(); return;}}
+    case HandStrength::strength::HIGHT : hight.operator++(); return;
+    case HandStrength::strength::PAIR : ++pair; return;
+    case HandStrength::strength::SET : ++set; return;
+    case HandStrength::strength::TWO_PAIRS : ++twopair;return;
+    case HandStrength::strength::STRAIT : ++strait;return;
+    case HandStrength::strength::FLASH : ++flash;return;
+    case HandStrength::strength::FULL_HOUSE : ++fullhouse;return;
+    case HandStrength::strength::STRAIT_FLASH : ++straitflash;return;
+    case HandStrength::strength::KARE : ++kare;return;
+    
+//    case HandStrength::strength::HIGHT : mt1.lock(); ++hight;mt1.unlock(); return;
+//    case HandStrength::strength::PAIR : mt1.lock(); ++pair;mt1.unlock(); return;
+//    case HandStrength::strength::SET : mt1.lock(); ++set;mt1.unlock(); return;
+//    case HandStrength::strength::TWO_PAIRS : mt1.lock(); ++twopair;mt1.unlock(); return;
+//    case HandStrength::strength::STRAIT : mt1.lock(); ++strait;mt1.unlock(); return;
+//    case HandStrength::strength::FLASH : mt1.lock(); ++flash;mt1.unlock(); return;
+//    case HandStrength::strength::FULL_HOUSE : mt1.lock(); ++fullhouse;mt1.unlock(); return;
+//    case HandStrength::strength::STRAIT_FLASH : mt1.lock(); ++straitflash;mt1.unlock(); return;
+//    case HandStrength::strength::KARE : mt1.lock(); ++kare;mt1.unlock(); return;
     }
 }

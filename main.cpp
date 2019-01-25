@@ -1,3 +1,4 @@
+#include <atomic>
 #include <iostream>
 #include <vector>
 #include "Card.h"
@@ -20,7 +21,8 @@ int main()
         vector<Card> board;
         board.reserve(5);
         
-        unsigned long long sum_cycle = 0, straitflash = 0, kare = 0, fullhouse = 0, flash = 0, strait = 0, set = 0, twopair = 0, pair = 0, hight = 0;
+        std::atomic<unsigned long long> sum_cycle, straitflash, kare, fullhouse, flash, strait, set, twopair, pair, hight;
+        sum_cycle=0;straitflash=0;kare=0;fullhouse=0;flash=0;strait=0;set=0; twopair=0; pair=0; hight=0;
         
 //        for (size_num hero_h1_s = 0; (hero_h1_s < Card::sizeSuitCardArr); ++hero_h1_s)
 //        {
