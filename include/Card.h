@@ -12,6 +12,7 @@ struct Card final
     Card(const size_num numValueCard,
 		 const size_num numSuitCard);
     Card(const Card & other); // Конструктор копирования карты в создаваемый объект типа Card
+    Card(Card && other);
     ~Card();
 
 	void SetCard(const char SetValueCard, const char SetSuitCard);	// Устанавливает значение и масть карты

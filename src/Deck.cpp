@@ -1,19 +1,19 @@
 #include "Deck.h"
 #include "Board.h"
 
-Deck::Deck(){deckArr.reserve(SIZE_DeckArr);};
+Deck::Deck(){deckArr.reserve(Deck::SIZE_DeckArr);};
 //---------------------------------------------------------------------------------------------------------------------------
-Deck::Deck(const Deck & other){this->deckArr = other.deckArr;};
+Deck::Deck(Deck && other) :deckArr(other.deckArr) {};
 //---------------------------------------------------------------------------------------------------------------------------
 const vector<Card> & Deck::getDeckArr() const {return deckArr;}
 //---------------------------------------------------------------------------------------------------------------------------
 unsigned long Deck::size() const {return deckArr.size();}
 //---------------------------------------------------------------------------------------------------------------------------
-const size_num & Deck::capacity() const {return SIZE_DeckArr;}
+const size_num & Deck::capacity() const {return Deck::SIZE_DeckArr;}
 //---------------------------------------------------------------------------------------------------------------------------
 void Deck::gen(const vector<Card> &board, const Hand &heroHand, const Hand &oppHand)
 {
-    deckArr.reserve(SIZE_DeckArr);
+    deckArr.reserve(Deck::SIZE_DeckArr);
     
     if (!deckArr.empty())
         deckArr.clear();

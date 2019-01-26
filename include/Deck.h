@@ -1,6 +1,6 @@
 //#pragma once
-#ifndef _DECK_H_
-#define _DECK_H_
+#ifndef __DECK_H__
+#define __DECK_H__
 
 
 #include <vector>
@@ -15,20 +15,17 @@ using namespace std;
 struct Deck final
 {
     Deck();
-    Deck(const Deck & other);
+    Deck(Deck && other);
+    Deck(const Deck & other) = delete;
     void gen(const vector<Card> &board, const Hand &heroHand, const Hand &oppHand);
-
     const size_num & capacity() const;
-    
     unsigned long size() const;
-    
     const vector<Card> & getDeckArr() const;
-
 private:
     vector<Card> deckArr;
-    const size_num SIZE_DeckArr = 52;
+    static constexpr size_num SIZE_DeckArr = 52;
 };
 
 
 
-#endif // _DECK_H_
+#endif // __DECK_H__

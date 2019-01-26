@@ -24,6 +24,13 @@ Card::Card(const Card &other)
     this->numSuitCard = other.numSuitCard;
 }
 //---------------------------------------------------------------------------------------------------------------------------
+Card::Card(Card && other)
+{
+    this->numValueCard = other.numValueCard;
+    this->numSuitCard = other.numSuitCard;
+
+}
+//---------------------------------------------------------------------------------------------------------------------------
 Card::~Card(){}
 //---------------------------------------------------------------------------------------------------------------------------
 void Card::SetCard(const char SetValueCard, const char SetSuitCard)

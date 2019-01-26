@@ -31,12 +31,10 @@ int main()
 //                if (hero_h1_s != hero_h2_s)
 //                {
     Hand hero_h{hero_h1_v, hero_h1_s, hero_h2_v, hero_h2_s};
-#pragma omp parallel firstprivate(board, deck, hero_h) shared(hight, pair, twopair, set, strait,flash, fullhouse, kare, straitflash)
-    {
+
     genFlop(board, deck, hero_h, hero_h, 
             hight, pair, twopair, set, strait,
             flash, fullhouse, kare, straitflash);
-    }
 //                }
 //            }
 //        }
