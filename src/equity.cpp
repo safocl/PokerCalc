@@ -47,30 +47,35 @@ void genFlop(vector<Card> & board, Deck & deck, const Hand hero_h, const Hand op
 
             deck.gen(board, hero_h, hero_h);
             unsigned long min_pos1 = 0;
-            auto max_pos1 = deck.size() / 4;
-            thread thread1(parallel_genOneBoardCard, board, deck, hero_h, hero_h, min_pos1, max_pos1,
-                           ref(hight), ref(pair), ref(twopair),ref(set),ref(strait),
-                           ref(flash),ref(fullhouse),ref(kare),ref(straitflash));
-            auto min_pos2 = max_pos1;
-            auto max_pos2 = max_pos1 * 2;
-            thread thread2(parallel_genOneBoardCard, board, deck, hero_h, hero_h, min_pos2, max_pos2,
-                           ref(hight), ref(pair), ref(twopair),ref(set),ref(strait),
-                           ref(flash),ref(fullhouse),ref(kare),ref(straitflash));
-            auto min_pos3 = max_pos2;
-            auto max_pos3 = max_pos1 * 3;
-            thread thread3(parallel_genOneBoardCard, board, deck, hero_h, hero_h, min_pos3, max_pos3,
-                           ref(hight), ref(pair), ref(twopair),ref(set),ref(strait),
-                           ref(flash),ref(fullhouse),ref(kare),ref(straitflash));
-            auto min_pos4 = max_pos3;
-            auto max_pos4 = deck.size();
-            thread thread4(parallel_genOneBoardCard, board, deck, hero_h, hero_h, min_pos4, max_pos4,
-                           ref(hight), ref(pair), ref(twopair),ref(set),ref(strait),
-                           ref(flash),ref(fullhouse),ref(kare),ref(straitflash));
+            auto max_pos1 = deck.size();
+            
+            parallel_genOneBoardCard(board, deck, hero_h, hero_h, min_pos1, max_pos1,
+                                       ref(hight), ref(pair), ref(twopair),ref(set),ref(strait),
+                                       ref(flash),ref(fullhouse),ref(kare),ref(straitflash));
+            
+//            thread thread1(parallel_genOneBoardCard, board, deck, hero_h, hero_h, min_pos1, max_pos1,
+//                           ref(hight), ref(pair), ref(twopair),ref(set),ref(strait),
+//                           ref(flash),ref(fullhouse),ref(kare),ref(straitflash));
+//            auto min_pos2 = max_pos1;
+//            auto max_pos2 = max_pos1 * 2;
+//            thread thread2(parallel_genOneBoardCard, board, deck, hero_h, hero_h, min_pos2, max_pos2,
+//                           ref(hight), ref(pair), ref(twopair),ref(set),ref(strait),
+//                           ref(flash),ref(fullhouse),ref(kare),ref(straitflash));
+//            auto min_pos3 = max_pos2;
+//            auto max_pos3 = max_pos1 * 3;
+//            thread thread3(parallel_genOneBoardCard, board, deck, hero_h, hero_h, min_pos3, max_pos3,
+//                           ref(hight), ref(pair), ref(twopair),ref(set),ref(strait),
+//                           ref(flash),ref(fullhouse),ref(kare),ref(straitflash));
+//            auto min_pos4 = max_pos3;
+//            auto max_pos4 = deck.size();
+//            thread thread4(parallel_genOneBoardCard, board, deck, hero_h, hero_h, min_pos4, max_pos4,
+//                           ref(hight), ref(pair), ref(twopair),ref(set),ref(strait),
+//                           ref(flash),ref(fullhouse),ref(kare),ref(straitflash));
 
-            thread1.join();
-            thread2.join();
-            thread3.join();
-            thread4.join();
+//            thread1.join();
+//            thread2.join();
+//            thread3.join();
+//            thread4.join();
         });
     });
 }

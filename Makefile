@@ -11,11 +11,14 @@ SHELL = /bin/sh
 export CXX = /bin/g++
 
 export CXXFLAGS += -march=sandybridge -mno-aes -fstack-protector-strong
-export CXXFLAGS += -Wall -Wextra -Wfatal-errors -Werror -std=c++17 -pipe -O2
+export CXXFLAGS += -Wall -Wextra -Wfatal-errors -Werror -std=c++17 -pipe
 CXXFLAGS += -g
+CXXFLAGS += -O0
+#CXXFLAGS += -fsanitize=thread
 CXXFLAGS += -I$(incdir)
-#CXXFLAGS += -fopenmp
+CXXFLAGS += -fopenmp
 
+export LDFLAGS +=
 export LDFLAGS += -fopenmp
 export LDPATH +=
 SRC_DIR = $(srcdir)/src
