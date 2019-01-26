@@ -21,8 +21,8 @@ int main()
         vector<Card> board;
         board.reserve(5);
         
-        std::atomic<unsigned long long> sum_cycle, straitflash, kare, fullhouse, flash, strait, set, twopair, pair, hight;
-        sum_cycle=0;straitflash=0;kare=0;fullhouse=0;flash=0;strait=0;set=0; twopair=0; pair=0; hight=0;
+        HandStrengthList hsl;
+        hsl.straitflash=0;hsl.kare=0;hsl.fullhouse=0;hsl.flash=0;hsl.strait=0;hsl.set=0; hsl.twopair=0; hsl.pair=0; hsl.hight=0;
         
 //        for (size_num hero_h1_s = 0; (hero_h1_s < Card::sizeSuitCardArr); ++hero_h1_s)
 //        {
@@ -32,23 +32,21 @@ int main()
 //                {
     Hand hero_h{hero_h1_v, hero_h1_s, hero_h2_v, hero_h2_s};
 
-    genFlop(board, deck, hero_h, hero_h, 
-            hight, pair, twopair, set, strait,
-            flash, fullhouse, kare, straitflash);
+    genFlop(board, deck, hero_h, hero_h, hsl);
 //                }
 //            }
 //        }
-        sum_cycle = hight+pair+set+twopair+strait+flash+fullhouse+straitflash+kare;
+        unsigned long long sum_cycle = hsl.hight+hsl.pair+hsl.set+hsl.twopair+hsl.strait+hsl.flash+hsl.fullhouse+hsl.straitflash+hsl.kare;
         
-        cout << "hi : " << hight << endl;
-        cout << "pairs : " << pair << endl;
-        cout << "sets : " << set << endl;
-        cout << "two pairs : " << twopair << endl;
-        cout << "straits : " << strait << endl;
-        cout << "flashes : " << flash << endl;
-        cout << "fullhouses : " << fullhouse << endl;
-        cout << "straitflashes : " << straitflash << endl;
-        cout << "kares : " << kare << endl;
+        cout << "hi : " << hsl.hight << endl;
+        cout << "pairs : " << hsl.pair << endl;
+        cout << "sets : " << hsl.set << endl;
+        cout << "two pairs : " << hsl.twopair << endl;
+        cout << "straits : " << hsl.strait << endl;
+        cout << "flashes : " << hsl.flash << endl;
+        cout << "fullhouses : " << hsl.fullhouse << endl;
+        cout << "straitflashes : " << hsl.straitflash << endl;
+        cout << "kares : " << hsl.kare << endl;
         cout << "sum_cycle : " << sum_cycle << endl;
     }
     catch (const exception & __exc){cout << __exc.what() << endl;}
