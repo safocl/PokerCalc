@@ -15,8 +15,8 @@ using namespace std;
 struct Deck final
 {
     Deck();
-    Deck(Deck && other);
-    Deck(const Deck & other) = delete;
+//    Deck(Deck && other);
+//    Deck(const Deck & other) = delete;
     void gen(const vector<Card> &board, const Hand &heroHand, const Hand &oppHand);
     const size_num & capacity() const;
     unsigned long size() const;

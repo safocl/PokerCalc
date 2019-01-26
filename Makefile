@@ -15,7 +15,7 @@ FLAGS_FOR_TESTS = -fsanitize=thread -fsanitize=undefined -O0
 export CXXFLAGS += -Wall -Wextra -Wfatal-errors -Werror -std=c++17
 CXXFLAGS += -march=sandybridge -mno-aes -fstack-protector-strong -pipe
 CXXFLAGS += -g
-CXXFLAGS += -O3
+CXXFLAGS += -O0
 CXXFLAGS += -I$(incdir)
 #CXXFLAGS += -fopenmp
 #CXXFLAGS += $(FLAGS_FOR_TESTS)

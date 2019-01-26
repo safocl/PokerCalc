@@ -1,5 +1,6 @@
 #pragma once
 
+#include <atomic>
 #include <vector>
 #include "Card.h"
 #include "Hand.h"
@@ -28,6 +29,11 @@ private:
     bool match_strait(const vector<Card> &combo) const;
     bool match_set(const vector<Card> &combo) const;
     bool match_twopairs(const vector<Card> &combo) const;
+};
+
+struct HandStrengthList final
+{
+    std::atomic<unsigned long long> hight, pair, twopair, set, strait, flash, fullhouse, kare, straitflash;
 };
 
 vector<Card> sort_cards(const vector<Card> &combo);
