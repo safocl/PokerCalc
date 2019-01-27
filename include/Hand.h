@@ -1,4 +1,5 @@
-#pragma once
+#ifndef HAND_H
+#define HAND_H
 
 
 #include <vector>
@@ -14,11 +15,12 @@ struct Hand final
 {
     Hand();
     Hand(const Hand & other);
-    Hand(const size_num numValueCard1,
-         const size_num numSuitCard1,
-         const size_num numValueCard2,
-         const size_num numSuitCard2);
-
+    Hand(Hand && other);
+    Hand(const size_t numValueCard1,
+         const size_t numSuitCard1,
+         const size_t numValueCard2,
+         const size_t numSuitCard2);
+    
     ~Hand();
 
 	// Указание руки
@@ -27,10 +29,10 @@ struct Hand final
                   const char valueCard2,
                   const char suitCard2);
 
-    void SetHand (const size_num numValueCard1,
-                  const size_num numSuitCard1,
-                  const size_num numValueCard2,
-                  const size_num numSuitCard2);
+    void SetHand (const size_t numValueCard1,
+                  const size_t numSuitCard1,
+                  const size_t numValueCard2,
+                  const size_t numSuitCard2);
 
 	void SetHand (const Card &card1, const Card &card2);
 
@@ -41,8 +43,13 @@ struct Hand final
     const Card & getCard2 () const;
     bool operator== (const Hand &other) const;
     bool operator!= (const Hand &other) const;
+    Hand & operator = (const Hand & other);
+    Hand & operator = (Hand && other);
 
 private:
     Card card1,
 		 card2;
 };
+
+
+#endif //HAND_H

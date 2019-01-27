@@ -6,27 +6,24 @@
 #include "Board.h"
 #include "Deck.h"
 #include "handstrength.h"
-#include <string>
+//#include <string>
 #include "equity.h"
 
 
 
 int main()
 {
-
-    try
-    {
         Deck deck;
-        const size_num hero_h1_v = 0, hero_h2_v = 0, hero_h1_s = 0, hero_h2_s = 1;
-        vector<Card> board;
+        const size_t hero_h1_v = 0, hero_h2_v = 0, hero_h1_s = 0, hero_h2_s = 1;
+        std::vector<Card> board;
         board.reserve(5);
         
         HandStrengthList hsl;
         hsl.straitflash=0;hsl.kare=0;hsl.fullhouse=0;hsl.flash=0;hsl.strait=0;hsl.set=0; hsl.twopair=0; hsl.pair=0; hsl.hight=0;
         
-//        for (size_num hero_h1_s = 0; (hero_h1_s < Card::sizeSuitCardArr); ++hero_h1_s)
+//        for (size_t hero_h1_s = 0; (hero_h1_s < Card::sizeSuitCardArr); ++hero_h1_s)
 //        {
-//            for (size_num hero_h2_s = hero_h1_s + 1; (hero_h2_s < Card::sizeSuitCardArr); ++hero_h2_s) 
+//            for (size_t hero_h2_s = hero_h1_s + 1; (hero_h2_s < Card::sizeSuitCardArr); ++hero_h2_s) 
 //            {
 //                if (hero_h1_s != hero_h2_s)
 //                {
@@ -48,11 +45,6 @@ int main()
         cout << "straitflashes : " << hsl.straitflash << endl;
         cout << "kares : " << hsl.kare << endl;
         cout << "sum_cycle : " << sum_cycle << endl;
-    }
-    catch (const exception & __exc){cout << __exc.what() << endl;}
-    catch (const char *str){cout << str << endl;}
-    
-
 
     return 0;
 }

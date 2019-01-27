@@ -1,20 +1,18 @@
 #include "Card.h"
+// #define NDEBUG
+#include <cassert>
+
 
 //---------------------------------------------------------------------------------------------------------------------------
-Card::Card (){}
+Card::Card () : numValueCard(), numSuitCard() {}
 //---------------------------------------------------------------------------------------------------------------------------
-Card::Card (const size_num numValueCard,
-            const size_num numSuitCard)
+Card::Card (const size_t numValueCard, const size_t numSuitCard)
 {
-    if (numValueCard >= sizeValueCardArr)
-        throw ("Недопустимое значение карты");
-    else
-        this->numValueCard = numValueCard;
+    assert((static_cast<bool>(numValueCard < sizeValueCardArr)));
+    this->numValueCard = numValueCard;
 
-    if (numSuitCard >= sizeSuitCardArr)
-        throw "Недопустимое значение масти карты";
-    else
-        this->numSuitCard = numSuitCard;
+    assert((static_cast<bool>(numSuitCard < sizeSuitCardArr)));
+    this->numSuitCard = numSuitCard;
 }
 //---------------------------------------------------------------------------------------------------------------------------
 // Конструктор копирования карты в создаваемый объект типа Card
@@ -24,12 +22,7 @@ Card::Card(const Card &other)
     this->numSuitCard = other.numSuitCard;
 }
 //---------------------------------------------------------------------------------------------------------------------------
-Card::Card(Card && other)
-{
-    this->numValueCard = other.numValueCard;
-    this->numSuitCard = other.numSuitCard;
-
-}
+Card::Card(Card && other){ *this = std::move(other);}
 //---------------------------------------------------------------------------------------------------------------------------
 Card::~Card(){}
 //---------------------------------------------------------------------------------------------------------------------------
@@ -64,27 +57,23 @@ void Card::SetCard(const char SetValueCard, const char SetSuitCard)
     }
 }
 //---------------------------------------------------------------------------------------------------------------------------
-void Card::SetCard(const size_num numValueCard, const size_num numSuitCard)
+void Card::SetCard(const size_t numValueCard, const size_t numSuitCard)
 {
     SetValueCardNum(numValueCard);
     SetSuitCardNum(numSuitCard);
 }
 //---------------------------------------------------------------------------------------------------------------------------
-void Card::SetSuitCardNum(const size_num numSuitCard)
+void Card::SetSuitCardNum(const size_t numSuitCard)
 {
-    if (numSuitCard >= sizeSuitCardArr)
-        throw "Недопустимое значение масти карты";
-    else
-        this->numSuitCard = numSuitCard;
+    assert((static_cast<bool>(numSuitCard < sizeSuitCardArr)));
+    this->numSuitCard = numSuitCard;
 }
-
+//---------------------------------------------------------------------------------------------------------------------------
 // Устанавливает индекс значения карты
-void Card::SetValueCardNum(const size_num numValueCard)
+void Card::SetValueCardNum(const size_t numValueCard)
 {
-    if (numValueCard >= sizeValueCardArr)
-        throw "Недопустимое значение карты";
-    else
-        this->numValueCard = numValueCard;
+    assert((static_cast<bool>(numValueCard < sizeValueCardArr)));
+    this->numValueCard = numValueCard;
 }
 //---------------------------------------------------------------------------------------------------------------------------
 // Возвращает масть карты
@@ -94,10 +83,10 @@ const char & Card::GetSuitCard() const {return SuitCardArr[numSuitCard];}
 const char & Card::GetValueCard() const {return ValueCardArr[numValueCard];}
 //---------------------------------------------------------------------------------------------------------------------------
 // Возвращает индекс массива масти карты
-const size_num & Card::GetSuitCardNum() const {return numSuitCard;}
+const size_t & Card::GetSuitCardNum() const {return numSuitCard;}
 //---------------------------------------------------------------------------------------------------------------------------
 // Возвращает индекс массива значений карты
-const size_num & Card::GetValueCardNum() const {return numValueCard;}
+const size_t & Card::GetValueCardNum() const {return numValueCard;}
 //---------------------------------------------------------------------------------------------------------------------------
 bool Card::operator== (const Card &other) const {
     return (this->numSuitCard == other.numSuitCard && this->numValueCard == other.numValueCard);
@@ -107,8 +96,15 @@ bool Card::operator!=(const Card &other) const {
     return !(this->numSuitCard == other.numSuitCard && this->numValueCard == other.numValueCard);
 }
 //---------------------------------------------------------------------------------------------------------------------------
-const Card & Card::operator= (const Card &other) {
-    this->SetCard(other.numValueCard, other.numSuitCard);
+Card & Card::operator= (const Card &other) {
+    this->numValueCard = other.numValueCard;
+    this->numSuitCard = other.numSuitCard;
+    return *this;
+}
+//---------------------------------------------------------------------------------------------------------------------------
+Card & Card::operator= (Card && other){
+    this->numValueCard = std::move(other.numValueCard);
+    this->numSuitCard = std::move(other.numSuitCard);
     return *this;
 }
 //---------------------------------------------------------------------------------------------------------------------------

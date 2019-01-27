@@ -13,7 +13,7 @@
 
 //---------------------------------------------------------------------------------------------------------------------------
 void genOneBoardCard(vector<Card> & board, Deck & deck, const Hand hero_h, const Hand opp_h, HandStrengthList & hsl,
-                     size_num & count_cycles)
+                     size_t & count_cycles)
 {
     --count_cycles;
     if (count_cycles > 0){
@@ -33,7 +33,7 @@ void genOneBoardCard(vector<Card> & board, Deck & deck, const Hand hero_h, const
 //---------------------------------------------------------------------------------------------------------------------------
 void parallel_genOneBoardCard(vector<Card> board, Deck deck, const Hand hero_h, const Hand opp_h, 
                               const unsigned long & min_pos, const unsigned long & max_pos,
-                              HandStrengthList & hsl, size_num & count_cycles)
+                              HandStrengthList & hsl, size_t & count_cycles)
 {
     
     deck.gen(board ,hero_h, opp_h);
@@ -51,10 +51,10 @@ void parallel_genOneBoardCard(vector<Card> board, Deck deck, const Hand hero_h, 
 void genFlop(vector<Card> & board, Deck & deck, const Hand hero_h, const Hand opp_h,
              HandStrengthList & hsl)
 {
-    size_num count_cycles1 = 3;
-//    size_num count_cycles2 = 3;
-//    size_num count_cycles3 = 3;
-//    size_num count_cycles4 = 3;
+    size_t count_cycles1 = 3;
+//    size_t count_cycles2 = 3;
+//    size_t count_cycles3 = 3;
+//    size_t count_cycles4 = 3;
             deck.gen(board, hero_h, hero_h);
             unsigned long min_pos1 = 0;
             auto max_pos1 = deck.size();
@@ -90,7 +90,7 @@ void sumHandStrength(const Hand & hero_h, const vector<Card> & board, HandStreng
     case HandStrength::strength::STRAIT : ++hsl.strait;return;
     case HandStrength::strength::FLASH : ++hsl.flash;return;
     case HandStrength::strength::FULL_HOUSE : ++hsl.fullhouse;return;
-    case HandStrength::strength::STRAIT_FLASH : ++hsl.straitflash;return;
+    case HandStrength::strength::STRAIT_FLUSH : ++hsl.straitflash;return;
     case HandStrength::strength::KARE : ++hsl.kare;return;
     }
 }

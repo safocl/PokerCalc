@@ -1,15 +1,20 @@
 #include "Deck.h"
 #include "Board.h"
 
-Deck::Deck(){deckArr.reserve(Deck::SIZE_DeckArr);};
+Deck::Deck() : deckArr() {deckArr.reserve(Deck::SIZE_DeckArr);}
 //---------------------------------------------------------------------------------------------------------------------------
-//Deck::Deck(Deck && other) :deckArr(other.deckArr) {};
+Deck::Deck(const Deck & other){this->deckArr = other.deckArr;}
+//---------------------------------------------------------------------------------------------------------------------------
+Deck::Deck(Deck && other){*this = std::move(other);}
+//---------------------------------------------------------------------------------------------------------------------------
+Deck & Deck::operator = (Deck && other){this->deckArr = std::move(other.deckArr);
+                                        return *this;}
 //---------------------------------------------------------------------------------------------------------------------------
 const vector<Card> & Deck::getDeckArr() const {return deckArr;}
 //---------------------------------------------------------------------------------------------------------------------------
 unsigned long Deck::size() const {return deckArr.size();}
 //---------------------------------------------------------------------------------------------------------------------------
-const size_num & Deck::capacity() const {return Deck::SIZE_DeckArr;}
+const size_t & Deck::capacity() const {return Deck::SIZE_DeckArr;}
 //---------------------------------------------------------------------------------------------------------------------------
 void Deck::gen(const vector<Card> &board, const Hand &heroHand, const Hand &oppHand)
 {
@@ -20,9 +25,9 @@ void Deck::gen(const vector<Card> &board, const Hand &heroHand, const Hand &oppH
     
     Card card;
     
-    for (size_num numValueCard = 0; numValueCard < Card::sizeValueCardArr; ++numValueCard)
+    for (size_t numValueCard = 0; numValueCard < Card::sizeValueCardArr; ++numValueCard)
     {
-        for (size_num numSuitCard = 0; numSuitCard < Card::sizeSuitCardArr; ++numSuitCard)
+        for (size_t numSuitCard = 0; numSuitCard < Card::sizeSuitCardArr; ++numSuitCard)
         {
            card.SetCard(numValueCard, numSuitCard);
            

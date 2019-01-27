@@ -1,10 +1,8 @@
-#pragma once
-
-typedef unsigned short int size_num;
-
+#ifndef DEFINES_H
+#define DEFINES_H
 
 
 
+#include <cstddef>
 
-
-
+#endif //DEFINES_H
