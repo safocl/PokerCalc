@@ -27,7 +27,7 @@ bool brute_force_matching_cards(const vector<Card> &board, const Card &card)
 {
     if (!board.empty())
     {
-        for (auto el : board)
+        for (auto const & el : board)
         {
             if (card == el)
                 return true;
