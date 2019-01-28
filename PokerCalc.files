@@ -1,5 +1,6 @@
 PokerCalc.pro
 include/equity.h
+main.pro
 src/equity.cpp
 src/handstrength.cpp
 include/Board.h
@@ -13,3 +14,4 @@ src/Board.cpp
 src/Card.cpp
 src/Deck.cpp
 src/Hand.cpp
+src/libpoker.pro
