@@ -1,0 +1,15 @@
+PockerCalc.pro
+include/equity.h
+src/equity.cpp
+src/handstrength.cpp
+include/Board.h
+include/Card.h
+include/Deck.h
+include/Hand.h
+include/defines.h
+include/handstrength.h
+main.cpp
+src/Board.cpp
+src/Card.cpp
+src/Deck.cpp
+src/Hand.cpp
