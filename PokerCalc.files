@@ -1,4 +1,4 @@
-PockerCalc.pro
+PokerCalc.pro
 include/equity.h
 src/equity.cpp
 src/handstrength.cpp
