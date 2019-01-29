@@ -35,6 +35,7 @@ private:
 
 struct HandStrengthList final
 {
+    HandStrengthList();
     std::atomic<unsigned long long> hight, pair, twopair, set, strait, flash, fullhouse, kare, straitflash;
 };
 

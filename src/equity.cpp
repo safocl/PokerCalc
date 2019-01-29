@@ -12,12 +12,21 @@
 
 
 //---------------------------------------------------------------------------------------------------------------------------
-void genOneBoardCard(vector<Card> & board, Deck & deck, const Hand hero_h, const Hand opp_h, HandStrengthList & hsl,
-                     size_t & count_cycles)
+void genOneBoardCard(vector<Card> & board, Deck & deck, const Hand hero_h, const Hand opp_h,
+                     unique_ptr<HandStrengthList> & hsl, size_t & count_cycles)
 {
     --count_cycles;
     if (count_cycles > 0){
-        genOneBoardCard(board, deck, hero_h, opp_h, hsl, count_cycles);
+        deck.gen(board ,hero_h, opp_h);
+        for (unsigned long count = 0; count < deck.size(); ++count)
+        {
+            if (pushNewCardToBoard(board, hero_h, opp_h, deck.getDeckArr().at(count)))
+            {
+                genOneBoardCard(board, deck, hero_h, opp_h, hsl, count_cycles);
+                board.erase(board.end() - 1);
+                deck.gen(board ,hero_h, opp_h);
+            }
+        }
     }
     else{
         deck.gen(board,hero_h,opp_h);
@@ -33,9 +42,9 @@ void genOneBoardCard(vector<Card> & board, Deck & deck, const Hand hero_h, const
 //---------------------------------------------------------------------------------------------------------------------------
 void parallel_genOneBoardCard(vector<Card> board, Deck deck, const Hand hero_h, const Hand opp_h, 
                               const unsigned long & min_pos, const unsigned long & max_pos,
-                              HandStrengthList & hsl, size_t & count_cycles)
+                              unique_ptr<HandStrengthList> & hsl, unsigned short count_cycles)
 {
-    
+    --count_cycles;
     deck.gen(board ,hero_h, opp_h);
     for (unsigned long count = min_pos; count < max_pos; ++count)
     {
@@ -48,13 +57,13 @@ void parallel_genOneBoardCard(vector<Card> board, Deck deck, const Hand hero_h, 
     }
 }
 //---------------------------------------------------------------------------------------------------------------------------
-void genFlop(vector<Card> & board, Deck & deck, const Hand hero_h, const Hand opp_h,
-             HandStrengthList & hsl)
+void genFlop(vector<Card> & board, Deck & deck, const Hand & hero_h, const Hand & opp_h,
+             unique_ptr<HandStrengthList> & hsl)
 {
-    size_t count_cycles1 = 3;
-//    size_t count_cycles2 = 3;
-//    size_t count_cycles3 = 3;
-//    size_t count_cycles4 = 3;
+    unsigned short count_cycles1 = 3;
+//    unsigned short count_cycles2 = 3;
+//    unsigned short count_cycles3 = 3;
+//    unsigned short count_cycles4 = 3;
             deck.gen(board, hero_h, hero_h);
             unsigned long min_pos1 = 0;
             auto max_pos1 = deck.size();
@@ -79,18 +88,18 @@ void genFlop(vector<Card> & board, Deck & deck, const Hand hero_h, const Hand op
 
 }
 //---------------------------------------------------------------------------------------------------------------------------
-void sumHandStrength(const Hand & hero_h, const vector<Card> & board, HandStrengthList & hsl)
+void sumHandStrength(const Hand & hero_h, const vector<Card> & board, unique_ptr<HandStrengthList> & hsl)
 {
     HandStrength pl_strangth{hero_h, board};
     switch (pl_strangth.getCurrStrength()) {
-    case HandStrength::strength::HIGHT : ++hsl.hight; return;
-    case HandStrength::strength::PAIR : ++hsl.pair; return;
-    case HandStrength::strength::SET : ++hsl.set; return;
-    case HandStrength::strength::TWO_PAIRS : ++hsl.twopair;return;
-    case HandStrength::strength::STRAIT : ++hsl.strait;return;
-    case HandStrength::strength::FLASH : ++hsl.flash;return;
-    case HandStrength::strength::FULL_HOUSE : ++hsl.fullhouse;return;
-    case HandStrength::strength::STRAIT_FLUSH : ++hsl.straitflash;return;
-    case HandStrength::strength::KARE : ++hsl.kare;return;
+    case HandStrength::strength::HIGHT : ++hsl->hight; return;
+    case HandStrength::strength::PAIR : ++hsl->pair; return;
+    case HandStrength::strength::SET : ++hsl->set; return;
+    case HandStrength::strength::TWO_PAIRS : ++hsl->twopair;return;
+    case HandStrength::strength::STRAIT : ++hsl->strait;return;
+    case HandStrength::strength::FLASH : ++hsl->flash;return;
+    case HandStrength::strength::FULL_HOUSE : ++hsl->fullhouse;return;
+    case HandStrength::strength::STRAIT_FLUSH : ++hsl->straitflash;return;
+    case HandStrength::strength::KARE : ++hsl->kare;return;
     }
 }

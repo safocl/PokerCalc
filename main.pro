@@ -10,10 +10,22 @@ QMAKE_LFLAGS += -lpoker
 
 CONFIG *= debug
 CONFIG *= console
-CONFIG *= c++17
-CONFIG -= app_bundle
+#CONFIG *= c++17
+#CONFIG -= app_bundle
 CONFIG -= qt
+#CONFIG -= debug_and_release
+#CONFIG -= build_all
 
-QMAKE_
+QMAKE_CXXFLAGS_RELEASE *= -O0
+QMAKE_CXXFLAGS_RELEASE -= -O2
+QMAKE_CXXFLAGS_RELEASE *= -std=c++17
+QMAKE_CXXFLAGS_RELEASE *= -g
+QMAKE_CXXFLAGS_RELEASE *= -Wall
+QMAKE_CXXFLAGS_RELEASE *= -Wextra
+QMAKE_CXXFLAGS_RELEASE *= -Wfatal-errors
+QMAKE_CXXFLAGS_RELEASE *= -Werror
+QMAKE_CXXFLAGS_RELEASE *= -pipe
+
+
 
 SOURCES *= main.cpp

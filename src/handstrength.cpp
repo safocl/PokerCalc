@@ -1,6 +1,8 @@
 #include "handstrength.h"
 
 
+HandStrengthList::HandStrengthList() : hight(0), pair(0), twopair(0), set(0), strait(0), flash(0), fullhouse(0), kare(0), straitflash(0) {}
+//---------------------------------------------------------------------------------------------------------------------------
 HandStrength::HandStrength(const HandStrength & other){this->curr_strength = other.curr_strength;};
 //---------------------------------------------------------------------------------------------------------------------------
 HandStrength::HandStrength(const Hand &hand, const vector<Card> &board)
