@@ -22,7 +22,7 @@ void genOneBoardCard(vector<Card> & board, Deck & deck, const Hand & hero_h, con
     {
         if (pushNewCardToBoard(board, hero_h, opp_h, deck_el))
         {
-            if (count_cycles > 1){
+            if (count_cycles > 0){
                 tmp_count_cycles = count_cycles - 1;
                 genOneBoardCard(board, deck, hero_h, opp_h, hsl, tmp_count_cycles);
             }
@@ -37,14 +37,14 @@ void genOneBoardCard(vector<Card> & board, Deck & deck, const Hand & hero_h, con
 //---------------------------------------------------------------------------------------------------------------------------
 void parallel_genOneBoardCard(vector<Card> board, Deck deck, const Hand hero_h, const Hand opp_h, 
                               const unsigned long & min_pos, const unsigned long & max_pos,
-                              unique_ptr<HandStrengthList> & hsl, const size_t count_cycles)
+                              unique_ptr<HandStrengthList> & hsl, const size_t & count_cycles)
 {
     size_t tmp_count_cycles;
     deck.gen(board ,hero_h, opp_h);
     for (unsigned long count = min_pos; count < max_pos; ++count)
     {
         if (count_cycles > 0){
-            tmp_count_cycles = count_cycles - 1;
+            tmp_count_cycles = count_cycles - 2;
             if (pushNewCardToBoard(board, hero_h, opp_h, deck.getDeckArr().at(count)))
             {
                 genOneBoardCard(board, deck, hero_h, opp_h, hsl, tmp_count_cycles);
