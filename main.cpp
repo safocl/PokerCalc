@@ -30,7 +30,7 @@ int main()
 //                {
     Hand hero_h{hero_h1_v, hero_h1_s, hero_h2_v, hero_h2_s};
 
-    genFlop(board, deck, hero_h, hero_h, hsl);
+    genPreFlop_Flop(board, deck, hero_h, hero_h, hsl);
 //                }
 //            }
 //        }
