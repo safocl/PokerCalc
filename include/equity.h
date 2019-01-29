@@ -1,6 +1,7 @@
 #ifndef EQUITY_H
 #define EQUITY_H
 
+
 #include <atomic>
 #include <functional>
 #include "Board.h"
