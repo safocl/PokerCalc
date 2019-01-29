@@ -1,12 +1,9 @@
 TEMPLATE = subdirs
 
-#INCLUDEPATH += include
-
 CONFIG *= ordered
-#CONFIG -= relese
-#CONFIG *= debug
-#CONFIG -= debug_and_release
-#CONFIG -= build_all
+CONFIG *= qt
+
+INCLUDEPATH += ./include
 
 SUBDIRS *= libpoker main
 
