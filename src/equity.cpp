@@ -58,29 +58,29 @@ void parallel_genOneBoardCard(QVector<Card> board, Deck deck, const Hand hero_h,
 void genPreFlop_Flop(QVector<Card> & board, Deck & deck, const Hand & hero_h, const Hand & opp_h,
              unique_ptr<HandStrengthList> & hsl)
 {
-    int count_cycles = 3;
+    int count_cycles = 4;
 
     deck.gen(board, hero_h, hero_h);
     int min_pos1 = 0;
-    auto max_pos1 = deck.size();
+    auto max_pos1 = deck.size() / 4;
     thread thread1(parallel_genOneBoardCard, board, deck, hero_h, opp_h, min_pos1, max_pos1, std::ref(hsl), count_cycles);
     
-//    auto min_pos2 = max_pos1;
-//    auto max_pos2 = max_pos1 * 2;
-//    thread thread2(parallel_genOneBoardCard, board, deck, hero_h, opp_h, min_pos2, max_pos2, std::ref(hsl), count_cycles);
+    auto min_pos2 = max_pos1;
+    auto max_pos2 = max_pos1 * 2;
+    thread thread2(parallel_genOneBoardCard, board, deck, hero_h, opp_h, min_pos2, max_pos2, std::ref(hsl), count_cycles);
     
-//    auto min_pos3 = max_pos2;
-//    auto max_pos3 = max_pos1 * 3;
-//    thread thread3(parallel_genOneBoardCard, board, deck, hero_h, opp_h, min_pos3, max_pos3, std::ref(hsl), count_cycles);
+    auto min_pos3 = max_pos2;
+    auto max_pos3 = max_pos1 * 3;
+    thread thread3(parallel_genOneBoardCard, board, deck, hero_h, opp_h, min_pos3, max_pos3, std::ref(hsl), count_cycles);
     
-//    auto min_pos4 = max_pos3;
-//    auto max_pos4 = deck.size();
-//    thread thread4(parallel_genOneBoardCard, board, deck, hero_h, opp_h, min_pos4, max_pos4, std::ref(hsl), count_cycles);
+    auto min_pos4 = max_pos3;
+    auto max_pos4 = deck.size();
+    thread thread4(parallel_genOneBoardCard, board, deck, hero_h, opp_h, min_pos4, max_pos4, std::ref(hsl), count_cycles);
 
     thread1.join();
-//    thread2.join();
-//    thread3.join();
-//    thread4.join();
+    thread2.join();
+    thread3.join();
+    thread4.join();
 
 }
 //---------------------------------------------------------------------------------------------------------------------------
