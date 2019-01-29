@@ -16,7 +16,7 @@ int main()
 {
         Deck deck;
         const size_t hero_h1_v = 0, hero_h2_v = 0, hero_h1_s = 0, hero_h2_s = 1;
-        std::vector<Card> board;
+        QVector<Card> board;
         board.reserve(5);
         
         unique_ptr<HandStrengthList> hsl(new HandStrengthList);

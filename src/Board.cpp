@@ -2,7 +2,7 @@
 
 
 //---------------------------------------------------------------------------------------------------------------------------
-bool pushNewCardToBoard(vector<Card> &board, const Hand &heroHand, const Hand &oppHand, const Card &card)
+bool pushNewCardToBoard(QVector<Card> &board, const Hand &heroHand, const Hand &oppHand, const Card &card)
 {
     if (!board.empty())
     {
@@ -23,7 +23,7 @@ bool pushNewCardToBoard(vector<Card> &board, const Hand &heroHand, const Hand &o
         return false;
 }
 //---------------------------------------------------------------------------------------------------------------------------
-bool brute_force_matching_cards(const vector<Card> &board, const Card &card)
+bool brute_force_matching_cards(const QVector<Card> &board, const Card &card)
 {
     if (!board.empty())
     {

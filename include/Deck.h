@@ -3,6 +3,7 @@
 #define DECK_H
 
 #include <utility>
+#include <QVector>
 #include <vector>
 #include "Card.h"
 #include "Hand.h"
@@ -17,12 +18,12 @@ struct Deck final
     Deck(Deck && other);
     Deck(const Deck & other);
     Deck & operator = (Deck && other);
-    void gen(const vector<Card> &board, const Hand &heroHand, const Hand &oppHand);
+    void gen(const QVector<Card> &board, const Hand &heroHand, const Hand &oppHand);
 //    const size_t & capacity() const;
-    unsigned long size() const;
-    const vector<Card> & getDeckArr() const;
+    int size() const;
+    const QVector<Card> & getDeckArr() const;
 private:
-    vector<Card> deckArr;
+    QVector<Card> deckArr;
     static constexpr size_t SIZE_DeckArr = 52;
 };
 

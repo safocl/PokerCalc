@@ -10,13 +10,13 @@ Deck::Deck(Deck && other){*this = std::move(other);}
 Deck & Deck::operator = (Deck && other){this->deckArr = std::move(other.deckArr);
                                         return *this;}
 //---------------------------------------------------------------------------------------------------------------------------
-const vector<Card> & Deck::getDeckArr() const {return deckArr;}
+const QVector<Card> & Deck::getDeckArr() const {return deckArr;}
 //---------------------------------------------------------------------------------------------------------------------------
-unsigned long Deck::size() const {return deckArr.size();}
+int Deck::size() const {return deckArr.size();}
 //---------------------------------------------------------------------------------------------------------------------------
 //const size_t & Deck::capacity() const {return Deck::SIZE_DeckArr;}
 //---------------------------------------------------------------------------------------------------------------------------
-void Deck::gen(const vector<Card> &board, const Hand &heroHand, const Hand &oppHand)
+void Deck::gen(const QVector<Card> &board, const Hand &heroHand, const Hand &oppHand)
 {
 //    deckArr.reserve(Deck::SIZE_DeckArr);
     

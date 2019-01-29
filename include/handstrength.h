@@ -3,7 +3,7 @@
 
 
 #include <atomic>
-#include <vector>
+#include <QVector>
 #include "Card.h"
 #include "Hand.h"
 #include "Board.h"
@@ -14,7 +14,7 @@ using namespace std;
 
 struct HandStrength final
 {
-    HandStrength(const Hand &hand, const vector<Card> &board);
+    HandStrength(const Hand &hand, const QVector<Card> &board);
     HandStrength(const HandStrength & other);
     enum class strength {HIGHT, PAIR, TWO_PAIRS, SET, STRAIT, FLASH, FULL_HOUSE, KARE, STRAIT_FLUSH 
 //                         ,ROYAL_FLASH
@@ -23,14 +23,14 @@ struct HandStrength final
     
 private:
     strength curr_strength;
-    strength checkCurrStrength(const Hand &hand, const vector<Card> &board) const;
-    bool match_straitflash(const vector<Card> &combo) const;
-    bool match_kare(const vector<Card> &combo) const;
-    bool match_fullhouse(const vector<Card> &combo) const;
-    bool match_flush(const vector<Card> &combo) const;
-    bool match_strait(const vector<Card> &combo) const;
-    bool match_set(const vector<Card> &combo) const;
-    bool match_twopairs(const vector<Card> &combo) const;
+    strength checkCurrStrength(const Hand &hand, const QVector<Card> &board) const;
+    bool match_straitflash(const QVector<Card> &combo) const;
+    bool match_kare(const QVector<Card> &combo) const;
+    bool match_fullhouse(const QVector<Card> &combo) const;
+    bool match_flush(const QVector<Card> &combo) const;
+    bool match_strait(const QVector<Card> &combo) const;
+    bool match_set(const QVector<Card> &combo) const;
+    bool match_twopairs(const QVector<Card> &combo) const;
 };
 
 struct HandStrengthList final
@@ -39,6 +39,6 @@ struct HandStrengthList final
     std::atomic<unsigned long long> hight, pair, twopair, set, strait, flash, fullhouse, kare, straitflash;
 };
 
-vector<Card> sort_cards(const vector<Card> &combo);
+QVector<Card> sort_cards(const QVector<Card> &combo);
 
 #endif // HANDSTRENGTH_H
