@@ -30,7 +30,6 @@ QT -= gui
 QMAKE_LFLAGS_SHLIB *= -fPIC
 
 SOURCES *= Board.cpp \
-    Board.cpp \
     Card.cpp \
     Deck.cpp \
     equity.cpp \

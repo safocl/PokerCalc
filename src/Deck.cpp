@@ -14,7 +14,7 @@ const vector<Card> & Deck::getDeckArr() const {return deckArr;}
 //---------------------------------------------------------------------------------------------------------------------------
 unsigned long Deck::size() const {return deckArr.size();}
 //---------------------------------------------------------------------------------------------------------------------------
-//const size_t & Deck::capacity() const {return Deck::SIZE_DeckArr;}
+//const int & Deck::capacity() const {return Deck::SIZE_DeckArr;}
 //---------------------------------------------------------------------------------------------------------------------------
 void Deck::gen(const vector<Card> &board, const Hand &heroHand, const Hand &oppHand)
 {
@@ -25,9 +25,9 @@ void Deck::gen(const vector<Card> &board, const Hand &heroHand, const Hand &oppH
     
     Card card;
     
-    for (size_t numValueCard = 0; numValueCard < Card::sizeValueCardArr; ++numValueCard)
+    for (int numValueCard = 0; numValueCard < Card::sizeValueCardArr; ++numValueCard)
     {
-        for (size_t numSuitCard = 0; numSuitCard < Card::sizeSuitCardArr; ++numSuitCard)
+        for (int numSuitCard = 0; numSuitCard < Card::sizeSuitCardArr; ++numSuitCard)
         {
            card.SetCard(numValueCard, numSuitCard);
            

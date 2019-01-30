@@ -89,11 +89,11 @@ bool HandStrength::match_straitflash(const vector<Card> &combo) const
     {
         vector<Card> temp_arr;
         temp_arr.reserve(combo.size());
-        for (size_t match_num = 0; (combo.size() - match_num) > 4; ++match_num)
+        for (unsigned match_num = 0; (combo.size() - match_num) > 4; ++match_num)
         {
             temp_arr.clear();
             temp_arr.push_back(combo.at(match_num));
-            for (size_t match_subnum = match_num + 1; match_subnum < combo.size(); ++match_subnum)
+            for (unsigned match_subnum = match_num + 1; match_subnum < combo.size(); ++match_subnum)
             {
                 if (combo.at(match_num).GetSuitCardNum() == combo.at(match_subnum).GetSuitCardNum())
                     temp_arr.push_back(combo.at(match_subnum));
@@ -103,7 +103,7 @@ bool HandStrength::match_straitflash(const vector<Card> &combo) const
         {
             auto temp = sort_cards(temp_arr);
             
-            for (size_t match_num = 0; (combo.size() - match_num) >= 5; ++match_num)
+            for (unsigned match_num = 0; (combo.size() - match_num) >= 5; ++match_num)
             {
                 if ((temp.at(match_num).GetValueCardNum() + 1 == temp.at(match_num + 1).GetValueCardNum()) &&
                     (temp.at(match_num).GetValueCardNum() + 2 == temp.at(match_num + 2).GetValueCardNum()) &&
@@ -127,19 +127,19 @@ bool HandStrength::match_straitflash(const vector<Card> &combo) const
 //проверка на карэ
 bool HandStrength::match_kare(const vector<Card> &combo) const
 {
-    size_t c_true;
+    int c_true;
     
-    for (size_t count = 0; (combo.size() - count) >= 4; ++count)
+    for (unsigned count = 0; (combo.size() - count) >= 4; ++count)
     {
         c_true = 0;
         
-        for (size_t subcount = count + 1; subcount < combo.size(); ++subcount)
+        for (unsigned subcount = count + 1; subcount < combo.size(); ++subcount)
         {
             if (combo.at(count).GetValueCardNum() == combo.at(subcount).GetValueCardNum())
                 ++c_true;
         }
         
-        if (c_true == 4)
+        if (c_true > 2)
             return true;
     }
     
@@ -175,10 +175,10 @@ bool HandStrength::match_flush(const vector<Card> &combo) const
         return false;
     else
     {
-        for (size_t match_num = 0; (combo.size() - match_num) > 4; ++match_num)
+        for (unsigned match_num = 0; (combo.size() - match_num) > 4; ++match_num)
         {
-            size_t match_true = 0, match_false = 0;
-            for (size_t match_subnum = match_num + 1; match_subnum < combo.size(); ++match_subnum)
+            unsigned match_true = 0, match_false = 0;
+            for (unsigned match_subnum = match_num + 1; match_subnum < combo.size(); ++match_subnum)
             {
                 if (combo.at(match_num).GetSuitCardNum() == combo.at(match_subnum).GetSuitCardNum())
                     ++match_true;
@@ -205,7 +205,7 @@ bool HandStrength::match_strait(const vector<Card> &combo) const
     else {
         vector<Card> temp = sort_cards(combo);
         
-        for (size_t match_num = 0; (combo.size() - match_num) >= 5; ++match_num)
+        for (unsigned match_num = 0; (combo.size() - match_num) >= 5; ++match_num)
         {
             if ((temp.at(match_num).GetValueCardNum() + 1 == temp.at(match_num + 1).GetValueCardNum()) &&
                 (temp.at(match_num).GetValueCardNum() + 2 == temp.at(match_num + 2).GetValueCardNum()) &&
@@ -231,7 +231,7 @@ bool HandStrength::match_set(const vector<Card> &combo) const
 {
     vector<Card> temp_arr = sort_cards(combo);
     
-    for (size_t count = 0; (temp_arr.size() - count) >= 3; ++count)
+    for (unsigned count = 0; (temp_arr.size() - count) >= 3; ++count)
     {
         if (temp_arr.at(count).GetValueCardNum() == temp_arr.at(count + 1).GetValueCardNum() &&
             temp_arr.at(count).GetValueCardNum() == temp_arr.at(count + 2).GetValueCardNum())
@@ -268,8 +268,8 @@ vector<Card> sort_cards(const vector<Card> &combo)
     
     Card temp_card;
     
-    for (size_t count = 0; count < temp_arr.size(); ++count) {
-        for (size_t subcount = count + 1; subcount < temp_arr.size(); ++subcount) {
+    for (unsigned count = 0; count < temp_arr.size(); ++count) {
+        for (unsigned subcount = count + 1; subcount < temp_arr.size(); ++subcount) {
             if (temp_arr.at(count) > temp_arr.at(subcount))
             {
                 temp_card = temp_arr.at(count);

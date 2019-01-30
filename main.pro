@@ -31,31 +31,9 @@ QT -= gui
 
 
 
-SOURCES *= main.cpp \
-    src/Board.cpp \
-    src/Card.cpp \
-    src/Deck.cpp \
-    src/equity.cpp \
-    src/Hand.cpp \
-    src/handstrength.cpp \
-    main.cpp \
-    src/Board.cpp \
-    src/Card.cpp \
-    src/Deck.cpp \
-    src/equity.cpp \
-    src/Hand.cpp \
-    src/handstrength.cpp \
-    main.cpp \
-    src/Board.cpp \
-    src/Card.cpp \
-    src/Deck.cpp \
-    src/equity.cpp \
-    src/Hand.cpp \
-    src/handstrength.cpp \
-    main.cpp
+SOURCES *= main.cpp
 
-HEADERS *= Board.h \
-    include/Board.h \
+HEADERS *= include/Board.h \
     include/Card.h \
     include/Deck.h \
     include/defines.h \

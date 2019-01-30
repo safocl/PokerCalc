@@ -9,20 +9,24 @@
 struct Card final
 {
     Card();
-    Card(const size_t numValueCard,
-		 const size_t numSuitCard);
+    Card(int &&numValueCard,
+		 int &&numSuitCard);
     Card(const Card & other); // Конструктор копирования карты в создаваемый объект типа Card
     Card(Card && other);
     ~Card();
+    
+    enum class vCard {_2, _3, _4, _5, _6, _7, _8, _9, _T, _J, _Q, _K, _A};
+    enum class sCard {_d, _s, _c, _h};
+    
 
-	void SetCard(const char SetValueCard, const char SetSuitCard);	// Устанавливает значение и масть карты
-	void SetCard(const size_t numValueCard, const size_t numSuitCard);
-	void SetSuitCardNum(const size_t numSuitCard);    // Устанавливает индекс масти карты
-    void SetValueCardNum(const size_t numValueCard);    // Устанавливает индекс значения карты
-    const char & GetSuitCard(void) const;    // Возвращает масть карты
-    const char & GetValueCard(void) const;    // Возвращает значение карты
-    const size_t & GetSuitCardNum() const;    // Возвращает индекс массива масти карты
-    const size_t & GetValueCardNum() const;    // Возвращает индекс массива значений карты
+	void SetCard(char &&SetValueCard, char &&SetSuitCard);	// Устанавливает значение и масть карты
+	void SetCard(const int numValueCard, const int numSuitCard);
+	void SetSuitCardNum(const int numSuitCard);    // Устанавливает индекс масти карты
+    void SetValueCardNum(const int numValueCard);    // Устанавливает индекс значения карты
+    char GetSuitCard() const;    // Возвращает масть карты
+    char GetValueCard() const;    // Возвращает значение карты
+    int GetSuitCardNum() const;    // Возвращает индекс массива масти карты
+    int GetValueCardNum() const;    // Возвращает индекс массива значений карты
     bool operator == (const Card &other) const;
     bool operator !=(const Card &other) const;
     Card & operator = (const Card &other);
@@ -30,11 +34,11 @@ struct Card final
     bool operator < (const Card &other) const;
     bool operator > (const Card &other) const;
 
-    static constexpr size_t sizeValueCardArr = 13;
-    static constexpr size_t sizeSuitCardArr = 4;
+    static const int sizeValueCardArr = 13;
+    static const int sizeSuitCardArr = 4;
 
 private:
-	size_t numValueCard, numSuitCard;
+	int numValueCard, numSuitCard;
 
     static const char ValueCardArr[sizeValueCardArr];
 	static const char SuitCardArr[sizeSuitCardArr];

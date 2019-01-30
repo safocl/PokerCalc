@@ -13,10 +13,10 @@
 
 //---------------------------------------------------------------------------------------------------------------------------
 void genOneBoardCard(vector<Card> & board, Deck & deck, const Hand & hero_h, const Hand & opp_h,
-                     unique_ptr<HandStrengthList> & hsl, const size_t & count_cycles)
+                     unique_ptr<HandStrengthList> & hsl, const int & count_cycles)
 {
     
-    size_t tmp_count_cycles;
+    int tmp_count_cycles;
     deck.gen(board ,hero_h, opp_h);
     for (auto deck_el : deck.getDeckArr())
     {
@@ -37,9 +37,9 @@ void genOneBoardCard(vector<Card> & board, Deck & deck, const Hand & hero_h, con
 //---------------------------------------------------------------------------------------------------------------------------
 void parallel_genOneBoardCard(vector<Card> board, Deck deck, const Hand hero_h, const Hand opp_h, 
                               const unsigned long & min_pos, const unsigned long & max_pos,
-                              unique_ptr<HandStrengthList> & hsl, const size_t & count_cycles)
+                              unique_ptr<HandStrengthList> & hsl, const int & count_cycles)
 {
-    size_t tmp_count_cycles;
+    int tmp_count_cycles;
     deck.gen(board ,hero_h, opp_h);
     for (unsigned long count = min_pos; count < max_pos; ++count)
     {
@@ -55,10 +55,10 @@ void parallel_genOneBoardCard(vector<Card> board, Deck deck, const Hand hero_h, 
     }
 }
 //---------------------------------------------------------------------------------------------------------------------------
-void genPreFlop_Flop(vector<Card> & board, Deck & deck, const Hand & hero_h, const Hand & opp_h,
+void genPreFlop_Flop(vector<Card> &&board, Deck &&deck, Hand &&hero_h, Hand &&opp_h,
              unique_ptr<HandStrengthList> & hsl)
 {
-    size_t count_cycles = 3;
+    int count_cycles = 4;
 
     deck.gen(board, hero_h, hero_h);
     unsigned long min_pos1 = 0;
