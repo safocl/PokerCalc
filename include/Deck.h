@@ -15,14 +15,14 @@ struct Deck final
 {
     Deck();
     Deck(Deck && other);
-    Deck(const Deck & other);
+    Deck(const Deck & other) = delete ;
     Deck & operator = (Deck && other);
     void gen(const unique_ptr< vector<Card> > & board_ptr, const Hand &heroHand, const Hand &oppHand);
 //    const int & capacity() const;
     unsigned long size() const;
-    const vector<Card> & getDeckArr() const;
+    const unique_ptr<vector<Card> > &getDeckArr() const;
 private:
-    vector<Card> deckArr;
+    unique_ptr< vector<Card> > deckArr;
     static constexpr int SIZE_DeckArr = 52;
 };
 

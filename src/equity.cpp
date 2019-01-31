@@ -18,7 +18,7 @@ void genOneBoardCard(unique_ptr< vector<Card> > & board_ptr, unique_ptr<Deck> & 
     
     int tmp_count_cycles;
     deck_ptr->gen(board_ptr ,hero_h, opp_h);
-    for (auto deck_el : deck_ptr->getDeckArr())
+    for (auto deck_el : deck_ptr->getDeckArr().operator*())
     {
         if (pushNewCardToBoard(board_ptr, hero_h, opp_h, deck_el))
         {
@@ -48,7 +48,7 @@ void parallel_genOneBoardCard(const Hand & hero_h, const Hand & opp_h,
     {
         if (count_cycles > 0){
             tmp_count_cycles = count_cycles - 2;
-            if (pushNewCardToBoard(board_ptr, hero_h, opp_h, deck_ptr->getDeckArr().at(count)))
+            if (pushNewCardToBoard(board_ptr, hero_h, opp_h, deck_ptr->getDeckArr()->at(count)))
             {
                 genOneBoardCard(board_ptr, deck_ptr, hero_h, opp_h, hsl, tmp_count_cycles);
                 board_ptr->erase(board_ptr->end() - 1);
@@ -61,7 +61,7 @@ void parallel_genOneBoardCard(const Hand & hero_h, const Hand & opp_h,
 void brutforcePreFlop_Flop(const Hand &hero_h, const Hand &opp_h,
              unique_ptr<HandStrengthList> & hsl)
 {
-    int count_cycles = 3;
+    int count_cycles = 4;
 
     int max_pos;
     if (hero_h == opp_h)
