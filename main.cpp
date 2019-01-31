@@ -14,23 +14,19 @@
 
 int main()
 {
-        Deck deck;
-        const size_t hero_h1_v = 0, hero_h2_v = 0, hero_h1_s = 0, hero_h2_s = 1;
-        QVector<Card> board;
-        board.reserve(5);
-        
+        const int hero_h1_v = 0, hero_h2_v = 0, hero_h1_s = 0, hero_h2_s = 1;
         unique_ptr<HandStrengthList> hsl(new HandStrengthList);
 //        hsl->straitflash=0;hsl->kare=0;hsl->fullhouse=0;hsl->flash=0;hsl->strait=0;hsl->set=0; hsl->twopair=0; hsl->pair=0; hsl->hight=0;
         
-//        for (size_t hero_h1_s = 0; (hero_h1_s < Card::sizeSuitCardArr); ++hero_h1_s)
+//        for (int hero_h1_s = 0; (hero_h1_s < Card::sizeSuitCardArr); ++hero_h1_s)
 //        {
-//            for (size_t hero_h2_s = hero_h1_s + 1; (hero_h2_s < Card::sizeSuitCardArr); ++hero_h2_s) 
+//            for (int hero_h2_s = hero_h1_s + 1; (hero_h2_s < Card::sizeSuitCardArr); ++hero_h2_s) 
 //            {
 //                if (hero_h1_s != hero_h2_s)
 //                {
     Hand hero_h{hero_h1_v, hero_h1_s, hero_h2_v, hero_h2_s};
 
-    genPreFlop_Flop(board, deck, hero_h, hero_h, hsl);
+    brutforcePreFlop_Flop(hero_h, hero_h, hsl);
 //                }
 //            }
 //        }

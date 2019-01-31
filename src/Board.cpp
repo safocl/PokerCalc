@@ -2,11 +2,11 @@
 
 
 //---------------------------------------------------------------------------------------------------------------------------
-bool pushNewCardToBoard(QVector<Card> &board, const Hand &heroHand, const Hand &oppHand, const Card &card)
+bool pushNewCardToBoard(unique_ptr< QVector<Card> > & board_ptr, const Hand & heroHand, const Hand & oppHand, const Card & card)
 {
-    if (!board.empty())
+    if (!board_ptr->empty())
     {
-        if (brute_force_matching_cards(board, card))
+        if (brute_force_matching_cards(board_ptr, card))
             return false;
     }
 //    deck.gen(board, heroHand, oppHand);
@@ -15,7 +15,7 @@ bool pushNewCardToBoard(QVector<Card> &board, const Hand &heroHand, const Hand &
         card != oppHand.getCard1() && 
         card != oppHand.getCard2())
     {
-        board.push_back(card);
+        board_ptr->push_back(card);
 
         return true;
     }
@@ -23,11 +23,11 @@ bool pushNewCardToBoard(QVector<Card> &board, const Hand &heroHand, const Hand &
         return false;
 }
 //---------------------------------------------------------------------------------------------------------------------------
-bool brute_force_matching_cards(const QVector<Card> &board, const Card &card)
+bool brute_force_matching_cards(const unique_ptr< QVector<Card> > & board_ptr, const Card &card)
 {
-    if (!board.empty())
+    if (!board_ptr->empty())
     {
-        for (auto const & el : board)
+        for (auto const & el : *board_ptr)
         {
             if (card == el)
                 return true;

@@ -7,11 +7,12 @@ Hand::Hand() : card1(), card2() {}
 //---------------------------------------------------------------------------------------------------------------------------
 Hand::Hand(Hand && other){*this = std::move(other);}
 //---------------------------------------------------------------------------------------------------------------------------
-Hand::Hand( const size_t numValueCard1,
-            const size_t numSuitCard1,
-            const size_t numValueCard2,
-            const size_t numSuitCard2)
+Hand::Hand( const int numValueCard1,
+            const int numSuitCard1,
+            const int numValueCard2,
+            const int numSuitCard2)
 {
+    
     card1.SetCard(numValueCard1, numSuitCard1);
     card2.SetCard(numValueCard2, numSuitCard2);
 }
@@ -28,10 +29,10 @@ void Hand::SetHand (const char valueCard1,
     card2.SetCard(valueCard2, suitCard2);
 }
 //---------------------------------------------------------------------------------------------------------------------------
-void Hand::SetHand (const size_t numValueCard1,
-                    const size_t numSuitCard1,
-                    const size_t numValueCard2,
-                    const size_t numSuitCard2)
+void Hand::SetHand (const int numValueCard1,
+                    const int numSuitCard1,
+                    const int numValueCard2,
+                    const int numSuitCard2)
 {
     this->card1.SetCard(numValueCard1, numSuitCard1);
     this->card2.SetCard(numValueCard2, numSuitCard2);

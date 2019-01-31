@@ -2,7 +2,6 @@
 #define BOARD_H
 
 #include <QVector>
-#include <vector>
 #include "Card.h"
 #include "Hand.h"
 #include "Deck.h"
@@ -12,7 +11,7 @@
 using namespace std;
 
 
-bool pushNewCardToBoard(QVector<Card> & board, const Hand &heroHand, const Hand &oppHand, const Card &card);
-bool brute_force_matching_cards(const QVector<Card> &board, const Card &card);
+bool pushNewCardToBoard(unique_ptr< QVector<Card> > & board_ptr, const Hand &heroHand, const Hand &oppHand, const Card &card);
+bool brute_force_matching_cards(const unique_ptr< QVector<Card> > & board_ptr, const Card &card);
 
 #endif //BOARD_H

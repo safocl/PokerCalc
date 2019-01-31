@@ -4,7 +4,6 @@
 
 #include <utility>
 #include <QVector>
-#include <vector>
 #include "Card.h"
 #include "Hand.h"
 #include "defines.h"
@@ -16,15 +15,15 @@ struct Deck final
 {
     Deck();
     Deck(Deck && other);
-    Deck(const Deck & other);
+    Deck(const Deck & other) = delete ;
     Deck & operator = (Deck && other);
-    void gen(const QVector<Card> &board, const Hand &heroHand, const Hand &oppHand);
-//    const size_t & capacity() const;
+    void gen(const unique_ptr< QVector<Card> > & board_ptr, const Hand &heroHand, const Hand &oppHand);
+//    const int & capacity() const;
     int size() const;
-    const QVector<Card> & getDeckArr() const;
+    const unique_ptr<QVector<Card> > &getDeckArr() const;
 private:
-    QVector<Card> deckArr;
-    static constexpr size_t SIZE_DeckArr = 52;
+    unique_ptr< QVector<Card> > deckArr;
+    static constexpr int SIZE_DeckArr = 52;
 };
 
 

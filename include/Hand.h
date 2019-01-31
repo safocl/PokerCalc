@@ -2,7 +2,7 @@
 #define HAND_H
 
 
-#include <vector>
+
 #include "Card.h"
 #include "defines.h"
 
@@ -16,10 +16,10 @@ struct Hand final
     Hand();
     Hand(const Hand & other);
     Hand(Hand && other);
-    Hand(const size_t numValueCard1,
-         const size_t numSuitCard1,
-         const size_t numValueCard2,
-         const size_t numSuitCard2);
+    Hand(const int numValueCard1,
+         const int numSuitCard1,
+         const int numValueCard2,
+         const int numSuitCard2);
     
     ~Hand();
 
@@ -29,10 +29,10 @@ struct Hand final
                   const char valueCard2,
                   const char suitCard2);
 
-    void SetHand (const size_t numValueCard1,
-                  const size_t numSuitCard1,
-                  const size_t numValueCard2,
-                  const size_t numSuitCard2);
+    void SetHand (const int numValueCard1,
+                  const int numSuitCard1,
+                  const int numValueCard2,
+                  const int numSuitCard2);
 
 	void SetHand (const Card &card1, const Card &card2);
 

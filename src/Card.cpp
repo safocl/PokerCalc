@@ -6,12 +6,12 @@
 //---------------------------------------------------------------------------------------------------------------------------
 Card::Card () : numValueCard(), numSuitCard() {}
 //---------------------------------------------------------------------------------------------------------------------------
-Card::Card (const size_t numValueCard, const size_t numSuitCard)
+Card::Card (int &&numValueCard, int &&numSuitCard)
 {
-    assert((static_cast<bool>(numValueCard < sizeValueCardArr)));
+    assert(static_cast<bool>(numValueCard < sizeValueCardArr));
     this->numValueCard = numValueCard;
 
-    assert((static_cast<bool>(numSuitCard < sizeSuitCardArr)));
+    assert(static_cast<bool>(numSuitCard < sizeSuitCardArr));
     this->numSuitCard = numSuitCard;
 }
 //---------------------------------------------------------------------------------------------------------------------------
@@ -26,7 +26,7 @@ Card::Card(Card && other){ *this = std::move(other);}
 //---------------------------------------------------------------------------------------------------------------------------
 Card::~Card(){}
 //---------------------------------------------------------------------------------------------------------------------------
-void Card::SetCard(const char SetValueCard, const char SetSuitCard)
+void Card::SetCard(char &&SetValueCard, char &&SetSuitCard)
 {
     while (numValueCard < sizeValueCardArr)
     {
@@ -57,36 +57,36 @@ void Card::SetCard(const char SetValueCard, const char SetSuitCard)
     }
 }
 //---------------------------------------------------------------------------------------------------------------------------
-void Card::SetCard(const size_t numValueCard, const size_t numSuitCard)
+void Card::SetCard(const int numValueCard, const int numSuitCard)
 {
     SetValueCardNum(numValueCard);
     SetSuitCardNum(numSuitCard);
 }
 //---------------------------------------------------------------------------------------------------------------------------
-void Card::SetSuitCardNum(const size_t numSuitCard)
+void Card::SetSuitCardNum(const int numSuitCard)
 {
     assert((static_cast<bool>(numSuitCard < sizeSuitCardArr)));
     this->numSuitCard = numSuitCard;
 }
 //---------------------------------------------------------------------------------------------------------------------------
 // Устанавливает индекс значения карты
-void Card::SetValueCardNum(const size_t numValueCard)
+void Card::SetValueCardNum(const int numValueCard)
 {
     assert((static_cast<bool>(numValueCard < sizeValueCardArr)));
     this->numValueCard = numValueCard;
 }
 //---------------------------------------------------------------------------------------------------------------------------
 // Возвращает масть карты
-const char & Card::GetSuitCard() const {return SuitCardArr[numSuitCard];}
+char Card::GetSuitCard() const {return SuitCardArr[numSuitCard];}
 //---------------------------------------------------------------------------------------------------------------------------
 // Возвращает значение карты
-const char & Card::GetValueCard() const {return ValueCardArr[numValueCard];}
+char Card::GetValueCard() const {return ValueCardArr[numValueCard];}
 //---------------------------------------------------------------------------------------------------------------------------
 // Возвращает индекс массива масти карты
-const size_t & Card::GetSuitCardNum() const {return numSuitCard;}
+int Card::GetSuitCardNum() const {return numSuitCard;}
 //---------------------------------------------------------------------------------------------------------------------------
 // Возвращает индекс массива значений карты
-const size_t & Card::GetValueCardNum() const {return numValueCard;}
+int Card::GetValueCardNum() const {return numValueCard;}
 //---------------------------------------------------------------------------------------------------------------------------
 bool Card::operator== (const Card &other) const {
     return (this->numSuitCard == other.numSuitCard && this->numValueCard == other.numValueCard);
