@@ -1,7 +1,7 @@
 TEMPLATE = subdirs
 
 CONFIG *= ordered
-CONFIG *= qt
+#CONFIG *= qt
 
 INCLUDEPATH += ./include
 
@@ -11,3 +11,8 @@ libpoker.file = src/libpoker.pro
 
 main.file = main.pro
 main.depends = libpoker
+
+CONFIG -= qt
+
+#QT *= core
+#QT -= gui

@@ -11,7 +11,7 @@
 using namespace std;
 
 
-bool pushNewCardToBoard(vector<Card> & board, const Hand &heroHand, const Hand &oppHand, const Card &card);
-bool brute_force_matching_cards(const std::vector<Card> &board, const Card &card);
+bool pushNewCardToBoard(unique_ptr< vector<Card> > & board_ptr, const Hand &heroHand, const Hand &oppHand, const Card &card);
+bool brute_force_matching_cards(const unique_ptr< vector<Card> > & board_ptr, const Card &card);
 
 #endif //BOARD_H

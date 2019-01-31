@@ -13,34 +13,31 @@ CONFIG *= dll
 #CONFIG *= debug
 CONFIG *= console
 CONFIG *= c++17
-CONFIG *= qt
+CONFIG -= qt
 
-QT *= core
-QT -= gui
+#QT *= core
+#QT -= gui
 
 #QMAKE_CXXFLAGS_DEBUG *= -O0
 #QMAKE_CXXFLAGS_DEBUG *= -std=c++17
 #QMAKE_CXXFLAGS_DEBUG *= -g
-#QMAKE_CXXFLAGS_DEBUG *= -Wall
-#QMAKE_CXXFLAGS_DEBUG *= -Wextra
-#QMAKE_CXXFLAGS_DEBUG *= -Wfatal-errors
-#QMAKE_CXXFLAGS_DEBUG *= -Werror
-#QMAKE_CXXFLAGS_DEBUG *= -pipe
+QMAKE_CXXFLAGS_DEBUG *= -Wall
+QMAKE_CXXFLAGS_DEBUG *= -Wextra
+QMAKE_CXXFLAGS_DEBUG *= -Wfatal-errors
+QMAKE_CXXFLAGS_DEBUG *= -Werror
+QMAKE_CXXFLAGS_DEBUG *= -pipe
+
+QMAKE_CXXFLAGS_RELEASE -=  -O2
+QMAKE_CXXFLAGS_RELEASE *=  -O3
 
 QMAKE_LFLAGS_SHLIB *= -fPIC
 
-SOURCES *= Board.cpp \
-    Card.cpp \
-    Deck.cpp \
-    equity.cpp \
-    Hand.cpp \
-    handstrength.cpp \
-
-#SOURCES *= Card.cpp
-#SOURCES *= Deck.cpp
-#SOURCES *= equity.cpp
-#SOURCES *= Hand.cpp
-#SOURCES *= handstrength.cpp
+SOURCES *= Board.cpp
+SOURCES *= Card.cpp
+SOURCES *= Deck.cpp
+SOURCES *= equity.cpp
+SOURCES *= Hand.cpp
+SOURCES *= handstrength.cpp
 
 HEADERS *= Board.h
 HEADERS *= Card.h

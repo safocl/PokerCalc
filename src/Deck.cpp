@@ -16,7 +16,7 @@ unsigned long Deck::size() const {return deckArr.size();}
 //---------------------------------------------------------------------------------------------------------------------------
 //const int & Deck::capacity() const {return Deck::SIZE_DeckArr;}
 //---------------------------------------------------------------------------------------------------------------------------
-void Deck::gen(const vector<Card> &board, const Hand &heroHand, const Hand &oppHand)
+void Deck::gen(const unique_ptr< vector<Card> > & board_ptr, const Hand &heroHand, const Hand &oppHand)
 {
 //    deckArr.reserve(Deck::SIZE_DeckArr);
     
@@ -35,7 +35,7 @@ void Deck::gen(const vector<Card> &board, const Hand &heroHand, const Hand &oppH
                 card != heroHand.getCard2() && 
                 card != oppHand.getCard1() && 
                 card != oppHand.getCard2() &&
-                !brute_force_matching_cards(board, card))
+                !brute_force_matching_cards(board_ptr, card))
             {
                 deckArr.push_back(card);
             }

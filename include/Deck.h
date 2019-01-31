@@ -17,7 +17,7 @@ struct Deck final
     Deck(Deck && other);
     Deck(const Deck & other);
     Deck & operator = (Deck && other);
-    void gen(const vector<Card> &board, const Hand &heroHand, const Hand &oppHand);
+    void gen(const unique_ptr< vector<Card> > & board_ptr, const Hand &heroHand, const Hand &oppHand);
 //    const int & capacity() const;
     unsigned long size() const;
     const vector<Card> & getDeckArr() const;

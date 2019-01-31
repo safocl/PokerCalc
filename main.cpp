@@ -14,11 +14,7 @@
 
 int main()
 {
-        Deck deck;
         const int hero_h1_v = 0, hero_h2_v = 0, hero_h1_s = 0, hero_h2_s = 1;
-        std::vector<Card> board;
-        board.reserve(5);
-        
         unique_ptr<HandStrengthList> hsl(new HandStrengthList);
 //        hsl->straitflash=0;hsl->kare=0;hsl->fullhouse=0;hsl->flash=0;hsl->strait=0;hsl->set=0; hsl->twopair=0; hsl->pair=0; hsl->hight=0;
         
@@ -30,7 +26,7 @@ int main()
 //                {
     Hand hero_h{hero_h1_v, hero_h1_s, hero_h2_v, hero_h2_s};
 
-    genPreFlop_Flop(move(board), move(deck), move(hero_h), move(hero_h), hsl);
+    brutforcePreFlop_Flop(hero_h, hero_h, hsl);
 //                }
 //            }
 //        }
