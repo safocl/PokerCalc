@@ -22,14 +22,15 @@ bool pushNewCardToBoard(unique_ptr< vector<Card> > & board_ptr, const Hand & her
 //---------------------------------------------------------------------------------------------------------------------------
 bool brute_force_matching_cards(const unique_ptr< vector<Card> > & board_ptr, const Card &card)
 {
+    bool res = false;
     if (!board_ptr->empty())
     {
         for (auto const & el : *board_ptr)
         {
             if (card == el)
-                return true;
+                res = true;
         }        
     }
 
-    return false;
+    return res;
 }
