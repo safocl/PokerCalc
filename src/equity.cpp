@@ -61,7 +61,7 @@ void parallel_genBoardCards(const Hand & hero_h, const Hand & opp_h,
 void brutforcePreFlop_Flop(const Hand &hero_h, const Hand &opp_h,
              unique_ptr<HandStrengthList> & hsl)
 {
-    int count_cycles = 4;
+    int count_cycles = 3;
 
     int max_pos;
     if (hero_h == opp_h)
