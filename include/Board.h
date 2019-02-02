@@ -12,6 +12,6 @@ using namespace std;
 
 
 bool pushNewCardToBoard(unique_ptr< vector<Card> > & board_ptr, const Hand &heroHand, const Hand &oppHand, const Card &card);
-bool brute_force_matching_cards(const unique_ptr< vector<Card> > & board_ptr, const Card &card);
+bool check_for_a_card(const unique_ptr< vector<Card> > & board_ptr, const Card &card);
 
 #endif //BOARD_H

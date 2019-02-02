@@ -35,7 +35,7 @@ void Deck::gen(const unique_ptr< vector<Card> > & board_ptr, const Hand &heroHan
                 card != heroHand.getCard2() && 
                 card != oppHand.getCard1() && 
                 card != oppHand.getCard2() &&
-                !brute_force_matching_cards(board_ptr, card))
+                !check_for_a_card(board_ptr, card))
             {
                 deckArr->push_back(card);
             }
