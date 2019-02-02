@@ -6,3 +6,4 @@ vgcore.*
 .qmake.stash
 *.so*
 *Makefile*
+*.pro.*
