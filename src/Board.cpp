@@ -27,8 +27,8 @@ bool check_for_a_card(const unique_ptr< vector<Card> > & board_ptr, const Card &
     {
         for (auto const & el : *board_ptr)
         {
-            if (card == el)
-                res = true;
+            if (card == el) { res = true; 
+                              break;}
         }        
     }
 
