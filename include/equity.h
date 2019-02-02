@@ -9,9 +9,9 @@
 #include "handstrength.h"
 #include "defines.h"
 
-void genOneBoardCard(unique_ptr<vector<Card>> && board, Deck & deck, const Hand & hero_h, const Hand & opp_h, 
+void genBoardCards(unique_ptr<vector<Card>> && board, Deck & deck, const Hand & hero_h, const Hand & opp_h, 
                      unique_ptr<HandStrengthList> & hsl,const int &count_cycles);
-void parallel_genOneBoardCard(const Hand & hero_h, const Hand & opp_h, 
+void parallel_genBoardCards(const Hand & hero_h, const Hand & opp_h, 
                                 const unsigned long & min_pos, const unsigned long & max_pos,
                                 unique_ptr<HandStrengthList> & hsl, const int &count_cycles);
 void brutforcePreFlop_Flop(const Hand & hero_h, const Hand & opp_h, unique_ptr<HandStrengthList> & hsl);
