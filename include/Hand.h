@@ -16,29 +16,26 @@ struct Hand final
     Hand();
     Hand(const Hand & other);
     Hand(Hand && other);
-    Hand(const int numValueCard1,
-         const int numSuitCard1,
-         const int numValueCard2,
-         const int numSuitCard2);
+    Hand(Card::valCard numValueCard1, Card::suitCard numSuitCard1,
+         Card::valCard numValueCard2, Card::suitCard numSuitCard2);
     
     ~Hand();
 
 	// Указание руки
-	void SetHand (const char valueCard1,
-                  const char suitCard1,
-                  const char valueCard2,
-                  const char suitCard2);
+	void setHand (const std::string card1_, const std::string card2_);
 
-    void SetHand (const int numValueCard1,
-                  const int numSuitCard1,
-                  const int numValueCard2,
-                  const int numSuitCard2);
+    void setHand (Card::valCard numValueCard1, Card::suitCard numSuitCard1,
+                  Card::valCard numValueCard2, Card::suitCard numSuitCard2);
 
-	void SetHand (const Card &card1, const Card &card2);
+	void setHand (const Card &card1, const Card &card2);
 
-	// Получение значения руки в переменные типа char
-    void GetHand(char &valueCard1Link, char &suitCard1Link, char &valueCard2Link, char &suitCard2Link) const;
-    void GetCards(Card &card1, Card &card2) const;
+    /**
+     * @brief getHand() getting the value of a hand into variables of type std::string
+     * @param card1_str string buffer for the first card
+     * @param card2_str string buffer for the second card
+     */
+    void getHand(std::string & card1_str, std::string & card2_str) const;
+    void getCards(Card &card1, Card &card2) const;
     const Card & getCard1 () const;
     const Card & getCard2 () const;
     bool operator== (const Hand &other) const;

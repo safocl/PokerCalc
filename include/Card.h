@@ -58,8 +58,7 @@ struct Card final
 	void setCard(const valCard &value, const suitCard &suit);
 	void setSuitNum(const suitCard &suit);
     void setValueNum(const valCard &value);
-    std::string && getSuit() const noexcept;
-    std::string && getValue() const noexcept;
+    std::string get_string() const noexcept;
     uint8_t getSuitNum() const noexcept;
     uint32_t getValueNum() const noexcept;
     /**
@@ -114,6 +113,8 @@ struct Card final
 private:
 	uint32_t numCard;
     
+    std::string && getSuit() const noexcept;
+    std::string && getValue() const noexcept;
     bool check_valid_value(const valCard &value);
     bool check_valid_suit(const suitCard &suit);
 };

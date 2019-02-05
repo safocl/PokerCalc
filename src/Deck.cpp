@@ -1,6 +1,6 @@
 #include "Deck.h"
 #include "Board.h"
-#include <memory>
+
 
 Deck::Deck() : deckArr(new vector<Card>) {deckArr->reserve(Deck::SIZE_DeckArr);}
 //---------------------------------------------------------------------------------------------------------------------------

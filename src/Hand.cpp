@@ -1,67 +1,50 @@
 #include "Hand.h"
 
 
+
 Hand::Hand(const Hand & other){*this = other;};
 //---------------------------------------------------------------------------------------------------------------------------
 Hand::Hand() : card1(), card2() {}
 //---------------------------------------------------------------------------------------------------------------------------
 Hand::Hand(Hand && other){*this = std::move(other);}
 //---------------------------------------------------------------------------------------------------------------------------
-Hand::Hand( const int numValueCard1,
-            const int numSuitCard1,
-            const int numValueCard2,
-            const int numSuitCard2)
-{
-    
-    card1.SetCard(numValueCard1, numSuitCard1);
-    card2.SetCard(numValueCard2, numSuitCard2);
+Hand::Hand( Card::valCard numValueCard1, Card::suitCard numSuitCard1,
+            Card::valCard numValueCard2, Card::suitCard numSuitCard2)
+{   
+    card1.setCard(numValueCard1, numSuitCard1);
+    card2.setCard(numValueCard2, numSuitCard2);
 }
 //---------------------------------------------------------------------------------------------------------------------------
 Hand::~Hand(){}
 //---------------------------------------------------------------------------------------------------------------------------
 // Указание руки
-void Hand::SetHand (const char valueCard1,
-                    const char suitCard1,
-                    const char valueCard2,
-                    const char suitCard2)
-{
-    card1.SetCard(valueCard1, suitCard1);
-    card2.SetCard(valueCard2, suitCard2);
+void Hand::setHand (const std::string card1_, const std::string card2_) {
+    card1.setCard(card1_);
+    card2.setCard(card2_);
 }
 //---------------------------------------------------------------------------------------------------------------------------
-void Hand::SetHand (const int numValueCard1,
-                    const int numSuitCard1,
-                    const int numValueCard2,
-                    const int numSuitCard2)
-{
-    this->card1.SetCard(numValueCard1, numSuitCard1);
-    this->card2.SetCard(numValueCard2, numSuitCard2);
+void Hand::setHand (Card::valCard numValueCard1, Card::suitCard numSuitCard1,
+                    Card::valCard numValueCard2, Card::suitCard numSuitCard2) {
+    card1.setCard(numValueCard1, numSuitCard1);
+    card2.setCard(numValueCard2, numSuitCard2);
 }
 //---------------------------------------------------------------------------------------------------------------------------
-void Hand::SetHand (const Card &card1, const Card &card2)
-{
-    this->card1 = card1;
-    this->card2 = card2;
+void Hand::setHand (const Card & card1_, const Card & card2_) {
+    this->card1 = card1_;
+    this->card2 = card2_;
 }
 //---------------------------------------------------------------------------------------------------------------------------
 // Получение значения руки в переменные типа char
-void Hand::GetHand(char &valueCard1Link,
-                   char &suitCard1Link,
-                   char &valueCard2Link,
-                   char &suitCard2Link) const
-{
-    valueCard1Link = card1.GetValueCard();
-    suitCard1Link = card1.GetSuitCard();
-    valueCard2Link = card2.GetValueCard();
-    suitCard2Link = card2.GetSuitCard();
+void Hand::getHand(std::string & card1_str, std::string & card2_str) const {
+    card1_str = card1.get_string();
+    card2_str = card2.get_string();
 }
 //---------------------------------------------------------------------------------------------------------------------------
-void Hand::GetCards(Card &card1, Card &card2) const
-{
-    card1.SetValueCardNum(this->card1.GetValueCardNum());
-    card1.SetSuitCardNum(this->card1.GetSuitCardNum());
-    card2.SetValueCardNum(this->card2.GetValueCardNum());
-    card2.SetSuitCardNum(this->card2.GetSuitCardNum());
+void Hand::getCards(Card &card1, Card &card2) const {
+    card1.setValueNum(static_cast<Card::valCard>(this->card1.getValueNum()));
+    card1.setSuitNum(static_cast<Card::suitCard>(this->card1.getSuitNum()));
+    card2.setValueNum(static_cast<Card::valCard>(this->card2.getValueNum()));
+    card2.setSuitNum(static_cast<Card::suitCard>(this->card2.getSuitNum()));
 }
 //---------------------------------------------------------------------------------------------------------------------------
 const Card & Hand::getCard1 () const {return card1;}

@@ -7,6 +7,7 @@
 Card::Card () : numCard(0) {}
 //---------------------------------------------------------------------------------------------------------------------------
 Card::Card(const std::string strCard) {
+    assert(strCard.length() == 2 && "invalid string length");
     setCard(strCard);
 }
 //---------------------------------------------------------------------------------------------------------------------------
@@ -24,6 +25,8 @@ Card::Card(Card && other) : numCard(other.numCard) { other.numCard = 0;}
 Card::~Card(){}
 //---------------------------------------------------------------------------------------------------------------------------
 void Card::setCard(const std::string strCard) {
+    assert(strCard.length() == 2 && "invalid string length");
+    
     if (numCard)
         numCard = 0;
     
@@ -185,6 +188,8 @@ std::string && Card::getValue() const noexcept{
     }
     return std::move(res);
 }
+//---------------------------------------------------------------------------------------------------------------------------
+std::string Card::get_string() const noexcept { return getValue() + getSuit();}
 //---------------------------------------------------------------------------------------------------------------------------
 uint8_t Card::getSuitNum() const noexcept {return (numCard & suit_mask);}
 //---------------------------------------------------------------------------------------------------------------------------
