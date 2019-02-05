@@ -3,6 +3,7 @@
 
 
 #include <memory>
+#include <stdexcept>
 //#include <cstddef>
 
 #endif //DEFINES_H
