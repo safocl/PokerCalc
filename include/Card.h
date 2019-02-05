@@ -42,13 +42,17 @@ struct Card final
     /**
      * @brief The suitCard enum
      * this is the bitmask of the card values in the range from 0b0000000000000000000000000001 to 0b000000000000000000000001000
-     * 0b000000000000000000000001111
+     * 0b000000000000000000000001111  <::>
+     * _d = 0x1 | 
+     * _s = 0x2 |
+     * _c = 0x4 |
+     * _h = 0x8 |
      */
     enum class suitCard : uint8_t {NODEF = 0,
-                                      _d = 0x1, //0b1
-                                      _s = 0x2, //0b10
-                                      _c = 0x4, //0b100
-                                      _h = 0x8}; //0b1000
+                                      _d_0x1 = 0x1, //0b1
+                                      _s_0x2 = 0x2, //0b10
+                                      _c_0x4 = 0x4, //0b100
+                                      _h_0x8 = 0x8}; //0b1000
     
 	void setCard(const std::string strCard);
 	void setCard(const valCard &value, const suitCard &suit);
@@ -104,8 +108,8 @@ struct Card final
      */
     static const uint32_t value_mask = 0x1fff0000;
 
-    static const uint32_t sizeValueCardArr = static_cast<uint32_t>(Card::valCard::_A);
-    static const uint8_t sizeSuitCardArr = static_cast<uint8_t>(Card::suitCard::_h);
+    static const uint32_t sizeValueCardArr = static_cast<uint32_t>(Card::valCard::_A) + 1;
+    static const uint8_t sizeSuitCardArr = static_cast<uint8_t>(Card::suitCard::_h_0x8) + 1;
 
 private:
 	uint32_t numCard;
