@@ -1,13 +1,14 @@
 #include "Deck.h"
 #include "Board.h"
+#include <memory>
 
 Deck::Deck() : deckArr(new vector<Card>) {deckArr->reserve(Deck::SIZE_DeckArr);}
 //---------------------------------------------------------------------------------------------------------------------------
 //Deck::Deck(const Deck & other){this->deckArr = other.deckArr;}
 //---------------------------------------------------------------------------------------------------------------------------
-Deck::Deck(Deck && other){*this = std::move(other);}
+Deck::Deck(Deck && other) : deckArr(other.deckArr.release()) {}
 //---------------------------------------------------------------------------------------------------------------------------
-Deck & Deck::operator = (Deck && other){this->deckArr = std::move(other.deckArr);
+Deck & Deck::operator = (Deck && other) {this->deckArr.reset(other.deckArr.release());
                                         return *this;}
 //---------------------------------------------------------------------------------------------------------------------------
 const unique_ptr< vector<Card> > & Deck::getDeckArr() const {return deckArr;}
@@ -23,21 +24,19 @@ void Deck::gen(const unique_ptr< vector<Card> > & board_ptr, const Hand &heroHan
     if (!deckArr->empty())
         deckArr->clear();
     
-    Card card;
+//    Card card;
     
-    for (int numValueCard = 0; numValueCard < Card::sizeValueCardArr; ++numValueCard)
+    for (auto card = make_unique<Card>(Card::valCard::_2, Card::suitCard::_d_0x1); card->getValueNum() < Card::sizeValueCardArr; card->inc_val())
     {
-        for (int numSuitCard = 0; numSuitCard < Card::sizeSuitCardArr; ++numSuitCard)
+        for (; card->getSuitNum() < Card::sizeSuitCardArr; card->inc_suit())
         {
-           card.SetCard(numValueCard, numSuitCard);
-           
-           if (card != heroHand.getCard1() && 
-                card != heroHand.getCard2() && 
-                card != oppHand.getCard1() && 
-                card != oppHand.getCard2() &&
+           if (*card != heroHand.getCard1() && 
+                *card != heroHand.getCard2() && 
+                *card != oppHand.getCard1() && 
+                *card != oppHand.getCard2() &&
                 !check_for_a_card(board_ptr, card))
             {
-                deckArr->push_back(card);
+                deckArr->push_back(*card);
             }
         }
     }
