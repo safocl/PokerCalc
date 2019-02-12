@@ -2,18 +2,20 @@
 #include "Board.h"
 
 
-Deck::Deck() : deckArr(new vector<Card>) {deckArr->reserve(Deck::SIZE_DeckArr);}
+Deck::Deck() : deckArr() {deckArr.reserve(Deck::SIZE_DeckArr);}
 //---------------------------------------------------------------------------------------------------------------------------
 //Deck::Deck(const Deck & other){this->deckArr = other.deckArr;}
 //---------------------------------------------------------------------------------------------------------------------------
-Deck::Deck(Deck && other) : deckArr(other.deckArr.release()) {}
+Deck::Deck(Deck && other) : deckArr(other.deckArr) {other.deckArr.clear();}
 //---------------------------------------------------------------------------------------------------------------------------
-Deck & Deck::operator = (Deck && other) {this->deckArr.reset(other.deckArr.release());
-                                        return *this;}
+Deck & Deck::operator = (Deck && other) {
+    this->deckArr = other.deckArr;
+    other.deckArr.clear();                                     
+    return *this;}
 //---------------------------------------------------------------------------------------------------------------------------
-const unique_ptr< vector<Card> > & Deck::getDeckArr() const {return deckArr;}
+const vector<Card> &Deck::getDeckArr() const {return deckArr;}
 //---------------------------------------------------------------------------------------------------------------------------
-unsigned long Deck::size() const {return deckArr->size();}
+unsigned long Deck::size() const {return deckArr.size();}
 //---------------------------------------------------------------------------------------------------------------------------
 //const int & Deck::capacity() const {return Deck::SIZE_DeckArr;}
 //---------------------------------------------------------------------------------------------------------------------------
@@ -21,8 +23,8 @@ void Deck::gen(const unique_ptr< vector<Card> > & board_ptr, const Hand &heroHan
 {
 //    deckArr.reserve(Deck::SIZE_DeckArr);
     
-    if (!deckArr->empty())
-        deckArr->clear();
+    if (!deckArr.empty())
+        deckArr.clear();
     
 //    Card card;
     
@@ -34,9 +36,9 @@ void Deck::gen(const unique_ptr< vector<Card> > & board_ptr, const Hand &heroHan
                 *card != heroHand.getCard2() && 
                 *card != oppHand.getCard1() && 
                 *card != oppHand.getCard2() &&
-                !check_for_a_card(board_ptr, card))
+                !checkCardOnBoard(board_ptr, card))
             {
-                deckArr->push_back(*card);
+                deckArr.push_back(*card);
             }
         }
     }

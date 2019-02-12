@@ -12,6 +12,6 @@ using namespace std;
 
 
 bool pushNewCardToBoard(unique_ptr< vector<Card> > & board_ptr, const Hand &heroHand, const Hand &oppHand, const unique_ptr<Card> &card);
-bool check_for_a_card(const unique_ptr<vector<Card> > &board_ptr, const unique_ptr<Card> &card);
+bool checkCardOnBoard(const unique_ptr< vector<Card> > &board_ptr, const unique_ptr<Card> &card);
 
 #endif //BOARD_H
