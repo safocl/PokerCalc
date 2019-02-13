@@ -24,11 +24,11 @@ struct HandStrength final
 private:
     strength curr_strength;
     strength checkCurrStrength(const Hand &hand, const unique_ptr<vector<Card> > & board_ptr) const;
-    bool match_straitflash(const unique_ptr<vector<Card> > &combo_ptr) const;
-    bool match_kare(const unique_ptr<vector<Card> > &combo_ptr) const;
+    bool match_straitflash(const unique_ptr<vector<Card> > & combo_ptr, const uint32_t & combo) const;
+    bool match_kare(const unique_ptr<vector<Card> > & combo_ptr) const;
     bool match_fullhouse(const unique_ptr<vector<Card> > & combo_ptr) const;
-    bool match_flush(const unique_ptr<vector<Card> > & combo_ptr) const;
-    bool match_strait(const unique_ptr<vector<Card> > & combo_ptr) const;
+    bool match_flush(const unique_ptr<vector<Card> > & combo_ptr, const uint32_t & combo) const;
+    bool match_strait(const uint32_t & combo) const;
     bool match_set(const unique_ptr<vector<Card> > & combo_ptr) const;
     bool match_twopairs(const unique_ptr<vector<Card> > & combo_ptr) const;
 };
@@ -39,6 +39,6 @@ struct HandStrengthList final
     std::atomic<unsigned long long> hight, pair, twopair, set, strait, flash, fullhouse, kare, straitflash;
 };
 
-unique_ptr<vector<Card> > sort_cards(const unique_ptr<vector<Card> > & combo_ptr);
+unique_ptr<vector<Card> > && sort_cards(const unique_ptr<vector<Card> > & combo_ptr);
 
 #endif // HANDSTRENGTH_H
