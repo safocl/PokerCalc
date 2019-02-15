@@ -18,6 +18,7 @@ struct Hand final
     Hand(Hand && other);
     Hand(Card::valCard numValueCard1, Card::suitCard numSuitCard1,
          Card::valCard numValueCard2, Card::suitCard numSuitCard2);
+    Hand(const std::string str1, const std::string str2);
     
     ~Hand();
 
@@ -35,7 +36,7 @@ struct Hand final
      * @param card2_str string buffer for the second card
      */
     void getHand(std::string & card1_str, std::string & card2_str) const;
-    void getCards(Card &card1, Card &card2) const;
+    void getCards(Card &card1_, Card &card2_) const;
     const Card & getCard1 () const;
     const Card & getCard2 () const;
     bool operator== (const Hand &other) const;

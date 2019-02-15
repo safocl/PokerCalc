@@ -6,10 +6,7 @@ HandStrengthList::HandStrengthList() : hight(0), pair(0), twopair(0), set(0), st
 //---------------------------------------------------------------------------------------------------------------------------
 HandStrength::HandStrength(const HandStrength & other){this->curr_strength = other.curr_strength;};
 //---------------------------------------------------------------------------------------------------------------------------
-HandStrength::HandStrength(const Hand &hand, const unique_ptr<vector<Card> > &board_ptr)
-{
-    curr_strength = checkCurrStrength(hand, board_ptr);
-}
+HandStrength::HandStrength(const Hand &hand, const unique_ptr<vector<Card> > &board_ptr) : curr_strength(checkCurrStrength(hand, board_ptr)) {}
 //---------------------------------------------------------------------------------------------------------------------------
 const HandStrength::strength & HandStrength::getCurrStrength() const {return curr_strength;}
 //---------------------------------------------------------------------------------------------------------------------------
@@ -28,7 +25,7 @@ HandStrength::strength HandStrength::checkCurrStrength(const Hand &hand, const u
         assert((hand.getCard1().getValueNum() != 0 && hand.getCard1().getSuitNum() != 0) &&
                (hand.getCard2().getValueNum() != 0 && hand.getCard2().getSuitNum() != 0) &&
                "invalid hand initialization");
-        unique_ptr< vector<Card>> combo_ptr;
+        unique_ptr< vector<Card>> combo_ptr(new vector<Card>);
         combo_ptr->reserve(board_ptr->size() + 2);
         for (auto const & card : *board_ptr) {
             combo_ptr->push_back(card);
@@ -272,7 +269,7 @@ bool HandStrength::match_twopairs(const unique_ptr<vector<Card> > & combo_ptr) c
     return res;
 }
 //---------------------------------------------------------------------------------------------------------------------------
-unique_ptr<vector<Card> > && sort_cards(const unique_ptr<vector<Card> > & combo_ptr) {
+unique_ptr<vector<Card> > sort_cards(const unique_ptr<vector<Card> > & combo_ptr) {
     unique_ptr<vector<Card> > temp_arr_ptr(new vector<Card>); 
     *temp_arr_ptr = *combo_ptr;
     
@@ -290,5 +287,5 @@ unique_ptr<vector<Card> > && sort_cards(const unique_ptr<vector<Card> > & combo_
         }
     }
     
-    return move(temp_arr_ptr);
+    return temp_arr_ptr;
 }

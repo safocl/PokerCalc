@@ -55,12 +55,12 @@ struct Card final
                                       _h_0x8 = 0x8}; //0b1000
     
 	void setCard(const std::string strCard);
+    void setCard(const Card & card);
 	void setCard(const valCard &value, const suitCard &suit);
-	void setSuitNum(const suitCard &suit);
-    void setValueNum(const valCard &value);
     std::string get_string() const noexcept;
     uint8_t getSuitNum() const noexcept;
     uint32_t getValueNum() const noexcept;
+    
     /**
      * @brief inc_val
      * @return 
@@ -88,6 +88,8 @@ struct Card final
      * decrement card suit
      */
     Card dec_suit() noexcept;
+    void setSuitNum(const suitCard &suit);
+    void setValueNum(const valCard &value);
     bool operator == (const Card &other) const noexcept;
     bool operator !=(const Card &other) const noexcept;
     Card & operator = (const Card &other) noexcept;
@@ -99,22 +101,22 @@ struct Card final
      * @brief suit_mask
      * = 0xf or 0b1111
      */
-    static const uint8_t suit_mask = 0xf;
+    static const uint8_t suit_mask = 0x1f;
     
     /**
      * @brief value_mask
-     * = 0x1fff0000 or 0b00011111111111110000000000000000
+     * = 0x3fff0000 or 0b00111111111111110000000000000000
      */
-    static const uint32_t value_mask = 0x1fff0000;
+    static const uint32_t value_mask = 0x3fff0000;
 
-    static const uint32_t sizeValueCardArr = static_cast<uint32_t>(Card::valCard::_A) + 1;
-    static const uint8_t sizeSuitCardArr = static_cast<uint8_t>(Card::suitCard::_h_0x8) + 1;
+    static const uint32_t sizeValueCardArr = 0x20000000;
+    static const uint8_t sizeSuitCardArr = 0x10;
 
 private:
 	uint32_t numCard;
     
     std::string && getSuit() const noexcept;
-    std::string && getValue() const noexcept;
+    std::string getValue() const noexcept;
     bool check_valid_value(const valCard &value);
     bool check_valid_suit(const suitCard &suit);
 };

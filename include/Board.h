@@ -11,7 +11,7 @@
 using namespace std;
 
 
-bool pushNewCardToBoard(unique_ptr< vector<Card> > & board_ptr, const Hand &heroHand, const Hand &oppHand, const unique_ptr<Card> &card);
-bool checkCardOnBoard(const unique_ptr< vector<Card> > &board_ptr, const unique_ptr<Card> &card);
+bool pushNewCardToBoard(unique_ptr< vector<Card> > & board_ptr, const Hand &heroHand, const Hand &oppHand, const Card &card);
+bool checkCardOnBoard(const unique_ptr< vector<Card> > &board_ptr, const Card &card);
 
 #endif //BOARD_H

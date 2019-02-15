@@ -30,13 +30,13 @@ void Deck::gen(const unique_ptr< vector<Card> > & board_ptr, const Hand &heroHan
     
     for (auto card = make_unique<Card>(Card::valCard::_2, Card::suitCard::_d_0x1); card->getValueNum() < Card::sizeValueCardArr; card->inc_val())
     {
-        for (; card->getSuitNum() < Card::sizeSuitCardArr; card->inc_suit())
+        for (card->setSuitNum(Card::suitCard::_d_0x1); card->getSuitNum() < Card::sizeSuitCardArr; card->inc_suit())
         {
            if (*card != heroHand.getCard1() && 
                 *card != heroHand.getCard2() && 
                 *card != oppHand.getCard1() && 
                 *card != oppHand.getCard2() &&
-                !checkCardOnBoard(board_ptr, card))
+                !checkCardOnBoard(board_ptr, *card))
             {
                 deckArr.push_back(*card);
             }

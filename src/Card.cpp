@@ -82,23 +82,28 @@ void Card::setCard(const std::string strCard) {
     switch (strCard.at(1)) {
     case 'd':
     case 'D':
-        numCard |= static_cast<uint32_t>(Card::valCard::_T);
+        numCard |= static_cast<uint32_t>(Card::suitCard::_d_0x1);
         break;
     case 's':
     case 'S':
-        numCard |= static_cast<uint32_t>(Card::valCard::_J);
+        numCard |= static_cast<uint32_t>(Card::suitCard::_s_0x2);
         break;
     case 'c':
     case 'C':
-        numCard |= static_cast<uint32_t>(Card::valCard::_Q);
+        numCard |= static_cast<uint32_t>(Card::suitCard::_c_0x4);
         break;
     case 'h':
     case 'H':
-        numCard |= static_cast<uint32_t>(Card::valCard::_K);
+        numCard |= static_cast<uint32_t>(Card::suitCard::_h_0x8);
         break;
     default:
         assert(false && "invalid card suit");
     }
+}
+
+void Card::setCard(const Card & card) {
+    numCard = 0;
+    numCard = card.numCard;
 }
 //---------------------------------------------------------------------------------------------------------------------------
 void Card::setCard(const Card::valCard & value, const Card::suitCard & suit) {
@@ -141,7 +146,7 @@ std::string && Card::getSuit() const noexcept{
     return std::move(res);
 }
 //---------------------------------------------------------------------------------------------------------------------------
-std::string && Card::getValue() const noexcept{
+std::string Card::getValue() const noexcept{
     std::string res;
     switch (numCard & value_mask) {
     case static_cast<uint32_t>(Card::valCard::_2) :
@@ -186,7 +191,7 @@ std::string && Card::getValue() const noexcept{
     default:
         assert(false && "an attempt to display the card value, but the card value is not defined");
     }
-    return std::move(res);
+    return res;
 }
 //---------------------------------------------------------------------------------------------------------------------------
 std::string Card::get_string() const noexcept { return getValue() + getSuit();}
@@ -196,25 +201,25 @@ uint8_t Card::getSuitNum() const noexcept {return (numCard & suit_mask);}
 uint32_t Card::getValueNum() const noexcept {return (numCard & value_mask);}
 //---------------------------------------------------------------------------------------------------------------------------
 Card Card::inc_val() noexcept {
-    assert(((numCard & value_mask) < (sizeValueCardArr - 1)) && "out of range");
+//    assert(((numCard & value_mask) < (sizeValueCardArr - 1)) && "out of range");
     numCard ^= (numCard & value_mask) | ((numCard & value_mask) << 1);
     return *this;
 };
 //---------------------------------------------------------------------------------------------------------------------------
 Card Card::inc_suit() noexcept {
-    assert(((numCard & suit_mask) < (sizeSuitCardArr -1)) && "out of range");
+//    assert(((numCard & suit_mask) < (sizeSuitCardArr -1)) && "out of range");
     numCard ^= (numCard & suit_mask) | ((numCard & suit_mask) << 1);
     return *this;
 };
 //---------------------------------------------------------------------------------------------------------------------------
 Card Card::dec_val() noexcept {
-    assert(((numCard & value_mask) > static_cast<uint32_t>(Card::valCard::_2)) && "out of range");
+//    assert(((numCard & value_mask) > static_cast<uint32_t>(Card::valCard::_2)) && "out of range");
     numCard ^= (numCard & value_mask) | ((numCard & value_mask) >> 1);
     return *this;
 };
 //---------------------------------------------------------------------------------------------------------------------------
 Card Card::dec_suit() noexcept {
-    assert(((numCard & suit_mask) > 0) && "out of range");
+//    assert(((numCard & suit_mask) > 0) && "out of range");
     numCard ^= (numCard & suit_mask) | ((numCard & suit_mask) >> 1);
     return *this;
 };

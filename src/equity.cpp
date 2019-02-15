@@ -18,11 +18,9 @@ void genBoardCards(unique_ptr< vector<Card> > & board_ptr, unique_ptr<Deck> & de
     
     int tmp_cycles_count;
     deck_ptr->gen(board_ptr ,hero_h, opp_h);
-    for (auto deck_el : deck_ptr->getDeckArr().operator*())
-    {
-        if (pushNewCardToBoard(board_ptr, hero_h, opp_h, deck_el))
-        {
-            if (cycles_count > 0){
+    for (auto deck_el : deck_ptr->getDeckArr()) {
+        if (pushNewCardToBoard(board_ptr, hero_h, opp_h, deck_el)) {
+            if (cycles_count > 1){
                 tmp_cycles_count = cycles_count - 1;
                 genBoardCards(board_ptr, deck_ptr, hero_h, opp_h, hsl, tmp_cycles_count);
             }
@@ -47,8 +45,8 @@ void parallel_genBoardCards(const Hand & hero_h, const Hand & opp_h,
     for (unsigned long count = min_pos; count < max_pos; ++count)
     {
         if (cycles_count > 0){
-            tmp_cycles_count = cycles_count - 2;
-            if (pushNewCardToBoard(board_ptr, hero_h, opp_h, deck_ptr->getDeckArr()->at(count)))
+            tmp_cycles_count = cycles_count - 1;
+            if (pushNewCardToBoard(board_ptr, hero_h, opp_h, deck_ptr->getDeckArr().at(count)))
             {
                 genBoardCards(board_ptr, deck_ptr, hero_h, opp_h, hsl, tmp_cycles_count);
                 board_ptr->erase(board_ptr->end() - 1);

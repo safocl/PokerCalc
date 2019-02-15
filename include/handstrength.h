@@ -39,6 +39,6 @@ struct HandStrengthList final
     std::atomic<unsigned long long> hight, pair, twopair, set, strait, flash, fullhouse, kare, straitflash;
 };
 
-unique_ptr<vector<Card> > && sort_cards(const unique_ptr<vector<Card> > & combo_ptr);
+unique_ptr<vector<Card> > sort_cards(const unique_ptr<vector<Card> > & combo_ptr);
 
 #endif // HANDSTRENGTH_H
