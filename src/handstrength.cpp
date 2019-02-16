@@ -2,7 +2,7 @@
 #include <cassert>
 
 
-HandStrengthList::HandStrengthList() : hight(0), pair(0), twopair(0), set(0), strait(0), flash(0), fullhouse(0), kare(0), straitflash(0) {}
+HandStrengthList::HandStrengthList() : hight(0), pair(0), twopair(0), set(0), strait(0), FLUSH(0), fullhouse(0), kare(0), straitFLUSH(0) {}
 //---------------------------------------------------------------------------------------------------------------------------
 HandStrength::HandStrength(const HandStrength & other){this->curr_strength = other.curr_strength;};
 //---------------------------------------------------------------------------------------------------------------------------
@@ -41,7 +41,7 @@ HandStrength::strength HandStrength::checkCurrStrength(const Hand &hand, const u
         combo |= (hand.getCard1().getValueNum() | hand.getCard1().getSuitNum()) | (hand.getCard2().getValueNum() | hand.getCard2().getSuitNum());
         
         // проверка на стрит-флеш
-        if (match_straitflash(combo_ptr, combo))
+        if (match_straitFLUSH(combo_ptr, combo))
             return HandStrength::strength::STRAIT_FLUSH;
         
         // проверка на карэ
@@ -54,7 +54,7 @@ HandStrength::strength HandStrength::checkCurrStrength(const Hand &hand, const u
         
         // проверка на флеш
         if (match_flush(combo_ptr, combo))
-            return HandStrength::strength::FLASH;
+            return HandStrength::strength::FLUSH;
         
         // проверка на стрит
         if (match_strait(combo))
@@ -88,7 +88,7 @@ HandStrength::strength HandStrength::checkCurrStrength(const Hand &hand, const u
 }
 //---------------------------------------------------------------------------------------------------------------------------
 // проверка на стрит-флеш
-bool HandStrength::match_straitflash(const unique_ptr<vector<Card> > & combo_ptr, const uint32_t & combo) const {
+bool HandStrength::match_straitFLUSH(const unique_ptr<vector<Card> > & combo_ptr, const uint32_t & combo) const {
     bool res = false;
     uint32_t combo_val = combo & Card::value_mask;
     uint8_t combo_suit = combo & Card::suit_mask;
@@ -171,23 +171,22 @@ bool HandStrength::match_kare(const unique_ptr<vector<Card> > & combo_ptr) const
 //---------------------------------------------------------------------------------------------------------------------------
 // проверка на фулл-хаус
 bool HandStrength::match_fullhouse(const unique_ptr<vector<Card> > & combo_ptr) const {
-    unique_ptr<vector<Card> > temp_arr_ptr(new vector<Card>);
-    temp_arr_ptr = sort_cards(combo_ptr);
+    auto temp_arr_ptr = std::make_unique<vector<Card>> (*sort_cards(combo_ptr));
     bool res = false;
-    
-    for (unsigned count = 0; (temp_arr_ptr->size() - count) > 4; ++count)
-    {
+
+    for (unsigned count = 0; (temp_arr_ptr->size() - count) > 2; ++count) {
         if (temp_arr_ptr->at(count).getValueNum() == temp_arr_ptr->at(count + 1).getValueNum() &&
-            temp_arr_ptr->at(count).getValueNum() == temp_arr_ptr->at(count + 2).getValueNum())
-        {
-            temp_arr_ptr->erase(temp_arr_ptr->begin() + count, temp_arr_ptr->begin() + count + 2);
+            temp_arr_ptr->at(count).getValueNum() == temp_arr_ptr->at(count + 2).getValueNum()) {
+            temp_arr_ptr->erase(temp_arr_ptr->begin() + count, temp_arr_ptr->begin() + count + 3);
             for (unsigned subcount = 0; (temp_arr_ptr->size() - subcount) >= 2; ++subcount) {
-                if (temp_arr_ptr->at(subcount).getValueNum() == temp_arr_ptr->at(subcount + 1).getValueNum())
+                if (temp_arr_ptr->at(subcount).getValueNum() == temp_arr_ptr->at(subcount + 1).getValueNum()) {
                     res = true;
+                    break;
+                }
             }
+            break;
         }
-    }
-    
+    }    
     return res;
 }
 //---------------------------------------------------------------------------------------------------------------------------
@@ -270,8 +269,8 @@ bool HandStrength::match_twopairs(const unique_ptr<vector<Card> > & combo_ptr) c
 }
 //---------------------------------------------------------------------------------------------------------------------------
 unique_ptr<vector<Card> > sort_cards(const unique_ptr<vector<Card> > & combo_ptr) {
-    unique_ptr<vector<Card> > temp_arr_ptr(new vector<Card>); 
-    *temp_arr_ptr = *combo_ptr;
+    auto temp_arr_ptr = std::make_unique<vector<Card>> (*combo_ptr); 
+//    *temp_arr_ptr = *combo_ptr;
     
     Card temp_card;
     
