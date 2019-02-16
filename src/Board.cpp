@@ -2,8 +2,7 @@
 
 
 //---------------------------------------------------------------------------------------------------------------------------
-bool pushNewCardToBoard(unique_ptr< vector<Card> > & board_ptr, const Hand & heroHand, const Hand & oppHand, const Card & card)
-{
+bool pushNewCardToBoard(unique_ptr< vector<Card> > & board_ptr, const Hand & heroHand, const Hand & oppHand, const Card & card) {
     bool res = false;
     if (!board_ptr->empty() && checkCardOnBoard(board_ptr, card))
         ;
@@ -18,13 +17,10 @@ bool pushNewCardToBoard(unique_ptr< vector<Card> > & board_ptr, const Hand & her
     return res;
 }
 //---------------------------------------------------------------------------------------------------------------------------
-bool checkCardOnBoard(const unique_ptr< vector<Card> > & board_ptr, const Card & card)
-{
+bool checkCardOnBoard(const unique_ptr< vector<Card> > & board_ptr, const Card & card) {
     bool res = false;
-    if (!board_ptr->empty())
-    {
-        for (auto const & el : *board_ptr)
-        {
+    if (!board_ptr->empty()) {
+        for (auto const & el : *board_ptr) {
             if (card == el) {
                 res = true; 
                 break;

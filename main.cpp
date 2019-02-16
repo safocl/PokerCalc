@@ -24,7 +24,7 @@ int main()
 //            {
 //                if (hero_h1_s != hero_h2_s)
 //                {
-        Hand hero_h{"2d","2h"};
+        Hand hero_h{"kd","kd"};
 
     brutforcePreFlop_Flop(hero_h, hero_h, hsl);
 //                }
@@ -32,15 +32,15 @@ int main()
 //        }
         unsigned long long sum_cycle = hsl->hight+hsl->pair+hsl->set+hsl->twopair+hsl->strait+hsl->flash+hsl->fullhouse+hsl->straitflash+hsl->kare;
         
-        cout << "hi : " << hsl->hight << endl;
-        cout << "pairs : " << hsl->pair << endl;
-        cout << "sets : " << hsl->set << endl;
-        cout << "two pairs : " << hsl->twopair << endl;
-        cout << "straits : " << hsl->strait << endl;
-        cout << "flashes : " << hsl->flash << endl;
-        cout << "fullhouses : " << hsl->fullhouse << endl;
-        cout << "straitflashes : " << hsl->straitflash << endl;
-        cout << "kares : " << hsl->kare << endl;
+        cout << "hi : " << "\t\t\t" << hsl->hight << "\t" << static_cast<double>(hsl->hight) / sum_cycle * 100 << "%" << endl;
+        cout << "pairs : " << "\t\t" << hsl->pair <<  "\t" << static_cast<double>(hsl->pair) / sum_cycle * 100 << "%" << endl;
+        cout << "sets : " << "\t\t" << hsl->set <<  "\t" << static_cast<double>(hsl->set) / sum_cycle * 100 << "%" << endl;
+        cout << "two pairs : " << "\t\t" << hsl->twopair <<  "\t" << static_cast<double>(hsl->twopair) / sum_cycle * 100 << "%" << endl;
+        cout << "straits : " << "\t\t" << hsl->strait <<  "\t" << static_cast<double>(hsl->strait) / sum_cycle * 100 << "%" << endl;
+        cout << "flashes : " << "\t\t" << hsl->flash <<  "\t" << static_cast<double>(hsl->flash) / sum_cycle * 100 << "%" << endl;
+        cout << "fullhouses : " << "\t\t" << hsl->fullhouse <<  "\t" << static_cast<double>(hsl->fullhouse) / sum_cycle * 100 << "%" << endl;
+        cout << "straitflashes : " << "\t" << hsl->straitflash <<  "\t" << static_cast<double>(hsl->straitflash) / sum_cycle * 100 << "%" << endl;
+        cout << "kares : " << "\t\t" << hsl->kare <<  "\t" << static_cast<double>(hsl->kare) / sum_cycle * 100 << "%" << endl;
         cout << "sum_cycle : " << sum_cycle << endl;
 
     return 0;

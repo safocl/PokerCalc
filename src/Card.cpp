@@ -6,12 +6,12 @@
 //---------------------------------------------------------------------------------------------------------------------------
 Card::Card () : numCard(0) {}
 //---------------------------------------------------------------------------------------------------------------------------
-Card::Card(const std::string strCard) {
+Card::Card(const std::string strCard) : numCard(0) {
     assert(strCard.length() == 2 && "invalid string length");
     setCard(strCard);
 }
 //---------------------------------------------------------------------------------------------------------------------------
-Card::Card (const Card::valCard && value, const Card::suitCard && suit) {
+Card::Card (const Card::valCard && value, const Card::suitCard && suit) : numCard(0) {
     assert(static_cast<bool>(static_cast<uint32_t>(value) < sizeValueCardArr));
     assert(static_cast<bool>(static_cast<uint8_t>(suit) < sizeSuitCardArr));
 

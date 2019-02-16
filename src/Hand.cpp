@@ -1,5 +1,5 @@
 #include "Hand.h"
-
+#include "cassert"
 
 
 Hand::Hand(const Hand & other){*this = other;};
@@ -8,13 +8,14 @@ Hand::Hand() : card1(), card2() {}
 //---------------------------------------------------------------------------------------------------------------------------
 Hand::Hand(Hand && other){*this = std::move(other);}
 //---------------------------------------------------------------------------------------------------------------------------
-Hand::Hand( Card::valCard numValueCard1, Card::suitCard numSuitCard1,
-            Card::valCard numValueCard2, Card::suitCard numSuitCard2) {   
-    card1.setCard(numValueCard1, numSuitCard1);
-    card2.setCard(numValueCard2, numSuitCard2);
+Hand::Hand( Card::valCard numValue1, Card::suitCard numSuit1,
+            Card::valCard numValue2, Card::suitCard numSuit2) {
+    assert(((numValue1 != numValue2) || (numSuit1 != numSuit2)) && "identical cards");
+    card1.setCard(numValue1, numSuit1);
+    card2.setCard(numValue2, numSuit2);
 }
 //---------------------------------------------------------------------------------------------------------------------------
-Hand::Hand(const std::string str1, const std::string str2) : card1(str1), card2(str2)  {}
+Hand::Hand(const std::string str1, const std::string str2) : card1(str1), card2(str2)  { assert(str1 != str2 && "identical cards"); }
 //---------------------------------------------------------------------------------------------------------------------------
 Hand::~Hand(){}
 //---------------------------------------------------------------------------------------------------------------------------
