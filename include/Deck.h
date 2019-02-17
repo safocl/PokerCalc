@@ -23,7 +23,7 @@ struct Deck final {
     Deck( Deck && other );
     Deck( const Deck & other ) = delete ;
     Deck & operator = ( Deck && other );
-    void gen(const Board & board, const Hand &hero, const Hand &opp );
+    void gen( const Board & board, const Hand &hero, const Hand &opp );
 //    const int & capacity() const;
     unsigned long size() const;
     const std::vector< Card > & getDeckArr() const;
