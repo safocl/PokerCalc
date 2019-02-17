@@ -2,7 +2,10 @@
 #ifndef DECK_H
 #define DECK_H
 
+
+namespace lp {
 class Board;
+}
 
 #include <utility>
 #include <vector>
@@ -10,6 +13,8 @@ class Board;
 #include "Hand.h"
 #include "defines.h"
 #include "Board.h"
+
+namespace lp {
 
 
 struct Deck final {
@@ -39,6 +44,6 @@ private:
 	
 };
 
-
+}
 
 #endif // DECK_H

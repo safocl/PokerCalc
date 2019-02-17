@@ -2,6 +2,7 @@
 #include <thread>
 #include "equity.h"
 
+namespace lp {
 
 Board::Board() : board_ptr( std::make_unique< std::vector< Card > >() ) { board_ptr->reserve(MAX_SIZE); }
 //---------------------------------------------------------------------------------------------------------------------------
@@ -36,13 +37,12 @@ bool Board::checkCardOnBoard( const Card & card ) const {
     return res;
 }
 //---------------------------------------------------------------------------------------------------------------------------
-void Board::genBoardCards( Deck & deck, const Hand & hero, const Hand & opp,
-							HandStrengthList & hsl, const int & cycles_count ) {    
+void Board::genBoardCards( Deck & deck, const Hand & hero, const Hand & opp, HandStrengthList & hsl, const int & cycles_count ) {    
     int tmp_cycles_count;
     deck.gen( *this, hero, opp );
-    for ( auto deck_el : deck.getDeckArr() ) {
+    for ( auto const & deck_el : deck.getDeckArr() ) {
         if ( pushNewCardToBoard( hero, opp, deck_el ) ) {
-            if ( cycles_count > 1 ){
+            if ( cycles_count > 1 ) {
                 tmp_cycles_count = cycles_count - 1;
                 genBoardCards( deck, hero, opp, hsl, tmp_cycles_count );
             }
@@ -55,7 +55,7 @@ void Board::genBoardCards( Deck & deck, const Hand & hero, const Hand & opp,
     }
 }
 //---------------------------------------------------------------------------------------------------------------------------
-void Board::parallel_genBoardCards( Deck & deck, const Hand & hero, const Hand & opp, HandStrengthList & hsl, const int &cycles_count ) {
+void Board::parallel_genBoardCards( Deck & deck, const Hand & hero, const Hand & opp, HandStrengthList & hsl, const int & cycles_count ) {
     int tmp_cycles_count;
     deck.gen( *this, hero, opp );
     for ( unsigned count = static_cast< unsigned >( deck.getMinPos() ); 
@@ -102,5 +102,7 @@ void Board::brutforcePreFlop_Flop( Deck & deck, const Hand & hero, const Hand & 
 //    thread2.join();
 //    thread3.join();
 //    thread4.join();
+
+}
 
 }

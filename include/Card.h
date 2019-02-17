@@ -8,6 +8,8 @@
 #include <string>
 
 //using namespace std;
+namespace lp {
+
 
 struct Card final
 {
@@ -122,4 +124,5 @@ private:
     bool check_valid_suit(const suitCard &suit);
 };
 
+}
 #endif

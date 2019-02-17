@@ -1,6 +1,7 @@
 #include "Hand.h"
 #include "cassert"
 
+namespace lp {
 
 Hand::Hand(const Hand & other){*this = other;};
 //---------------------------------------------------------------------------------------------------------------------------
@@ -66,3 +67,5 @@ Hand & Hand::operator= (const Hand & other) {this->card1 = other.card1; this->ca
 //---------------------------------------------------------------------------------------------------------------------------
 Hand & Hand::operator= (Hand && other) {this->card1 = std::move(other.card1); this->card2 = std::move(other.card2);
                                              return *this;}
+
+}

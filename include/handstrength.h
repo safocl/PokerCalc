@@ -11,6 +11,9 @@ class Board;
 #include "Board.h"
 #include "defines.h"
 
+namespace lp {
+
+
 struct HandStrength final {
     HandStrength( const Hand &hand, const Board & board );
     HandStrength( const HandStrength & other );
@@ -37,5 +40,7 @@ struct HandStrengthList final {
 };
 
 std::unique_ptr<std::vector<Card> > sort_cards( const std::vector< Card > & combo_ptr );
+
+}
 
 #endif // HANDSTRENGTH_H

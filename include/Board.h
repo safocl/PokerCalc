@@ -12,6 +12,7 @@ struct HandStrengthList;
 #include "defines.h"
 #include "handstrength.h"
 
+namespace lp {
 
 class Board {
 	std::unique_ptr< std::vector< Card > > board_ptr;
@@ -23,10 +24,10 @@ public:
 	bool checkCardOnBoard( const Card & card ) const;
 	void brutforcePreFlop_Flop( Deck & deck, const Hand & hero, const Hand & opp, HandStrengthList & hsl );
 private:
-	void genBoardCards( Deck & deck, const Hand & hero, const Hand & opp, 
-						HandStrengthList & hsl,const int &cycles_count );
+	void genBoardCards( Deck & deck, const Hand & hero, const Hand & opp, HandStrengthList & hsl,const int &cycles_count );
 	void parallel_genBoardCards( Deck & deck, const Hand & hero, const Hand & opp, HandStrengthList & hsl, const int &cycles_count );
 };
 
+}
 
 #endif //BOARD_H

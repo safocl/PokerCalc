@@ -1,6 +1,8 @@
 #include "handstrength.h"
 #include <cassert>
 
+namespace lp {
+
 
 HandStrengthList::HandStrengthList() : hight(0), pair(0), twopair(0), set(0), strait(0), FLUSH(0), fullhouse(0), kare(0), straitFLUSH(0) {}
 //---------------------------------------------------------------------------------------------------------------------------
@@ -286,4 +288,6 @@ std::unique_ptr<std::vector<Card> > sort_cards(const std::vector<Card> & combo_p
     }
     
     return temp_arr_ptr;
+}
+
 }

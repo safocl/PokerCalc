@@ -2,6 +2,8 @@
 // #define NDEBUG
 #include <cassert>
 
+namespace lp {
+
 
 //---------------------------------------------------------------------------------------------------------------------------
 Card::Card () : numCard( 0 ) {}
@@ -164,7 +166,7 @@ std::string Card::getValue() const noexcept{
     case static_cast< uint32_t >( Card::valCard::_6 ) :
         res = "6";
         break;
-    case static_cast< uint32_t>(Card::valCard::_7 ) :
+    case static_cast< uint32_t>( Card::valCard::_7 ) :
         res = "7";
         break;
     case static_cast< uint32_t >( Card::valCard::_8 ) :
@@ -249,7 +251,7 @@ bool Card::operator> ( const Card & other ) const noexcept { return ( this->getV
 //---------------------------------------------------------------------------------------------------------------------------
 bool Card::check_valid_value( const Card::valCard & value ) {
     uint32_t check;
-    for ( check = static_cast<uint32_t>(Card::valCard::_2 ); ( check < sizeValueCardArr ) &&
+    for ( check = static_cast<uint32_t>( Card::valCard::_2 ); ( check < sizeValueCardArr ) &&
 		  ( static_cast< uint32_t >( value ) != check ); check <<= 1 )
         ;
     assert( static_cast< uint32_t >( value ) == check );
@@ -263,4 +265,6 @@ bool Card::check_valid_suit( const Card::suitCard & suit ) {
         ;
     assert( static_cast< uint8_t >( suit ) == check );
     return true;
+}
+
 }

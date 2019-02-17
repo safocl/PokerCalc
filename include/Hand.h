@@ -7,6 +7,9 @@
 #include "Card.h"
 #include "defines.h"
 
+namespace lp {
+
+
 struct Hand final
 {
     Hand();
@@ -45,5 +48,6 @@ private:
 		 card2;
 };
 
+}
 
 #endif //HAND_H

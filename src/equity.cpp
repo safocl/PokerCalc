@@ -10,6 +10,8 @@
 //#define UNUSED
 //#endif
 
+namespace lp {
+
 
 ////---------------------------------------------------------------------------------------------------------------------------
 //void genBoardCards(unique_ptr< vector<Card> > & board_ptr, unique_ptr<Deck> & deck_ptr, const Hand & hero_h, const Hand & opp_h,
@@ -90,7 +92,7 @@
 
 //}
 //---------------------------------------------------------------------------------------------------------------------------
-void sumHandStrength(const Hand & hand, const Board & board,
+void sumHandStrength( const Hand & hand, const Board & board,
 					 HandStrengthList & hsl) {
     HandStrength pl_strangth{hand, board};
     switch (pl_strangth.getCurrStrength()) {
@@ -104,4 +106,6 @@ void sumHandStrength(const Hand & hand, const Board & board,
     case HandStrength::strength::STRAIT_FLUSH : ++hsl.straitFLUSH;return;
     case HandStrength::strength::KARE : ++hsl.kare;return;
     }
+}
+
 }

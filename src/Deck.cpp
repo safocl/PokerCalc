@@ -2,7 +2,7 @@
 //#include "Board.h"
 #include <cassert>
 
-
+namespace lp {
 
 //---------------------------------------------------------------------------------------------------------------------------
 Deck::Range::Range() : minPos( -1 ), maxPos( -1 ) { }
@@ -67,4 +67,6 @@ void Deck::gen( const Board & board, const Hand & hero, const Hand & opp ) {
             }
         }
     }
+}
+
 }
