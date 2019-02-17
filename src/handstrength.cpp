@@ -4,56 +4,55 @@
 
 HandStrengthList::HandStrengthList() : hight(0), pair(0), twopair(0), set(0), strait(0), FLUSH(0), fullhouse(0), kare(0), straitFLUSH(0) {}
 //---------------------------------------------------------------------------------------------------------------------------
-HandStrength::HandStrength(const HandStrength & other){this->curr_strength = other.curr_strength;};
+HandStrength::HandStrength( const HandStrength & other) {this->curr_strength = other.curr_strength;};
 //---------------------------------------------------------------------------------------------------------------------------
-HandStrength::HandStrength(const Hand &hand, const unique_ptr<vector<Card> > &board_ptr) : curr_strength(checkCurrStrength(hand, board_ptr)) {}
+HandStrength::HandStrength( const Hand & hand, const Board & board ) : curr_strength( checkCurrStrength( hand, board ) ) {}
 //---------------------------------------------------------------------------------------------------------------------------
 const HandStrength::strength & HandStrength::getCurrStrength() const {return curr_strength;}
 //---------------------------------------------------------------------------------------------------------------------------
-HandStrength::strength HandStrength::checkCurrStrength(const Hand &hand, const unique_ptr<vector<Card> > &board_ptr) const
-{
-    if (board_ptr->size() < 3) {
-        assert(board_ptr->size() == 0 && "invalid board");
+HandStrength::strength HandStrength::checkCurrStrength( const Hand &hand, const Board & board ) const {
+    if ( board.getVector().size() < 3 ) {
+        assert( board.getVector().size() == 0 && "invalid board" );
         
         // проверка на пару, если борд пуст
-        if (hand.getCard1().getValueNum() == hand.getCard2().getValueNum()) {
+        if ( hand.getCard1().getValueNum() == hand.getCard2().getValueNum() ) {
             return HandStrength::strength::PAIR;
         }
     }
     else {
-        assert(board_ptr->size() < 6 && "invalid board");
+        assert(board.getVector().size() < 6 && "invalid board");
         assert((hand.getCard1().getValueNum() != 0 && hand.getCard1().getSuitNum() != 0) &&
                (hand.getCard2().getValueNum() != 0 && hand.getCard2().getSuitNum() != 0) &&
                "invalid hand initialization");
-        unique_ptr< vector<Card>> combo_ptr(new vector<Card>);
-        combo_ptr->reserve(board_ptr->size() + 2);
-        for (auto const & card : *board_ptr) {
+        std::unique_ptr< std::vector<Card>> combo_ptr(new std::vector<Card>);
+        combo_ptr->reserve(board.getVector().size() + 2);
+        for (auto const & card : board.getVector()) {
             combo_ptr->push_back(card);
         }
         combo_ptr->push_back(hand.getCard1());
         combo_ptr->push_back(hand.getCard2());
         
         uint32_t combo = 0;
-        for (auto const & card : *board_ptr) {
+        for (auto const & card : board.getVector()) {
             combo |= (card.getValueNum() | card.getSuitNum());
         }
         
         combo |= (hand.getCard1().getValueNum() | hand.getCard1().getSuitNum()) | (hand.getCard2().getValueNum() | hand.getCard2().getSuitNum());
         
         // проверка на стрит-флеш
-        if (match_straitFLUSH(combo_ptr, combo))
+        if (match_straitFLUSH(*combo_ptr, combo))
             return HandStrength::strength::STRAIT_FLUSH;
         
         // проверка на карэ
-        if (match_kare(combo_ptr))
+        if (match_kare(*combo_ptr))
             return HandStrength::strength::KARE;
         
         // проверка на фулл-хаус
-        if (match_fullhouse(combo_ptr))
+        if (match_fullhouse(*combo_ptr))
             return HandStrength::strength::FULL_HOUSE;
         
         // проверка на флеш
-        if (match_flush(combo_ptr, combo))
+        if (match_flush(*combo_ptr, combo))
             return HandStrength::strength::FLUSH;
         
         // проверка на стрит
@@ -61,16 +60,16 @@ HandStrength::strength HandStrength::checkCurrStrength(const Hand &hand, const u
             return HandStrength::strength::STRAIT;
         
         // проверка на сет
-        if (match_set(combo_ptr))
+        if (match_set(*combo_ptr))
             return HandStrength::strength::SET;
         
         // проверка на две пары
-        if (match_twopairs(combo_ptr))
+        if (match_twopairs(*combo_ptr))
             return HandStrength::strength::TWO_PAIRS;
         
         // проверка на пару
-        if ([&board_ptr, &hand](){
-            for (auto const & el : *board_ptr) {
+        if ([&board, &hand](){
+            for (auto const & el : board.getVector()) {
                 if (hand.getCard1().getValueNum() == el.getValueNum() ||
                     hand.getCard2().getValueNum() == el.getValueNum()) {
                     return true;
@@ -88,28 +87,28 @@ HandStrength::strength HandStrength::checkCurrStrength(const Hand &hand, const u
 }
 //---------------------------------------------------------------------------------------------------------------------------
 // проверка на стрит-флеш
-bool HandStrength::match_straitFLUSH(const unique_ptr<vector<Card> > & combo_ptr, const uint32_t & combo) const {
+bool HandStrength::match_straitFLUSH(const std::vector<Card> & combo_ptr, const uint32_t & combo) const {
     bool res = false;
     uint32_t combo_val = combo & Card::value_mask;
     uint8_t combo_suit = combo & Card::suit_mask;
     if (match_strait(combo_val) && (combo_suit == 0x1 || combo_suit == 0x2 || combo_suit == 0x4 || combo_suit == 0x8))
         res = true;
-    else if ((combo_ptr->size() == 6 && (combo_suit == 0x7 || combo_suit == 0xe|| combo_suit == 0xd || combo_suit == 0xb)) ||
-             (combo_ptr->size() == 7 && combo_suit == 0xf))
+    else if ((combo_ptr.size() == 6 && (combo_suit == 0x7 || combo_suit == 0xe|| combo_suit == 0xd || combo_suit == 0xb)) ||
+             (combo_ptr.size() == 7 && combo_suit == 0xf))
         ;
     else if (match_strait(combo_val)) {
     
-            unique_ptr<vector<Card> > temp_arr_ptr(new vector<Card>);
-            temp_arr_ptr->reserve(combo_ptr->size());
+            std::unique_ptr<std::vector<Card> > temp_arr_ptr(new std::vector<Card>);
+            temp_arr_ptr->reserve(combo_ptr.size());
             
-            for (unsigned match_num = 0; ((combo_ptr->size() - match_num) > 4) && (temp_arr_ptr->size() < 5); ++match_num)
+            for (unsigned match_num = 0; ((combo_ptr.size() - match_num) > 4) && (temp_arr_ptr->size() < 5); ++match_num)
             {
                 temp_arr_ptr->clear();
-                temp_arr_ptr->push_back(combo_ptr->at(match_num));
-                for (unsigned match_subnum = match_num + 1; match_subnum < combo_ptr->size(); ++match_subnum)
+                temp_arr_ptr->push_back(combo_ptr.at(match_num));
+                for (unsigned match_subnum = match_num + 1; match_subnum < combo_ptr.size(); ++match_subnum)
                 {
-                    if (combo_ptr->at(match_num).getSuitNum() == combo_ptr->at(match_subnum).getSuitNum())
-                        temp_arr_ptr->push_back(combo_ptr->at(match_subnum));
+                    if (combo_ptr.at(match_num).getSuitNum() == combo_ptr.at(match_subnum).getSuitNum())
+                        temp_arr_ptr->push_back(combo_ptr.at(match_subnum));
                 }
             }
             
@@ -148,15 +147,15 @@ bool HandStrength::match_straitFLUSH(const unique_ptr<vector<Card> > & combo_ptr
 }
 //---------------------------------------------------------------------------------------------------------------------------
 //проверка на карэ
-bool HandStrength::match_kare(const unique_ptr<vector<Card> > & combo_ptr) const {
+bool HandStrength::match_kare(const std::vector<Card> & combo_ptr) const {
     bool res = false;
     int match_true;
     
-    for (unsigned count = 0; (combo_ptr->size() - count) > 3; ++count) {
+    for (unsigned count = 0; (combo_ptr.size() - count) > 3; ++count) {
         match_true = 0;
         
-        for (unsigned subcount = count + 1; subcount < combo_ptr->size(); ++subcount) {
-            if (combo_ptr->at(count).getValueNum() == combo_ptr->at(subcount).getValueNum())
+        for (unsigned subcount = count + 1; subcount < combo_ptr.size(); ++subcount) {
+            if (combo_ptr.at(count).getValueNum() == combo_ptr.at(subcount).getValueNum())
                 ++match_true;
         }
         
@@ -170,8 +169,8 @@ bool HandStrength::match_kare(const unique_ptr<vector<Card> > & combo_ptr) const
 }
 //---------------------------------------------------------------------------------------------------------------------------
 // проверка на фулл-хаус
-bool HandStrength::match_fullhouse(const unique_ptr<vector<Card> > & combo_ptr) const {
-    auto temp_arr_ptr = std::make_unique<vector<Card>> (*sort_cards(combo_ptr));
+bool HandStrength::match_fullhouse(const std::vector<Card> & combo_ptr) const {
+    auto temp_arr_ptr = std::make_unique<std::vector<Card>> (*sort_cards(combo_ptr));
     bool res = false;
 
     for (unsigned count = 0; (temp_arr_ptr->size() - count) > 2; ++count) {
@@ -191,26 +190,26 @@ bool HandStrength::match_fullhouse(const unique_ptr<vector<Card> > & combo_ptr) 
 }
 //---------------------------------------------------------------------------------------------------------------------------
 // проверка на флеш
-bool HandStrength::match_flush(const unique_ptr<vector<Card> > & combo_ptr, const uint32_t & combo) const {
+bool HandStrength::match_flush(const std::vector<Card> & combo_ptr, const uint32_t & combo) const {
     bool res = false;
     uint8_t combo_suit = combo & Card::suit_mask;
     
     if (combo_suit == 0x1 || combo_suit == 0x2 || combo_suit == 0x4 || combo_suit == 0x8)
         res = true;
-    else if ((combo_ptr->size() == 6 && (combo_suit == 0x7 || combo_suit == 0xe|| combo_suit == 0xd || combo_suit == 0xb)) ||
-             (combo_ptr->size() == 7 && combo_suit == 0xf))
+    else if ((combo_ptr.size() == 6 && (combo_suit == 0x7 || combo_suit == 0xe|| combo_suit == 0xd || combo_suit == 0xb)) ||
+             (combo_ptr.size() == 7 && combo_suit == 0xf))
         ;
     else {
-        for (unsigned match_num = 0; (combo_ptr->size() - match_num) > 4; ++match_num)
+        for (unsigned match_num = 0; (combo_ptr.size() - match_num) > 4; ++match_num)
         {
             unsigned match_true = 0, match_false = 0;
-            for (unsigned match_subnum = match_num + 1; match_subnum < combo_ptr->size(); ++match_subnum)
+            for (unsigned match_subnum = match_num + 1; match_subnum < combo_ptr.size(); ++match_subnum)
             {
-                if (combo_ptr->at(match_num).getSuitNum() == combo_ptr->at(match_subnum).getSuitNum())
+                if (combo_ptr.at(match_num).getSuitNum() == combo_ptr.at(match_subnum).getSuitNum())
                     ++match_true;
                 else {
                     ++match_false;
-                    if ((combo_ptr->size() - match_num - match_false) < 5)
+                    if ((combo_ptr.size() - match_num - match_false) < 5)
                         break;
                 }
             }
@@ -233,8 +232,8 @@ bool HandStrength::match_strait(const uint32_t & combo) const {
 }
 //---------------------------------------------------------------------------------------------------------------------------
 // проверка на сет
-bool HandStrength::match_set(const unique_ptr<vector<Card> > & combo_ptr) const {
-    unique_ptr<vector<Card> > temp_arr_ptr(new vector<Card>);
+bool HandStrength::match_set( const std::vector<Card> & combo_ptr ) const {
+    std::unique_ptr<std::vector<Card> > temp_arr_ptr(new std::vector<Card>);
     temp_arr_ptr = sort_cards(combo_ptr);
     bool res = false;
     
@@ -248,8 +247,8 @@ bool HandStrength::match_set(const unique_ptr<vector<Card> > & combo_ptr) const 
 }
 //---------------------------------------------------------------------------------------------------------------------------
 // проверка на две пары
-bool HandStrength::match_twopairs(const unique_ptr<vector<Card> > & combo_ptr) const {
-    unique_ptr<vector<Card> > temp_arr_ptr(new vector<Card>);
+bool HandStrength::match_twopairs(const std::vector<Card> & combo_ptr) const {
+    std::unique_ptr<std::vector<Card> > temp_arr_ptr(new std::vector<Card>);
     temp_arr_ptr = sort_cards(combo_ptr);
     bool res = false;
     
@@ -268,8 +267,8 @@ bool HandStrength::match_twopairs(const unique_ptr<vector<Card> > & combo_ptr) c
     return res;
 }
 //---------------------------------------------------------------------------------------------------------------------------
-unique_ptr<vector<Card> > sort_cards(const unique_ptr<vector<Card> > & combo_ptr) {
-    auto temp_arr_ptr = std::make_unique<vector<Card>> (*combo_ptr); 
+std::unique_ptr<std::vector<Card> > sort_cards(const std::vector<Card> & combo_ptr) {
+    auto temp_arr_ptr = std::make_unique<std::vector<Card>> (combo_ptr); 
 //    *temp_arr_ptr = *combo_ptr;
     
     Card temp_card;

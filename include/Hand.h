@@ -1,3 +1,4 @@
+//#pragma once
 #ifndef HAND_H
 #define HAND_H
 
@@ -5,11 +6,6 @@
 #include <vector>
 #include "Card.h"
 #include "defines.h"
-
-
-
-
-using namespace std;
 
 struct Hand final
 {

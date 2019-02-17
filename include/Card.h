@@ -1,3 +1,4 @@
+//#pragma once
 #ifndef CARD_H
 #define CARD_H
 
@@ -99,7 +100,7 @@ struct Card final
     
     /**
      * @brief suit_mask
-     * = 0xf or 0b1111
+     * = 0x1f or 0b11111
      */
     static const uint8_t suit_mask = 0x1f;
     
