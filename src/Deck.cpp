@@ -8,8 +8,8 @@ namespace lp {
 Deck::Range::Range() : minPos( -1 ), maxPos( -1 ) { }
 //---------------------------------------------------------------------------------------------------------------------------
 Deck::Range::Range( const int minPos, const int maxPos ) : minPos( minPos ), maxPos( maxPos ) { 
-	assert( minPos <= Deck::capacity && "invalid minPos" );
-	assert( maxPos <= Deck::capacity && "invalid maxPos" );
+	assert( minPos <= Deck::capacity && minPos > -1 && "invalid minPos" );
+	assert( maxPos <= Deck::capacity && maxPos > -1 && "invalid maxPos" );
 }
 //---------------------------------------------------------------------------------------------------------------------------
 Deck::Deck( const int minPos, const int maxPos ) : range( minPos, maxPos ) { deckArr.reserve( Deck::capacity ); }
