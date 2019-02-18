@@ -15,6 +15,8 @@ CONFIG -= qt
 #QT *= core
 #QT -= gui
 
+QMAKE_CXX = /usr/bin/clang
+
 #QMAKE_CXXFLAGS_DEBUG *= -O0
 #QMAKE_CXXFLAGS_DEBUG *= -std=c++17
 #QMAKE_CXXFLAGS_DEBUG *= -g
