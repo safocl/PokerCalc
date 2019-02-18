@@ -104,7 +104,7 @@ void Card::setCard( const std::string strCard ) {
 }
 
 void Card::setCard( const Card & card ) {
-    numCard = 0;
+//    numCard = 0;
     numCard = card.numCard;
 }
 //---------------------------------------------------------------------------------------------------------------------------

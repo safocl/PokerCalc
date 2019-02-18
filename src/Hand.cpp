@@ -3,7 +3,10 @@
 
 namespace lp {
 
-Hand::Hand( const Hand & other ){ *this = other; };
+Hand::Hand( const Hand & other ) : card1( std::make_unique< Card >() ), card2( std::make_unique< Card >() )  {
+	card1->setCard( other.card1.operator*() );
+	card2->setCard( other.card2.operator*() );
+};
 //---------------------------------------------------------------------------------------------------------------------------
 Hand::Hand() : card1( std::make_unique< Card >() ), card2( std::make_unique< Card >() ) {}
 //---------------------------------------------------------------------------------------------------------------------------
@@ -39,8 +42,8 @@ void Hand::setHand ( Card::valCard numValueCard1, Card::suitCard numSuitCard1,
 }
 //---------------------------------------------------------------------------------------------------------------------------
 void Hand::setHand ( const Card & card1_, const Card & card2_ ) {
-    this->card1.operator*() = card1_;
-    this->card2.operator*() = card2_;
+    card1->setCard( card1_ );
+    card2->setCard( card2_ );
 }
 //---------------------------------------------------------------------------------------------------------------------------
 // Получение значения руки в переменные типа char
@@ -71,14 +74,14 @@ bool Hand::operator!= ( const Hand &other ) const
 }
 //---------------------------------------------------------------------------------------------------------------------------
 Hand & Hand::operator= ( const Hand & other ) {
-	this->card1.operator*() = other.card1.operator*();
-	this->card2.operator*() = other.card2.operator*();
+	this->card1->setCard(*(other.card1));
+	this->card2->setCard(*(other.card2));
 	return *this;
 }
 //---------------------------------------------------------------------------------------------------------------------------
 Hand & Hand::operator= ( Hand && other ) {
-	this->card1 = std::move( other.card1 );
-	this->card2 = std::move( other.card2 );
+	this->card1.swap( other.card1 );
+	this->card2.swap( other.card2 );
 	other.card1 = nullptr;
 	other.card2 = nullptr;
 	return *this;

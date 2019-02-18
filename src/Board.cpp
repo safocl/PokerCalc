@@ -73,36 +73,38 @@ void Board::parallel_genBoardCards( Deck & deck, const Hand & hero, const Hand &
 //---------------------------------------------------------------------------------------------------------------------------
 void Board::brutforcePreFlop_Flop( Deck & deck, const Hand & hero, const Hand & opp, HandStrengthList & hsl ) {
     int cycles_count = 3;
-
-//    int max_pos;
-//    if (hero_h == opp_h)
-//        max_pos = 50;
-//    else
-//        max_pos = 48;
-    
 	parallel_genBoardCards( deck, hero, opp, std::ref( hsl ), cycles_count );
-	
-//    int min_pos1 = 0;
-//    int max_pos1 = max_pos / 4;
-//    thread thread1(parallel_genBoardCards, hero_h, opp_h, min_pos1, max_pos1, std::ref(hsl), cycles_count);
-    
-//    auto min_pos2 = max_pos1;
-//    auto max_pos2 = max_pos1 * 2;
-//    thread thread2(parallel_genBoardCards, hero_h, opp_h, min_pos2, max_pos2, std::ref(hsl), cycles_count);
-    
-//    auto min_pos3 = max_pos2;
-//    auto max_pos3 = max_pos1 * 3;
-//    thread thread3(parallel_genBoardCards, hero_h, opp_h, min_pos3, max_pos3, std::ref(hsl), cycles_count);
-    
-//    auto min_pos4 = max_pos3;
-//    auto max_pos4 = max_pos;
-//    thread thread4(parallel_genBoardCards, hero_h, opp_h, min_pos4, max_pos4, std::ref(hsl), cycles_count);
-
-//    thread1.join();
-//    thread2.join();
-//    thread3.join();
-//    thread4.join();
-
 }
+//---------------------------------------------------------------------------------------------------------------------------
+ParallelGenBoard::ParallelGenBoard( const Hand & hero, const Hand & opp ) : 
+										nCpus( static_cast< int >( std::thread::hardware_concurrency() ) ),
+										maxPos( hero == opp ? 50 : 48 ), hero( std::make_unique< Hand >( hero ) ), 
+										opp( std::make_unique< Hand >( opp ) ),
+										threadQueue( new std::queue< std::thread > ) { }
+//---------------------------------------------------------------------------------------------------------------------------
+ParallelGenBoard::~ParallelGenBoard() { join(); }
+//---------------------------------------------------------------------------------------------------------------------------
+void ParallelGenBoard::start( HandStrengthList & hsl ) {
+	auto minPos = maxPos / nCpus;
+	int8_t count;
+	for ( count = 0; count < ( nCpus - 1 ); ++count )
+	threadQueue->push( std::thread( []( Deck && deck, const Hand hero, const Hand opp, HandStrengthList & hsl )->void {
+										auto board = std::make_unique< Board >();
+										board->brutforcePreFlop_Flop( deck, hero, opp, hsl );
+					   },
+					   Deck( ( count * minPos ), ( ( count + 1 ) * minPos ) ), Hand( *hero ), Hand( *opp ), std::ref( hsl ) ) );
+	
+	threadQueue->push( std::thread( []( Deck && deck, const Hand hero, const Hand opp, HandStrengthList & hsl )->void {
+										auto board = std::make_unique< Board >();
+										board->brutforcePreFlop_Flop( deck, hero, opp, hsl );
+					   },
+					   Deck( ( count * minPos ),  maxPos ), Hand( *hero ), Hand( *opp ), std::ref( hsl ) ) );
+}
+//---------------------------------------------------------------------------------------------------------------------------
+void ParallelGenBoard::join() {
+	for (; (! threadQueue->empty() ) && threadQueue->front().joinable(); threadQueue->pop() )
+		threadQueue->front().join();
+}
+//---------------------------------------------------------------------------------------------------------------------------
 
 }

@@ -4,7 +4,8 @@
 
 
 namespace lp {
-class Board;
+//class Board;
+struct Deck;
 }
 
 #include <utility>
