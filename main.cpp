@@ -16,7 +16,7 @@
 int main()
 {
 //        const int hero_h1_v = 0, hero_h2_v = 0, hero_h1_s = 0, hero_h2_s = 1;
-        std::unique_ptr< lp::HandStrengthList > hsl( new lp::HandStrengthList );
+    std::unique_ptr< lp::HandStrengthList > hsl( new lp::HandStrengthList );
 //        hsl->straitFLUSH=0;hsl->kare=0;hsl->fullhouse=0;hsl->FLUSH=0;hsl->strait=0;hsl->set=0; hsl->twopair=0; hsl->pair=0; hsl->hight=0;
         
 //        for (int hero_h1_s = 0; (hero_h1_s < Card::sizeSuitCardArr); ++hero_h1_s)
@@ -25,9 +25,9 @@ int main()
 //            {
 //                if (hero_h1_s != hero_h2_s)
 //                {
-        lp::Hand hero{"2c","2d"};
-		std::unique_ptr< lp::Board > board( new lp::Board );
-		std::unique_ptr< lp::Deck > deck( new lp::Deck );
+    lp::Hand hero{"2c","2d"};
+	std::unique_ptr< lp::Board > board( new lp::Board );
+	std::unique_ptr< lp::Deck > deck( new lp::Deck );
 	std::chrono::time_point start = std::chrono::steady_clock::now();
 	board->brutforcePreFlop_Flop( *deck, hero, hero, *hsl );
 	std::chrono::time_point end = std::chrono::steady_clock::now();

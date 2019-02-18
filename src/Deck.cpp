@@ -8,13 +8,13 @@ namespace lp {
 Deck::Range::Range() : minPos( -1 ), maxPos( -1 ) { }
 //---------------------------------------------------------------------------------------------------------------------------
 Deck::Range::Range( const int minPos, const int maxPos ) : minPos( minPos ), maxPos( maxPos ) { 
-	assert( minPos <= Deck::SIZE_DeckArr && "invalid minPos" );
-	assert( maxPos <= Deck::SIZE_DeckArr && "invalid maxPos" );
+	assert( minPos <= Deck::capacity && "invalid minPos" );
+	assert( maxPos <= Deck::capacity && "invalid maxPos" );
 }
 //---------------------------------------------------------------------------------------------------------------------------
-Deck::Deck( const int minPos, const int maxPos ) : range( minPos, maxPos ) { deckArr.reserve( Deck::SIZE_DeckArr ); }
+Deck::Deck( const int minPos, const int maxPos ) : range( minPos, maxPos ) { deckArr.reserve( Deck::capacity ); }
 //---------------------------------------------------------------------------------------------------------------------------
-Deck::Deck() : deckArr() { deckArr.reserve( Deck::SIZE_DeckArr ); }
+Deck::Deck() : deckArr() { deckArr.reserve( Deck::capacity ); }
 //---------------------------------------------------------------------------------------------------------------------------
 //Deck::Deck(const Deck & other){this->deckArr = other.deckArr;}
 //---------------------------------------------------------------------------------------------------------------------------
@@ -42,7 +42,7 @@ const std::vector< Card > & Deck::getDeckArr() const { return deckArr; }
 //---------------------------------------------------------------------------------------------------------------------------
 unsigned long Deck::size() const { return deckArr.size(); }
 //---------------------------------------------------------------------------------------------------------------------------
-//const int & Deck::capacity() const {return Deck::SIZE_DeckArr;}
+//const int & Deck::capacity() const {return Deck::capacity;}
 //---------------------------------------------------------------------------------------------------------------------------
 void Deck::gen( const Board & board, const Hand & hero, const Hand & opp ) {
 	if ( ! range.isValid() ) {

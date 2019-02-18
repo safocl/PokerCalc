@@ -18,15 +18,15 @@ namespace lp {
 
 
 struct Deck final {
-    Deck();
+	Deck();
 	Deck( const int minPos, const int maxPos );
-    Deck( Deck && other );
-    Deck( const Deck & other ) = delete ;
-    Deck & operator = ( Deck && other );
-    void gen( const Board & board, const Hand &hero, const Hand &opp );
+	Deck( Deck && other );
+	Deck( const Deck & other ) = delete ;
+	Deck & operator = ( Deck && other );
+	void gen( const Board & board, const Hand &hero, const Hand &opp );
 //    const int & capacity() const;
-    unsigned long size() const;
-    const std::vector< Card > & getDeckArr() const;
+	unsigned long size() const;
+	const std::vector< Card > & getDeckArr() const;
 	int getMinPos () const;
 	int getMaxPos () const;
 	
@@ -39,7 +39,7 @@ private:
 	};
 	
     std::vector< Card > deckArr;
-    static constexpr int SIZE_DeckArr = 52;
+    static constexpr int capacity = 52;
 	Range range;
 	
 };
