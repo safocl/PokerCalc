@@ -35,7 +35,7 @@ bool Board::checkCardOnBoard( const Card & card ) const {
     return res;
 }
 //---------------------------------------------------------------------------------------------------------------------------
-void Board::genBoardCards( Deck & deck, const Hand & hero, const Hand & opp, HandStrengthList & hsl,
+void Board::bruteForceCards( Deck & deck, const Hand & hero, const Hand & opp, HandStrengthList & hsl,
                            const int & cycles_count ) {
     int tmp_cycles_count;
     deck.gen( *this, hero, opp );
@@ -43,7 +43,7 @@ void Board::genBoardCards( Deck & deck, const Hand & hero, const Hand & opp, Han
         if ( pushNewCardToBoard( hero, opp, deck_el ) ) {
             if ( cycles_count > 1 ) {
                 tmp_cycles_count = cycles_count - 1;
-                genBoardCards( deck, hero, opp, hsl, tmp_cycles_count );
+                bruteForceCards( deck, hero, opp, hsl, tmp_cycles_count );
             } else
                 sumHandStrength( hero, *this, hsl );
 
@@ -53,7 +53,7 @@ void Board::genBoardCards( Deck & deck, const Hand & hero, const Hand & opp, Han
     }
 }
 //---------------------------------------------------------------------------------------------------------------------------
-void Board::parallel_genBoardCards( Deck & deck, const Hand & hero, const Hand & opp, HandStrengthList & hsl,
+void Board::bruteForceFirstCard( Deck & deck, const Hand & hero, const Hand & opp, HandStrengthList & hsl,
                                     const int & cycles_count ) {
     int tmp_cycles_count;
     deck.gen( *this, hero, opp );
@@ -62,7 +62,7 @@ void Board::parallel_genBoardCards( Deck & deck, const Hand & hero, const Hand &
         if ( cycles_count > 0 ) {
             tmp_cycles_count = cycles_count - 1;
             if ( pushNewCardToBoard( hero, opp, deck.getDeckArr().at( count ) ) ) {
-                genBoardCards( deck, hero, opp, hsl, tmp_cycles_count );
+                bruteForceCards( deck, hero, opp, hsl, tmp_cycles_count );
                 board_ptr->erase( board_ptr->end() - 1 );
                 deck.gen( *this, hero, opp );
             }
@@ -72,7 +72,7 @@ void Board::parallel_genBoardCards( Deck & deck, const Hand & hero, const Hand &
 //---------------------------------------------------------------------------------------------------------------------------
 void Board::brutforcePreFlop_Flop( Deck & deck, const Hand & hero, const Hand & opp, HandStrengthList & hsl ) {
     int cycles_count = 3;
-    parallel_genBoardCards( deck, hero, opp, std::ref( hsl ), cycles_count );
+    bruteForceFirstCard( deck, hero, opp, std::ref( hsl ), cycles_count );
 }
 //---------------------------------------------------------------------------------------------------------------------------
 ParallelGenBoard::ParallelGenBoard( const Hand & hero, const Hand & opp )

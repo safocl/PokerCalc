@@ -33,9 +33,9 @@ class Board {
     void brutforcePreFlop_Flop( Deck & deck, const Hand & hero, const Hand & opp, HandStrengthList & hsl );
 
   private:
-    void genBoardCards( Deck & deck, const Hand & hero, const Hand & opp, HandStrengthList & hsl,
+    void bruteForceCards( Deck & deck, const Hand & hero, const Hand & opp, HandStrengthList & hsl,
                         const int & cycles_count );
-    void parallel_genBoardCards( Deck & deck, const Hand & hero, const Hand & opp, HandStrengthList & hsl,
+    void bruteForceFirstCard( Deck & deck, const Hand & hero, const Hand & opp, HandStrengthList & hsl,
                                  const int & cycles_count );
 };
 
