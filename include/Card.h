@@ -2,13 +2,18 @@
 #ifndef CARD_H
 #define CARD_H
 
+//namespace lp {
+struct Card;
+//} // namespace lp
+
+
 #include "defines.h"
 #include <cstdint>
 #include <string>
 #include <utility>
 
 // using namespace std;
-namespace lp {
+//namespace lp {
 
 struct Card final {
     enum class valCard : uint32_t;
@@ -16,7 +21,7 @@ struct Card final {
 
     Card();
     Card( const std::string strCard );
-    Card( const Card::valCard && numValueCard, const Card::suitCard && numSuitCard );
+    Card( Card::valCard && numValueCard, Card::suitCard && numSuitCard );
     Card( const Card & other );
     Card( Card && other );
     ~Card();
@@ -122,5 +127,5 @@ struct Card final {
     bool check_valid_suit( const suitCard & suit );
 };
 
-} // namespace lp
+//} // namespace lp
 #endif

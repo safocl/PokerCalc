@@ -1,30 +1,34 @@
 #include "handstrength.h"
+#include "Board.h"
+#include "Card.h"
+#include "Hand.h"
 #include <cassert>
+#include <iostream>
 
-namespace lp {
+// namespace lp {
 
 HandStrengthList::HandStrengthList()
-    : hight( 0 ), pair( 0 ), twopair( 0 ), set( 0 ), strait( 0 ), FLUSH( 0 ), fullhouse( 0 ), kare( 0 ),
-      straitFLUSH( 0 ) {}
+    : hight( 0 ), pair( 0 ), twopair( 0 ), set( 0 ), strait( 0 ), flush( 0 ), fullhouse( 0 ), kare( 0 ),
+      straitflush( 0 ) {}
 //---------------------------------------------------------------------------------------------------------------------------
-HandStrength::HandStrength( const HandStrength & other ) { this->curr_strength = other.curr_strength; };
+HandStrength::HandStrength( const HandStrength & other ) : curr_strength( other.curr_strength ){};
 //---------------------------------------------------------------------------------------------------------------------------
 HandStrength::HandStrength( const Hand & hand, const Board & board )
     : curr_strength( checkCurrStrength( hand, board ) ) {}
 //---------------------------------------------------------------------------------------------------------------------------
 const HandStrength::strength & HandStrength::getCurrStrength() const { return curr_strength; }
 //---------------------------------------------------------------------------------------------------------------------------
-HandStrength::strength HandStrength::checkCurrStrength( const Hand & hand, const Board & board ) const {
+HandStrength::strength HandStrength::checkCurrStrength( const Hand & hand, const Board & board ) {
     if ( board.getVector().size() < 3 ) {
         assert( board.getVector().size() == 0 && "invalid board" );
 
         // проверка на пару, если борд пуст
-        if ( hand.getCard1().getValueNum() == hand.getCard2().getValueNum() ) {
+        if ( hand.getlCard().getValueNum() == hand.getCard2().getValueNum() ) {
             return HandStrength::strength::PAIR;
         }
     } else {
         assert( board.getVector().size() < 6 && "invalid board" );
-        assert( ( hand.getCard1().getValueNum() != 0 && hand.getCard1().getSuitNum() != 0 ) &&
+        assert( ( hand.getlCard().getValueNum() != 0 && hand.getlCard().getSuitNum() != 0 ) &&
                 ( hand.getCard2().getValueNum() != 0 && hand.getCard2().getSuitNum() != 0 ) &&
                 "invalid hand initialization" );
         std::unique_ptr< std::vector< Card > > combo_ptr( new std::vector< Card > );
@@ -32,7 +36,7 @@ HandStrength::strength HandStrength::checkCurrStrength( const Hand & hand, const
         for ( auto const & card : board.getVector() ) {
             combo_ptr->push_back( card );
         }
-        combo_ptr->push_back( hand.getCard1() );
+        combo_ptr->push_back( hand.getlCard() );
         combo_ptr->push_back( hand.getCard2() );
 
         uint32_t combo = 0;
@@ -40,7 +44,7 @@ HandStrength::strength HandStrength::checkCurrStrength( const Hand & hand, const
             combo |= ( card.getValueNum() | card.getSuitNum() );
         }
 
-        combo |= ( hand.getCard1().getValueNum() | hand.getCard1().getSuitNum() ) |
+        combo |= ( hand.getlCard().getValueNum() | hand.getlCard().getSuitNum() ) |
                  ( hand.getCard2().getValueNum() | hand.getCard2().getSuitNum() );
 
         // проверка на стрит-флеш
@@ -74,14 +78,14 @@ HandStrength::strength HandStrength::checkCurrStrength( const Hand & hand, const
         // проверка на пару
         if ( [&board, &hand]() {
                  for ( auto const & el : board.getVector() ) {
-                     if ( hand.getCard1().getValueNum() == el.getValueNum() ||
+                     if ( hand.getlCard().getValueNum() == el.getValueNum() ||
                           hand.getCard2().getValueNum() == el.getValueNum() ) {
                          return true;
                      }
                  }
                  return false;
              }() ||
-             hand.getCard1().getValueNum() == hand.getCard2().getValueNum() ) {
+             hand.getlCard().getValueNum() == hand.getCard2().getValueNum() ) {
             return HandStrength::strength::PAIR;
         } // проверка на пару
     }     //проверка, если борд не пуст
@@ -272,7 +276,7 @@ bool HandStrength::match_twopairs( const std::vector< Card > & combo_ptr ) const
     return res;
 }
 //---------------------------------------------------------------------------------------------------------------------------
-std::unique_ptr< std::vector< Card > > sort_cards( const std::vector< Card > & combo_ptr ) {
+std::unique_ptr< std::vector< Card > > HandStrength::sort_cards( const std::vector< Card > & combo_ptr ) const {
     auto temp_arr_ptr = std::make_unique< std::vector< Card > >( combo_ptr );
     //    *temp_arr_ptr = *combo_ptr;
 
@@ -290,5 +294,65 @@ std::unique_ptr< std::vector< Card > > sort_cards( const std::vector< Card > & c
 
     return temp_arr_ptr;
 }
+//---------------------------------------------------------------------------------------------------------------------------
+void HandStrengthList::accumulate( const Hand & hand, const Board & board ) {
+    HandStrength pl_strangth{hand, board};
+    switch ( pl_strangth.getCurrStrength() ) {
+    case HandStrength::strength::HIGHT:
+        ++hight;
+        break;
+    case HandStrength::strength::PAIR:
+        ++pair;
+        break;
+    case HandStrength::strength::SET:
+        ++set;
+        break;
+    case HandStrength::strength::TWO_PAIRS:
+        ++twopair;
+        break;
+    case HandStrength::strength::STRAIT:
+        ++strait;
+        break;
+    case HandStrength::strength::FLUSH:
+        ++flush;
+        break;
+    case HandStrength::strength::FULL_HOUSE:
+        ++fullhouse;
+        break;
+    case HandStrength::strength::STRAIT_FLUSH:
+        ++straitflush;
+        break;
+    case HandStrength::strength::KARE:
+        ++kare;
+        break;
+    case HandStrength::strength::NODEF:
+        assert( false && "is no define strength" );
+    }
+}
 
-} // namespace lp
+void HandStrengthList::print() const {
+    unsigned long long sum_cycle = hight + pair + set + twopair + strait + flush + fullhouse + straitflush + kare;
+    std::cout << "hi : "
+              << "\t\t\t" << hight << "\t" << static_cast< double >( hight ) / sum_cycle * 100 << "%" << std::endl;
+    std::cout << "pairs : "
+              << "\t\t" << pair << "\t" << static_cast< double >( pair ) / sum_cycle * 100 << "%" << std::endl;
+    std::cout << "sets : "
+              << "\t\t" << set << "\t" << static_cast< double >( set ) / sum_cycle * 100 << "%" << std::endl;
+    std::cout << "two pairs : "
+              << "\t\t" << twopair << "\t" << static_cast< double >( twopair ) / sum_cycle * 100 << "%" << std::endl;
+    std::cout << "straits : "
+              << "\t\t" << strait << "\t" << static_cast< double >( strait ) / sum_cycle * 100 << "%" << std::endl;
+    std::cout << "FLUSHes : "
+              << "\t\t" << flush << "\t" << static_cast< double >( flush ) / sum_cycle * 100 << "%" << std::endl;
+    std::cout << "fullhouses : "
+              << "\t\t" << fullhouse << "\t" << static_cast< double >( fullhouse ) / sum_cycle * 100 << "%"
+              << std::endl;
+    std::cout << "straitFLUSHes : "
+              << "\t" << straitflush << "\t" << static_cast< double >( straitflush ) / sum_cycle * 100 << "%"
+              << std::endl;
+    std::cout << "kares : "
+              << "\t\t" << kare << "\t" << static_cast< double >( kare ) / sum_cycle * 100 << "%" << std::endl;
+    std::cout << "sum_cycle : " << sum_cycle << std::endl;
+}
+
+//} // namespace lp

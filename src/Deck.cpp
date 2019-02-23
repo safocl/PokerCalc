@@ -1,8 +1,10 @@
 #include "Deck.h"
-//#include "Board.h"
+#include "Board.h"
+#include "Card.h"
+#include "Hand.h"
 #include <cassert>
 
-namespace lp {
+//namespace lp {
 
 //---------------------------------------------------------------------------------------------------------------------------
 Deck::Range::Range() : minPos( -1 ), maxPos( -1 ) {}
@@ -59,7 +61,7 @@ void Deck::gen( const Board & board, const Hand & hero, const Hand & opp ) {
           card->getValueNum() < Card::sizeValueCardArr; card->inc_val() ) {
         for ( card->setSuitNum( Card::suitCard::_d_0x1 ); card->getSuitNum() < Card::sizeSuitCardArr;
               card->inc_suit() ) {
-            if ( *card != hero.getCard1() && *card != hero.getCard2() && *card != opp.getCard1() &&
+            if ( *card != hero.getlCard() && *card != hero.getCard2() && *card != opp.getlCard() &&
                  *card != opp.getCard2() && !board.checkCardOnBoard( *card ) ) {
                 deckArr.push_back( *card );
             }
@@ -67,4 +69,4 @@ void Deck::gen( const Board & board, const Hand & hero, const Hand & opp ) {
     }
 }
 
-} // namespace lp
+//} // namespace lp

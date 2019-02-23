@@ -1,8 +1,12 @@
 #include "Board.h"
+#include "Card.h"
+#include "Deck.h"
+#include "Hand.h"
 #include "equity.h"
+#include "handstrength.h"
 #include <thread>
 
-namespace lp {
+// namespace lp {
 
 Board::Board() : board_ptr( std::make_unique< std::vector< Card > >() ) { board_ptr->reserve( MAX_SIZE ); }
 //---------------------------------------------------------------------------------------------------------------------------
@@ -12,7 +16,7 @@ bool Board::pushNewCardToBoard( const Hand & heroHand, const Hand & oppHand, con
     bool res = false;
     if ( !board_ptr->empty() && checkCardOnBoard( card ) )
         ;
-    else if ( card != heroHand.getCard1() && card != heroHand.getCard2() && card != oppHand.getCard1() &&
+    else if ( card != heroHand.getlCard() && card != heroHand.getCard2() && card != oppHand.getlCard() &&
               card != oppHand.getCard2() ) {
         board_ptr->push_back( card );
         res = true;
@@ -36,7 +40,7 @@ bool Board::checkCardOnBoard( const Card & card ) const {
 }
 //---------------------------------------------------------------------------------------------------------------------------
 void Board::bruteForceCards( Deck & deck, const Hand & hero, const Hand & opp, HandStrengthList & hsl,
-                           const int & cycles_count ) {
+                             const int & cycles_count ) {
     int tmp_cycles_count;
     deck.gen( *this, hero, opp );
     for ( auto const & deck_el : deck.getDeckArr() ) {
@@ -45,7 +49,7 @@ void Board::bruteForceCards( Deck & deck, const Hand & hero, const Hand & opp, H
                 tmp_cycles_count = cycles_count - 1;
                 bruteForceCards( deck, hero, opp, hsl, tmp_cycles_count );
             } else
-                sumHandStrength( hero, *this, hsl );
+                hsl.accumulate( hero, *this );
 
             board_ptr->erase( board_ptr->end() - 1 );
             deck.gen( *this, hero, opp );
@@ -54,7 +58,7 @@ void Board::bruteForceCards( Deck & deck, const Hand & hero, const Hand & opp, H
 }
 //---------------------------------------------------------------------------------------------------------------------------
 void Board::bruteForceFirstCard( Deck & deck, const Hand & hero, const Hand & opp, HandStrengthList & hsl,
-                                    const int & cycles_count ) {
+                                 const int & cycles_count ) {
     int tmp_cycles_count;
     deck.gen( *this, hero, opp );
     for ( unsigned count = static_cast< unsigned >( deck.getMinPos() );
@@ -109,4 +113,4 @@ void ParallelGenBoard::join() {
 }
 //---------------------------------------------------------------------------------------------------------------------------
 
-} // namespace lp
+//} // namespace lp

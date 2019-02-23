@@ -2,7 +2,7 @@
 // #define NDEBUG
 #include <cassert>
 
-namespace lp {
+// namespace lp {
 
 //---------------------------------------------------------------------------------------------------------------------------
 Card::Card() : numCard( 0 ) {}
@@ -12,7 +12,7 @@ Card::Card( const std::string strCard ) : numCard( 0 ) {
     setCard( strCard );
 }
 //---------------------------------------------------------------------------------------------------------------------------
-Card::Card( const Card::valCard && value, const Card::suitCard && suit ) : numCard( 0 ) {
+Card::Card( valCard && value, suitCard && suit ) : numCard( 0 ) {
     assert( static_cast< bool >( static_cast< uint32_t >( value ) < sizeValueCardArr ) );
     assert( static_cast< bool >( static_cast< uint8_t >( suit ) < sizeSuitCardArr ) );
 
@@ -262,4 +262,4 @@ bool Card::check_valid_suit( const Card::suitCard & suit ) {
     return true;
 }
 
-} // namespace lp
+//} // namespace lp
