@@ -2,10 +2,9 @@
 #ifndef CARD_H
 #define CARD_H
 
-//namespace lp {
+// namespace lp {
 struct Card;
 //} // namespace lp
-
 
 #include "defines.h"
 #include <cstdint>
@@ -13,7 +12,7 @@ struct Card;
 #include <utility>
 
 // using namespace std;
-//namespace lp {
+// namespace lp {
 
 struct Card final {
     enum class valCard : uint32_t;
@@ -21,7 +20,7 @@ struct Card final {
 
     Card();
     Card( const std::string strCard );
-    Card( Card::valCard && numValueCard, Card::suitCard && numSuitCard );
+    Card( valCard && value, suitCard && suit );
     Card( const Card & other );
     Card( Card && other );
     ~Card();
@@ -115,8 +114,8 @@ struct Card final {
      */
     static const uint32_t value_mask = 0x3fff0000;
 
-    static const uint32_t sizeValueCardArr = 0x20000000;
-    static const uint8_t sizeSuitCardArr = 0x10;
+    static const uint32_t valueSize = 0x20000000;
+    static const uint8_t suitSize = 0x10;
 
   private:
     uint32_t numCard;
