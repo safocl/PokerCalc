@@ -2,7 +2,7 @@
 // #define NDEBUG
 #include <cassert>
 
-// namespace lp {
+ namespace lp {
 
 //---------------------------------------------------------------------------------------------------------------------------
 Card::Card() : numCard( 0 ) {}
@@ -262,4 +262,4 @@ bool Card::check_valid_suit( const Card::suitCard & suit ) {
     return true;
 }
 
-//} // namespace lp
+} // namespace lp

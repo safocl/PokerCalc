@@ -2,17 +2,17 @@
 #ifndef HAND_H
 #define HAND_H
 
-// namespace lp {
+ namespace lp {
 struct Hand;
 class Board;
 struct Card;
-//} // namespace lp
+} // namespace lp
 
 #include "Card.h"
 #include "defines.h"
 #include <vector>
 
-// namespace lp {
+ namespace lp {
 
 struct Hand final {
   public:
@@ -45,6 +45,6 @@ struct Hand final {
     std::unique_ptr< Card > lCard, rCard;
 };
 
-//} // namespace lp
+} // namespace lp
 
 #endif // HAND_H

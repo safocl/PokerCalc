@@ -6,7 +6,7 @@
 #include "handstrength.h"
 #include <thread>
 
-// namespace lp {
+ namespace lp {
 
 Board::Board() : board_ptr( std::make_unique< std::vector< Card > >() ) { board_ptr->reserve( MAX_SIZE ); }
 //---------------------------------------------------------------------------------------------------------------------------
@@ -113,4 +113,4 @@ void ParallelGenBoard::join() {
 }
 //---------------------------------------------------------------------------------------------------------------------------
 
-//} // namespace lp
+} // namespace lp

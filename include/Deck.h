@@ -2,12 +2,12 @@
 #ifndef DECK_H
 #define DECK_H
 
-//namespace lp {
+namespace lp {
 struct Deck;
 struct Card;
 class Board;
 struct Hand;
-//} // namespace lp
+} // namespace lp
 
 //#include "Board.h"
 //#include "Card.h"
@@ -16,7 +16,7 @@ struct Hand;
 #include <utility>
 #include <vector>
 
-//namespace lp {
+namespace lp {
 
 struct Deck final {
     Deck();
@@ -44,6 +44,6 @@ struct Deck final {
     Range range;
 };
 
-//} // namespace lp
+} // namespace lp
 
 #endif // DECK_H

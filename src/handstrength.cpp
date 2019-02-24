@@ -5,10 +5,10 @@
 #include <cassert>
 #include <iostream>
 
-// namespace lp {
+ namespace lp {
 
 HandStrengthList::HandStrengthList()
-    : hight( 0 ), pair( 0 ), twopair( 0 ), set( 0 ), strait( 0 ), flush( 0 ), fullhouse( 0 ), kare( 0 ),
+    : sum_cycle( 0 ), hight( 0 ), pair( 0 ), twopair( 0 ), set( 0 ), strait( 0 ), flush( 0 ), fullhouse( 0 ), kare( 0 ),
       straitflush( 0 ) {}
 //---------------------------------------------------------------------------------------------------------------------------
 HandStrength::HandStrength( const HandStrength & other ) : curr_strength( other.curr_strength ){};
@@ -329,9 +329,8 @@ void HandStrengthList::accumulate( const Hand & hand, const Board & board ) {
         assert( false && "is no define strength" );
     }
 }
-
+//---------------------------------------------------------------------------------------------------------------------------
 void HandStrengthList::print() const {
-    unsigned long long sum_cycle = hight + pair + set + twopair + strait + flush + fullhouse + straitflush + kare;
     std::cout << "hi : "
               << "\t\t\t" << hight << "\t" << static_cast< double >( hight ) / sum_cycle * 100 << "%" << std::endl;
     std::cout << "pairs : "
@@ -354,5 +353,10 @@ void HandStrengthList::print() const {
               << "\t\t" << kare << "\t" << static_cast< double >( kare ) / sum_cycle * 100 << "%" << std::endl;
     std::cout << "sum_cycle : " << sum_cycle << std::endl;
 }
+//---------------------------------------------------------------------------------------------------------------------------
+void HandStrengthList::calcSum() {
+    sum_cycle = hight + pair + set + twopair + strait + flush + fullhouse + straitflush + kare;
+}
+//---------------------------------------------------------------------------------------------------------------------------
 
-//} // namespace lp
+} // namespace lp

@@ -2,19 +2,19 @@
 #ifndef HANDSTRENGTH_H
 #define HANDSTRENGTH_H
 
-// namespace lp {
+ namespace lp {
 struct Hand;
 struct Card;
 struct HandStrengthList;
 class Board;
-//}
+}
 
 //#include "Hand.h"
 #include "defines.h"
 #include <atomic>
 #include <vector>
 
-// namespace lp {
+ namespace lp {
 
 struct HandStrength final {
     HandStrength( const Hand & hand, const Board & board );
@@ -51,11 +51,13 @@ struct HandStrengthList final {
     HandStrengthList();
     void accumulate( const Hand & hand, const Board & board );
 	void print() const;
+	void calcSum();
 	
   private:
+	unsigned long long sum_cycle;
     std::atomic< unsigned long long > hight, pair, twopair, set, strait, flush, fullhouse, kare, straitflush;
 };
 
-//} // namespace lp
+} // namespace lp
 
 #endif // HANDSTRENGTH_H

@@ -2,7 +2,7 @@
 #ifndef BOARD_H
 #define BOARD_H
 
-//namespace lp {
+namespace lp {
 class ParallelGenBoard;
 class Board;
 struct Card;
@@ -10,7 +10,7 @@ struct Deck;
 struct Hand;
 struct HandStrengthList;
 
-//} // namespace lp
+} // namespace lp
 
 
 #include "defines.h"
@@ -18,7 +18,7 @@ struct HandStrengthList;
 #include <thread>
 #include <vector>
 
-//namespace lp {
+namespace lp {
 
 class Board {
     static constexpr uint8_t MAX_SIZE = 5;
@@ -51,6 +51,6 @@ class ParallelGenBoard {
     void join();
 };
 
-//} // namespace lp
+} // namespace lp
 
 #endif // BOARD_H

@@ -3,7 +3,7 @@
 #include "handstrength.h"
 #include <cassert>
 
-// namespace lp {
+ namespace lp {
 Hand::Hand( const Hand & other )
     : lCard( std::make_unique< Card >( other.lCard.operator*() ) ),
       rCard( std::make_unique< Card >( other.rCard.operator*() ) ){};
@@ -86,4 +86,4 @@ Hand & Hand::operator=( Hand && other ) {
     return *this;
 }
 
-//} // namespace lp
+} // namespace lp
