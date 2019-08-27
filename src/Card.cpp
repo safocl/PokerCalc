@@ -2,10 +2,11 @@
 // #define NDEBUG
 #include <cassert>
 
- namespace lp {
+namespace lp {
 
 //---------------------------------------------------------------------------------------------------------------------------
-Card::Card() : numCard( 0 ) {}
+Card::Card()
+    : numCard( static_cast< uint32_t >( Card::valCard::NODEF ) | static_cast< uint8_t >( Card::suitCard::NODEF ) ) {}
 //---------------------------------------------------------------------------------------------------------------------------
 Card::Card( const std::string strCard ) : numCard( 0 ) {
     assert( strCard.length() == 2 && "invalid string length" );
@@ -113,22 +114,22 @@ void Card::setCard( const Card::valCard & value, const Card::suitCard & suit ) {
 }
 //---------------------------------------------------------------------------------------------------------------------------
 void Card::setSuitNum( const Card::suitCard & suit ) {
-    if ( numCard & suit_mask )
-        numCard &= value_mask;
-    if ( check_valid_suit( suit ) )
+    if ( numCard & suitMask )
+        numCard &= valueMask;
+    if ( checkValidSuit( suit ) )
         numCard |= static_cast< uint8_t >( suit );
 }
 //---------------------------------------------------------------------------------------------------------------------------
 void Card::setValueNum( const Card::valCard & value ) {
-    if ( numCard & value_mask )
-        numCard &= suit_mask;
-    if ( check_valid_value( value ) )
+    if ( numCard & valueMask )
+        numCard &= suitMask;
+    if ( checkValidValue( value ) )
         numCard |= static_cast< uint32_t >( value );
 }
 //---------------------------------------------------------------------------------------------------------------------------
 std::string && Card::getSuit() const noexcept {
     std::string res;
-    switch ( numCard | suit_mask ) {
+    switch ( numCard | suitMask ) {
     case static_cast< uint8_t >( Card::suitCard::_c_0x4 ):
         res = "c";
         break;
@@ -149,7 +150,7 @@ std::string && Card::getSuit() const noexcept {
 //---------------------------------------------------------------------------------------------------------------------------
 std::string Card::getValue() const noexcept {
     std::string res;
-    switch ( numCard & value_mask ) {
+    switch ( numCard & valueMask ) {
     case static_cast< uint32_t >( Card::valCard::_2 ):
         res = "2";
         break;
@@ -195,33 +196,33 @@ std::string Card::getValue() const noexcept {
     return res;
 }
 //---------------------------------------------------------------------------------------------------------------------------
-std::string Card::get_string() const noexcept { return getValue() + getSuit(); }
+std::string Card::getString() const noexcept { return getValue() + getSuit(); }
 //---------------------------------------------------------------------------------------------------------------------------
-uint8_t Card::getSuitNum() const noexcept { return ( numCard & suit_mask ); }
+uint8_t Card::getSuitNum() const noexcept { return ( numCard & suitMask ); }
 //---------------------------------------------------------------------------------------------------------------------------
-uint32_t Card::getValueNum() const noexcept { return ( numCard & value_mask ); }
+uint32_t Card::getValueNum() const noexcept { return ( numCard & valueMask ); }
 //---------------------------------------------------------------------------------------------------------------------------
-Card Card::inc_val() noexcept {
-    //    assert(((numCard & value_mask) < (valueSize - 1)) && "out of range");
-    numCard ^= ( numCard & value_mask ) | ( ( numCard & value_mask ) << 1 );
+Card Card::incVal() noexcept {
+    //    assert(((numCard & valueMask) < (valueSize - 1)) && "out of range");
+    numCard ^= ( numCard & valueMask ) | ( ( numCard & valueMask ) << 1 );
     return *this;
 };
 //---------------------------------------------------------------------------------------------------------------------------
-Card Card::inc_suit() noexcept {
-    //    assert(((numCard & suit_mask) < (suitSize -1)) && "out of range");
-    numCard ^= ( numCard & suit_mask ) | ( ( numCard & suit_mask ) << 1 );
+Card Card::incSuit() noexcept {
+    //    assert(((numCard & suitMask) < (suitSize -1)) && "out of range");
+    numCard ^= ( numCard & suitMask ) | ( ( numCard & suitMask ) << 1 );
     return *this;
 };
 //---------------------------------------------------------------------------------------------------------------------------
-Card Card::dec_val() noexcept {
-    //    assert(((numCard & value_mask) > static_cast<uint32_t>(Card::valCard::_2)) && "out of range");
-    numCard ^= ( numCard & value_mask ) | ( ( numCard & value_mask ) >> 1 );
+Card Card::decVal() noexcept {
+    //    assert(((numCard & valueMask) > static_cast<uint32_t>(Card::valCard::_2)) && "out of range");
+    numCard ^= ( numCard & valueMask ) | ( ( numCard & valueMask ) >> 1 );
     return *this;
 };
 //---------------------------------------------------------------------------------------------------------------------------
-Card Card::dec_suit() noexcept {
-    //    assert(((numCard & suit_mask) > 0) && "out of range");
-    numCard ^= ( numCard & suit_mask ) | ( ( numCard & suit_mask ) >> 1 );
+Card Card::decSuit() noexcept {
+    //    assert(((numCard & suitMask) > 0) && "out of range");
+    numCard ^= ( numCard & suitMask ) | ( ( numCard & suitMask ) >> 1 );
     return *this;
 };
 //---------------------------------------------------------------------------------------------------------------------------
@@ -244,7 +245,7 @@ bool Card::operator<( const Card & other ) const noexcept { return ( this->getVa
 //---------------------------------------------------------------------------------------------------------------------------
 bool Card::operator>( const Card & other ) const noexcept { return ( this->getValueNum() > other.getValueNum() ); }
 //---------------------------------------------------------------------------------------------------------------------------
-bool Card::check_valid_value( const Card::valCard & value ) {
+bool Card::checkValidValue( const Card::valCard & value ) const {
     uint32_t check;
     for ( check = static_cast< uint32_t >( Card::valCard::_2 );
           ( check < valueSize ) && ( static_cast< uint32_t >( value ) != check ); check <<= 1 )
@@ -253,7 +254,7 @@ bool Card::check_valid_value( const Card::valCard & value ) {
     return true;
 }
 //---------------------------------------------------------------------------------------------------------------------------
-bool Card::check_valid_suit( const Card::suitCard & suit ) {
+bool Card::checkValidSuit( const Card::suitCard & suit ) const {
     uint8_t check;
     for ( check = static_cast< uint8_t >( Card::suitCard::_d_0x1 );
           ( check < suitSize ) && ( static_cast< uint8_t >( suit ) != check ); check <<= 1 )

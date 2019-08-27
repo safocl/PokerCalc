@@ -3,7 +3,7 @@
 #include "handstrength.h"
 #include <cassert>
 
- namespace lp {
+namespace lp {
 Hand::Hand( const Hand & other )
     : lCard( std::make_unique< Card >( other.lCard.operator*() ) ),
       rCard( std::make_unique< Card >( other.rCard.operator*() ) ){};
@@ -15,10 +15,11 @@ Hand::Hand( Hand && other ) : lCard( other.lCard.release() ), rCard( other.rCard
     other.rCard = nullptr;
 }
 //---------------------------------------------------------------------------------------------------------------------------
-Hand::Hand( Card::valCard numValue1, Card::suitCard numSuit1, Card::valCard numValue2, Card::suitCard numSuit2 )
-    : lCard( std::make_unique< Card >( std::move( numValue1 ), std::move( numSuit1 ) ) ),
-      rCard( std::make_unique< Card >( std::move( numValue2 ), std::move( numSuit2 ) ) ) {
-    assert( ( ( numValue1 != numValue2 ) || ( numSuit1 != numSuit2 ) ) && "identical cards" );
+Hand::Hand( const Card::valCard lCardV, const Card::suitCard lCardS, const Card::valCard rCardV,
+            const Card::suitCard rCardS )
+    : lCard( std::make_unique< Card >( std::move( lCardV ), std::move( lCardS ) ) ),
+      rCard( std::make_unique< Card >( std::move( rCardV ), std::move( rCardS ) ) ) {
+    assert( ( ( lCardV != rCardV ) && ( lCardS != rCardS ) ) && "identical cards" );
 }
 //---------------------------------------------------------------------------------------------------------------------------
 Hand::Hand( const std::string str1, const std::string str2 )
@@ -44,9 +45,9 @@ void Hand::setHand( const Card & lCard_, const Card & rCard_ ) {
 }
 //---------------------------------------------------------------------------------------------------------------------------
 // Получение значения руки в переменные типа char
-void Hand::getHand( std::string & lCard_str, std::string & rCard_str ) const {
-    lCard_str = lCard->get_string();
-    rCard_str = rCard->get_string();
+void Hand::getHand( std::string & lCardStr, std::string & rCardStr ) const {
+    lCardStr = lCard->getString();
+    rCardStr = rCard->getString();
 }
 //---------------------------------------------------------------------------------------------------------------------------
 void Hand::getCards( Card & lCard_, Card & rCard_ ) const {
@@ -54,9 +55,9 @@ void Hand::getCards( Card & lCard_, Card & rCard_ ) const {
     rCard_.setCard( *rCard );
 }
 //---------------------------------------------------------------------------------------------------------------------------
-const Card & Hand::getlCard() const { return *lCard; }
+const Card & Hand::getLCard() const { return *lCard; }
 //---------------------------------------------------------------------------------------------------------------------------
-const Card & Hand::getCard2() const { return *rCard; }
+const Card & Hand::getRCard() const { return *rCard; }
 //---------------------------------------------------------------------------------------------------------------------------
 bool Hand::operator==( const Hand & other ) const {
     return ( ( ( this->lCard.operator*() == other.lCard.operator*() ) &&

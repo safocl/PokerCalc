@@ -58,11 +58,10 @@ void Deck::gen( const Board & board, const Hand & hero, const Hand & opp ) {
         deckArr.clear();
 
     for ( auto card = std::make_unique< Card >( Card::valCard::_2, Card::suitCard::_d_0x1 );
-          card->getValueNum() < Card::valueSize; card->inc_val() ) {
-        for ( card->setSuitNum( Card::suitCard::_d_0x1 ); card->getSuitNum() < Card::suitSize;
-              card->inc_suit() ) {
-            if ( *card != hero.getlCard() && *card != hero.getCard2() && *card != opp.getlCard() &&
-                 *card != opp.getCard2() && !board.checkCardOnBoard( *card ) ) {
+          card->getValueNum() < Card::valueSize; card->incVal() ) {
+        for ( card->setSuitNum( Card::suitCard::_d_0x1 ); card->getSuitNum() < Card::suitSize; card->incSuit() ) {
+            if ( *card != hero.getLCard() && *card != hero.getRCard() && *card != opp.getLCard() &&
+                 *card != opp.getRCard() && !board.checkCardOnBoard( *card ) ) {
                 deckArr.push_back( *card );
             }
         }

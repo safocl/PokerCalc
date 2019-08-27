@@ -2,7 +2,7 @@
 #ifndef HAND_H
 #define HAND_H
 
- namespace lp {
+namespace lp {
 struct Hand;
 class Board;
 struct Card;
@@ -12,14 +12,14 @@ struct Card;
 #include "defines.h"
 #include <vector>
 
- namespace lp {
+namespace lp {
 
 struct Hand final {
   public:
     Hand();
     Hand( const Hand & other );
     Hand( Hand && other );
-    Hand( Card::valCard lCardV, Card::suitCard lCardS, Card::valCard rCardV, Card::suitCard rCardS );
+    Hand( const Card::valCard lCardV, const Card::suitCard lCardS, const Card::valCard rCardV, const Card::suitCard rCardS );
     Hand( const std::string str1, const std::string str2 );
     ~Hand();
 
@@ -29,13 +29,13 @@ struct Hand final {
 
     /**
      * @brief getHand() getting the value of a hand into variables of type std::string
-     * @param lCard_str string buffer for the first card
-     * @param rCard_str string buffer for the second card
+     * @param lCardStr string buffer for the first card
+     * @param rCardStr string buffer for the second card
      */
-    void getHand( std::string & lCard_str, std::string & rCard_str ) const;
+    void getHand( std::string & lCardStr, std::string & rCardStr ) const;
     void getCards( Card & lCard_, Card & rCard_ ) const;
-    const Card & getlCard() const;
-    const Card & getCard2() const;
+    const Card & getLCard() const;
+    const Card & getRCard() const;
     bool operator==( const Hand & other ) const;
     bool operator!=( const Hand & other ) const;
     Hand & operator=( const Hand & other );

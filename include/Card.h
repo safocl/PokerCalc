@@ -2,7 +2,7 @@
 #ifndef CARD_H
 #define CARD_H
 
- namespace lp {
+namespace lp {
 struct Card;
 } // namespace lp
 
@@ -12,7 +12,7 @@ struct Card;
 #include <utility>
 
 // using namespace std;
- namespace lp {
+namespace lp {
 
 struct Card final {
     enum class valCard : uint32_t;
@@ -62,39 +62,40 @@ struct Card final {
     void setCard( const std::string strCard );
     void setCard( const Card & card );
     void setCard( const valCard & value, const suitCard & suit );
-    std::string get_string() const noexcept;
+    std::string getString() const noexcept;
     uint8_t getSuitNum() const noexcept;
     uint32_t getValueNum() const noexcept;
 
     /**
-     * @brief inc_val
+     * @brief incVal
      * @return
      * increment card value
      */
-    Card inc_val() noexcept;
+    Card incVal() noexcept;
 
     /**
-     * @brief inc_suit
+     * @brief incSuit
      * @return
      * increment card suit
      */
-    Card inc_suit() noexcept;
+    Card incSuit() noexcept;
 
     /**
-     * @brief dec_val
+     * @brief decVal
      * @return
      * decrement card value
      */
-    Card dec_val() noexcept;
+    Card decVal() noexcept;
 
     /**
-     * @brief dec_suit
+     * @brief decSuit
      * @return
      * decrement card suit
      */
-    Card dec_suit() noexcept;
+    Card decSuit() noexcept;
     void setSuitNum( const suitCard & suit );
     void setValueNum( const valCard & value );
+    bool eqVal() const;
     bool operator==( const Card & other ) const noexcept;
     bool operator!=( const Card & other ) const noexcept;
     Card & operator=( const Card & other ) noexcept;
@@ -103,16 +104,16 @@ struct Card final {
     bool operator>( const Card & other ) const noexcept;
 
     /**
-     * @brief suit_mask
+     * @brief suitMask
      * = 0x1f or 0b11111
      */
-    static const uint8_t suit_mask = 0x1f;
+    static const uint8_t suitMask = 0x1f;
 
     /**
-     * @brief value_mask
+     * @brief valueMask
      * = 0x3fff0000 or 0b00111111111111110000000000000000
      */
-    static const uint32_t value_mask = 0x3fff0000;
+    static const uint32_t valueMask = 0x3fff0000;
 
     static const uint32_t valueSize = 0x20000000;
     static const uint8_t suitSize = 0x10;
@@ -122,8 +123,8 @@ struct Card final {
 
     std::string && getSuit() const noexcept;
     std::string getValue() const noexcept;
-    bool check_valid_value( const valCard & value );
-    bool check_valid_suit( const suitCard & suit );
+    bool checkValidValue( const valCard & value ) const;
+    bool checkValidSuit( const suitCard & suit ) const;
 };
 
 } // namespace lp

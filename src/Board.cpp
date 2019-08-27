@@ -4,31 +4,31 @@
 #include "Hand.h"
 #include "equity.h"
 #include "handstrength.h"
+#include <cassert>
 #include <thread>
 
- namespace lp {
+namespace lp {
 
-Board::Board() : board_ptr( std::make_unique< std::vector< Card > >() ) { board_ptr->reserve( MAX_SIZE ); }
 //---------------------------------------------------------------------------------------------------------------------------
-const std::vector< Card > & Board::getVector() const { return *board_ptr; }
+Board::Board() : board( std::vector< Card >{} ) { board.reserve( MAX_SIZE ); }
 //---------------------------------------------------------------------------------------------------------------------------
-bool Board::pushNewCardToBoard( const Hand & heroHand, const Hand & oppHand, const Card & card ) const {
-    bool res = false;
-    if ( !board_ptr->empty() && checkCardOnBoard( card ) )
-        ;
-    else if ( card != heroHand.getlCard() && card != heroHand.getCard2() && card != oppHand.getlCard() &&
-              card != oppHand.getCard2() ) {
-        board_ptr->push_back( card );
-        res = true;
+Board::Board( const Board & other ) : board( std::vector< Card >{other.getBoard()} ) {}
+//---------------------------------------------------------------------------------------------------------------------------
+const std::vector< Card > & Board::getBoard() const { return board; }
+//---------------------------------------------------------------------------------------------------------------------------
+bool Board::pushNewCardToBoard( const Hand & heroH, const Hand & oppH, const Card & card ) {
+    if ( !checkCardOnBoard( card ) && card != heroH.getLCard() && card != heroH.getRCard() && card != oppH.getLCard() &&
+         card != oppH.getRCard() ) {
+        board.push_back( card );
+        return true;
     }
-
-    return res;
+    return false;
 }
 //---------------------------------------------------------------------------------------------------------------------------
 bool Board::checkCardOnBoard( const Card & card ) const {
     bool res = false;
-    if ( !board_ptr->empty() ) {
-        for ( auto const & el : *board_ptr ) {
+    if ( !board.empty() ) {
+        for ( auto const & el : board ) {
             if ( card == el ) {
                 res = true;
                 break;
@@ -39,77 +39,72 @@ bool Board::checkCardOnBoard( const Card & card ) const {
     return res;
 }
 //---------------------------------------------------------------------------------------------------------------------------
-void Board::bruteForceCards( Deck & deck, const Hand & hero, const Hand & opp, HandStrengthList & hsl,
-                             const int & cycles_count ) {
-    int tmp_cycles_count;
-    deck.gen( *this, hero, opp );
+void Board::bruteForceCards( Deck & deck, Eval ev, const unsigned int & cyclesCount ) {
+    assert( cyclesCount < 6 && "Unavaible number cycles count" );
+    unsigned int tmpCyclesCount;
+    deck.gen( *this, ev.getHeroH(), ev.getOppH() );
     for ( auto const & deck_el : deck.getDeckArr() ) {
-        if ( pushNewCardToBoard( hero, opp, deck_el ) ) {
-            if ( cycles_count > 1 ) {
-                tmp_cycles_count = cycles_count - 1;
-                bruteForceCards( deck, hero, opp, hsl, tmp_cycles_count );
+        if ( pushNewCardToBoard( ev.getHeroH(), ev.getOppH(), deck_el ) ) {
+            if ( cyclesCount > 1 ) {
+                tmpCyclesCount = cyclesCount - 1;
+                bruteForceCards( deck, ev, tmpCyclesCount );
             } else
-                hsl.accumulate( hero, *this );
-
-            board_ptr->erase( board_ptr->end() - 1 );
-            deck.gen( *this, hero, opp );
+                ev.accumulate( *this );
         }
+
+        board.erase( board.end() - 1 );
+        deck.gen( *this, ev.getHeroH(), ev.getOppH() );
     }
 }
 //---------------------------------------------------------------------------------------------------------------------------
-void Board::bruteForceFirstCard( Deck & deck, const Hand & hero, const Hand & opp, HandStrengthList & hsl,
-                                 const int & cycles_count ) {
-    int tmp_cycles_count;
-    deck.gen( *this, hero, opp );
+template < unsigned int cyclesCount > void Board::bruteForceCardsMT( Deck & deck, Eval & ev ) {
+    assert( cyclesCount < 6 && "Unavaible number cycles count" );
+    unsigned int tmpCyclesCount;
+    deck.gen( *this, ev.getHeroH(), ev.getOppH() );
     for ( unsigned count = static_cast< unsigned >( deck.getMinPos() );
           count < static_cast< unsigned >( deck.getMaxPos() ); ++count ) {
-        if ( cycles_count > 0 ) {
-            tmp_cycles_count = cycles_count - 1;
-            if ( pushNewCardToBoard( hero, opp, deck.getDeckArr().at( count ) ) ) {
-                bruteForceCards( deck, hero, opp, hsl, tmp_cycles_count );
-                board_ptr->erase( board_ptr->end() - 1 );
-                deck.gen( *this, hero, opp );
+        if ( cyclesCount > 0 ) {
+            tmpCyclesCount = cyclesCount - 1;
+            if ( pushNewCardToBoard( ev.getHeroH(), ev.getOppH(), deck.getDeckArr().at( count ) ) ) {
+                bruteForceCards( deck, ev, tmpCyclesCount );
+                board.erase( board.end() - 1 );
+                deck.gen( *this, ev.getHeroH(), ev.getOppH() );
             }
         }
     }
 }
 //---------------------------------------------------------------------------------------------------------------------------
-void Board::brutforcePreFlop_Flop( Deck & deck, const Hand & hero, const Hand & opp, HandStrengthList & hsl ) {
-    int cycles_count = 3;
-    bruteForceFirstCard( deck, hero, opp, std::ref( hsl ), cycles_count );
-}
+void Board::brutforcePreFlop_Flop( Deck & deck, Eval & ev ) { bruteForceCardsMT< 3 >( deck, ev ); }
 //---------------------------------------------------------------------------------------------------------------------------
-ParallelGenBoard::ParallelGenBoard( const Hand & hero, const Hand & opp )
-    : nCpus( static_cast< int >( std::thread::hardware_concurrency() ) ), maxPos( hero == opp ? 50 : 48 ),
-      hero( std::make_unique< Hand >( hero ) ), opp( std::make_unique< Hand >( opp ) ),
-      threadQueue( new std::queue< std::thread > ) {}
+ParallelGenBoard::ParallelGenBoard( const Eval & ev )
+    : nCpus( static_cast< int >( std::thread::hardware_concurrency() ) ), maxPos( ev.isEqHands() ? 50 : 48 ),
+      threadQueue( std::queue< std::thread >{} ) {}
 //---------------------------------------------------------------------------------------------------------------------------
 ParallelGenBoard::~ParallelGenBoard() { join(); }
 //---------------------------------------------------------------------------------------------------------------------------
-void ParallelGenBoard::start( HandStrengthList & hsl ) {
+void ParallelGenBoard::start( Eval & ev ) {
     auto minPos = maxPos / nCpus;
-    for ( ; static_cast< int >( threadQueue->size() ) < ( nCpus ); threadQueue->push( std::thread(
-              []( Deck &&deck, const Hand hero, const Hand opp, HandStrengthList &hsl ) -> void {
+    for ( ; static_cast< int >( threadQueue.size() ) < ( nCpus ); threadQueue.push( std::thread(
+              []( Deck &&deck, Eval &ev ) -> void {
                   auto board = std::make_unique< Board >();
-                  board->brutforcePreFlop_Flop( deck, hero, opp, hsl );
+                  board->brutforcePreFlop_Flop( deck, ev );
               },
-              Deck( ( static_cast< int >( threadQueue->size() ) * minPos ),
-                    ( ( static_cast< int >( threadQueue->size() ) + 1 ) * minPos ) ),
-              Hand( *hero ), Hand( *opp ), std::ref( hsl ) ) ) ) {
+              Deck( ( static_cast< int >( threadQueue.size() ) * minPos ),
+                    ( ( static_cast< int >( threadQueue.size() ) + 1 ) * minPos ) ),
+              ev ) ) ) {
     }
 
-    threadQueue->push( std::thread(
-        []( Deck && deck, const Hand hero, const Hand opp, HandStrengthList & hsl ) -> void {
+    threadQueue.push( std::thread(
+        []( Deck && deck, Eval & ev ) -> void {
             auto board = std::make_unique< Board >();
-            board->brutforcePreFlop_Flop( deck, hero, opp, hsl );
+            board->brutforcePreFlop_Flop( deck, ev );
         },
-        Deck( ( static_cast< int >( threadQueue->size() ) * minPos ), maxPos ), Hand( *hero ), Hand( *opp ),
-        std::ref( hsl ) ) );
+        Deck( ( static_cast< int >( threadQueue.size() ) * minPos ), maxPos ), ev ) );
 }
 //---------------------------------------------------------------------------------------------------------------------------
 void ParallelGenBoard::join() {
-    for ( ; ( !threadQueue->empty() ) && threadQueue->front().joinable(); threadQueue->pop() )
-        threadQueue->front().join();
+    for ( ; ( !threadQueue.empty() ) && threadQueue.front().joinable(); threadQueue.pop() )
+        threadQueue.front().join();
 }
 //---------------------------------------------------------------------------------------------------------------------------
 

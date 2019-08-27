@@ -5,11 +5,22 @@
 #include <cassert>
 #include <iostream>
 
- namespace lp {
+namespace lp {
 
 HandStrengthList::HandStrengthList()
-    : sum_cycle( 0 ), hight( 0 ), pair( 0 ), twopair( 0 ), set( 0 ), strait( 0 ), flush( 0 ), fullhouse( 0 ), kare( 0 ),
-      straitflush( 0 ) {}
+    : /*hightP( 0 ), pairP( 0 ), twopairP( 0 ), setP( 0 ), straitP( 0 ), flushP( 0 ), fullhouseP( 0 ), kareP( 0 ),
+      straitflushP( 0 ),*/
+      /*sum_cycle( 0 ),*/ hight( 0 ), pair( 0 ), twopair( 0 ), set( 0 ), strait( 0 ), flush( 0 ), fullhouse( 0 ),
+      kare( 0 ), straitflush( 0 ) {}
+
+HandStrengthList::HandStrengthList( const HandStrengthList & other )
+    : /*hightP( other.hightP ), pairP( other.pairP ), twopairP( other.twopairP ), setP( other.setP ),
+      straitP( other.straitP ), flushP( other.flushP ), fullhouseP( other.fullhouseP ), kareP( other.kareP ),
+      straitflushP( other.straitflushP ),*/
+      /*sum_cycle( other.sum_cycle ),*/ hight( other.hight.load() ), pair( other.pair.load() ),
+      twopair( other.twopair.load() ), set( other.set.load() ), strait( other.strait.load() ),
+      flush( other.flush.load() ), fullhouse( other.fullhouse.load() ), kare( other.kare.load() ),
+      straitflush( other.straitflush.load() ) {}
 //---------------------------------------------------------------------------------------------------------------------------
 HandStrength::HandStrength( const HandStrength & other ) : curr_strength( other.curr_strength ){};
 //---------------------------------------------------------------------------------------------------------------------------
@@ -19,73 +30,152 @@ HandStrength::HandStrength( const Hand & hand, const Board & board )
 const HandStrength::strength & HandStrength::getCurrStrength() const { return curr_strength; }
 //---------------------------------------------------------------------------------------------------------------------------
 HandStrength::strength HandStrength::checkCurrStrength( const Hand & hand, const Board & board ) {
-    if ( board.getVector().size() < 3 ) {
-        assert( board.getVector().size() == 0 && "invalid board" );
+    if ( board.getBoard().size() < 3 ) {
+        assert( board.getBoard().size() == 0 && "invalid board" );
 
         // проверка на пару, если борд пуст
-        if ( hand.getlCard().getValueNum() == hand.getCard2().getValueNum() ) {
+        if ( hand.getLCard().getValueNum() == hand.getRCard().getValueNum() ) {
             return HandStrength::strength::PAIR;
         }
     } else {
-        assert( board.getVector().size() < 6 && "invalid board" );
-        assert( ( hand.getlCard().getValueNum() != 0 && hand.getlCard().getSuitNum() != 0 ) &&
-                ( hand.getCard2().getValueNum() != 0 && hand.getCard2().getSuitNum() != 0 ) &&
+        assert( board.getBoard().size() < 6 && "invalid board" );
+        assert( ( hand.getLCard().getValueNum() != 0 && hand.getLCard().getSuitNum() != 0 ) &&
+                ( hand.getRCard().getValueNum() != 0 && hand.getRCard().getSuitNum() != 0 ) &&
                 "invalid hand initialization" );
         std::unique_ptr< std::vector< Card > > combo_ptr( new std::vector< Card > );
-        combo_ptr->reserve( board.getVector().size() + 2 );
-        for ( auto const & card : board.getVector() ) {
+        combo_ptr->reserve( board.getBoard().size() + 2 );
+        for ( auto const & card : board.getBoard() ) {
             combo_ptr->push_back( card );
         }
-        combo_ptr->push_back( hand.getlCard() );
-        combo_ptr->push_back( hand.getCard2() );
+        combo_ptr->push_back( hand.getLCard() );
+        combo_ptr->push_back( hand.getRCard() );
 
         uint32_t combo = 0;
-        for ( auto const & card : board.getVector() ) {
+        for ( auto const & card : board.getBoard() ) {
             combo |= ( card.getValueNum() | card.getSuitNum() );
         }
 
-        combo |= ( hand.getlCard().getValueNum() | hand.getlCard().getSuitNum() ) |
-                 ( hand.getCard2().getValueNum() | hand.getCard2().getSuitNum() );
+        combo |= ( hand.getLCard().getValueNum() | hand.getLCard().getSuitNum() ) |
+                 ( hand.getRCard().getValueNum() | hand.getRCard().getSuitNum() );
 
         // проверка на стрит-флеш
-        if ( match_straitFLUSH( *combo_ptr, combo ) )
+        if ( matchStraitflush( *combo_ptr, combo ) )
             return HandStrength::strength::STRAIT_FLUSH;
 
         // проверка на карэ
-        if ( match_kare( *combo_ptr ) )
+        if ( matchKare( *combo_ptr ) )
             return HandStrength::strength::KARE;
 
         // проверка на фулл-хаус
-        if ( match_fullhouse( *combo_ptr ) )
+        if ( matchFullhouse( *combo_ptr ) )
             return HandStrength::strength::FULL_HOUSE;
 
         // проверка на флеш
-        if ( match_flush( *combo_ptr, combo ) )
+        if ( matchFlush( *combo_ptr, combo ) )
             return HandStrength::strength::FLUSH;
 
         // проверка на стрит
-        if ( match_strait( combo ) )
+        if ( matchStrait( combo ) )
             return HandStrength::strength::STRAIT;
 
         // проверка на сет
-        if ( match_set( *combo_ptr ) )
+        if ( matchSet( *combo_ptr ) )
             return HandStrength::strength::SET;
 
         // проверка на две пары
-        if ( match_twopairs( *combo_ptr ) )
+        if ( matchTwopairs( *combo_ptr ) )
             return HandStrength::strength::TWO_PAIRS;
 
         // проверка на пару
         if ( [&board, &hand]() {
-                 for ( auto const & el : board.getVector() ) {
-                     if ( hand.getlCard().getValueNum() == el.getValueNum() ||
-                          hand.getCard2().getValueNum() == el.getValueNum() ) {
+                 for ( auto const & el : board.getBoard() ) {
+                     if ( hand.getLCard().getValueNum() == el.getValueNum() ||
+                          hand.getRCard().getValueNum() == el.getValueNum() ) {
                          return true;
                      }
                  }
                  return false;
              }() ||
-             hand.getlCard().getValueNum() == hand.getCard2().getValueNum() ) {
+             hand.getLCard().getValueNum() == hand.getRCard().getValueNum() ) {
+            return HandStrength::strength::PAIR;
+        } // проверка на пару
+    }     //проверка, если борд не пуст
+
+    return HandStrength::strength::HIGHT;
+}
+
+HandStrength::strength HandStrength::checkCurrStrength( const std::vector< Card > & combo ) {
+    assert( combo.size() < 6 && "invalid board" );
+    if ( combo.size() < 5 ) {
+        assert( combo.size() == 2 && "invalid board" );
+
+        // проверка на пару, если борд пуст
+        if ( combo.at( 0 ).getValueNum() == combo.at( 1 ).getValueNum() ) {
+            return HandStrength::strength::PAIR;
+        }
+    } else {
+        for ( unsigned int i = 0; i < combo.size(); ++i ) {
+            
+                assert( ( hand.getLCard().getValueNum() != 0 && hand.getLCard().getSuitNum() != 0 ) &&
+                        ( hand.getRCard().getValueNum() != 0 && hand.getRCard().getSuitNum() != 0 ) &&
+                        "invalid hand initialization" );
+            
+        }
+        std::unique_ptr< std::vector< Card > > combo_ptr( new std::vector< Card > );
+        combo_ptr->reserve( board.getBoard().size() + 2 );
+        for ( auto const & card : board.getBoard() ) {
+            combo_ptr->push_back( card );
+        }
+        combo_ptr->push_back( hand.getLCard() );
+        combo_ptr->push_back( hand.getRCard() );
+
+        uint32_t combo = 0;
+        for ( auto const & card : board.getBoard() ) {
+            combo |= ( card.getValueNum() | card.getSuitNum() );
+        }
+
+        combo |= ( hand.getLCard().getValueNum() | hand.getLCard().getSuitNum() ) |
+                 ( hand.getRCard().getValueNum() | hand.getRCard().getSuitNum() );
+
+        // проверка на стрит-флеш
+        if ( matchStraitflush( *combo_ptr, combo ) )
+            return HandStrength::strength::STRAIT_FLUSH;
+
+        // проверка на карэ
+        if ( matchKare( *combo_ptr ) )
+            return HandStrength::strength::KARE;
+
+        // проверка на фулл-хаус
+        if ( matchFullhouse( *combo_ptr ) )
+            return HandStrength::strength::FULL_HOUSE;
+
+        // проверка на флеш
+        if ( matchFlush( *combo_ptr, combo ) )
+            return HandStrength::strength::FLUSH;
+
+        // проверка на стрит
+        if ( matchStrait( combo ) )
+            return HandStrength::strength::STRAIT;
+
+        // проверка на сет
+        if ( matchSet( *combo_ptr ) )
+            return HandStrength::strength::SET;
+
+        // проверка на две пары
+        if ( matchTwopairs( *combo_ptr ) )
+            return HandStrength::strength::TWO_PAIRS;
+
+        // проверка на пару
+        if ( [&board, &hand]() {
+                 for ( auto const & el : board.getBoard() ) {
+                     if ( hand.getLCard().getValueNum() == el.getValueNum() ||
+                          hand.getRCard().getValueNum() == el.getValueNum() ) {
+                         return true;
+                     }
+                 }
+                 return false;
+             }() ||
+             hand.getLCard().getValueNum() == hand.getRCard().getValueNum() ) {
             return HandStrength::strength::PAIR;
         } // проверка на пару
     }     //проверка, если борд не пуст
@@ -94,18 +184,18 @@ HandStrength::strength HandStrength::checkCurrStrength( const Hand & hand, const
 }
 //---------------------------------------------------------------------------------------------------------------------------
 // проверка на стрит-флеш
-bool HandStrength::match_straitFLUSH( const std::vector< Card > & combo_ptr, const uint32_t & combo ) const {
+bool HandStrength::matchStraitflush( const std::vector< Card > & combo_ptr, const uint32_t & combo ) const {
     bool res = false;
-    uint32_t combo_val = combo & Card::value_mask;
-    uint8_t combo_suit = combo & Card::suit_mask;
-    if ( match_strait( combo_val ) &&
+    uint32_t combo_val = combo & Card::valueMask;
+    uint8_t combo_suit = combo & Card::suitMask;
+    if ( matchStrait( combo_val ) &&
          ( combo_suit == 0x1 || combo_suit == 0x2 || combo_suit == 0x4 || combo_suit == 0x8 ) )
         res = true;
     else if ( ( combo_ptr.size() == 6 &&
                 ( combo_suit == 0x7 || combo_suit == 0xe || combo_suit == 0xd || combo_suit == 0xb ) ) ||
               ( combo_ptr.size() == 7 && combo_suit == 0xf ) )
         ;
-    else if ( match_strait( combo_val ) ) {
+    else if ( matchStrait( combo_val ) ) {
 
         std::unique_ptr< std::vector< Card > > temp_arr_ptr( new std::vector< Card > );
         temp_arr_ptr->reserve( combo_ptr.size() );
@@ -122,42 +212,43 @@ bool HandStrength::match_straitFLUSH( const std::vector< Card > & combo_ptr, con
 
         combo_val = 0;
         for ( auto const & card : *temp_arr_ptr ) {
-            combo_val |= ( card.getValueNum() & Card::value_mask );
+            combo_val |= ( card.getValueNum() & Card::valueMask );
         }
-        res = match_strait( combo_val );
+        res = matchStrait( combo_val );
 
         // для проверки разницы в скорасти вычисления
-        //            if (temp_arr_ptr->size() > 4)
-        //            {
-        //                temp_arr_ptr = sort_cards(temp_arr_ptr);
-
-        //                for (unsigned match_num = 0; (combo_ptr->size() - match_num) >= 5; ++match_num)
-        //                {
-        //                    if ((temp_arr_ptr->at(match_num).getValueNum() + 1 == temp_arr_ptr->at(match_num +
-        //                    1).getValueNum()) &&
-        //                        (temp_arr_ptr->at(match_num).getValueNum() + 2 == temp_arr_ptr->at(match_num +
-        //                        2).getValueNum()) && (temp_arr_ptr->at(match_num).getValueNum() + 3 ==
-        //                        temp_arr_ptr->at(match_num + 3).getValueNum()) &&
-        //                        (temp_arr_ptr->at(match_num).getValueNum() + 4 == temp_arr_ptr->at(match_num +
-        //                        4).getValueNum())) res = true;
-        //                    else if (temp_arr_ptr->at(match_num).getValueNum() == 0)
+        //                    if (temp_arr_ptr->size() > 4)
         //                    {
-        //                        if ((temp_arr_ptr->at(match_num).getValueNum() + 1 == temp_arr_ptr->at(match_num +
-        //                        1).getValueNum()) &&
-        //                            (temp_arr_ptr->at(match_num).getValueNum() + 2 == temp_arr_ptr->at(match_num +
-        //                            2).getValueNum()) && (temp_arr_ptr->at(match_num).getValueNum() + 3 ==
-        //                            temp_arr_ptr->at(match_num + 3).getValueNum()) &&
-        //                            (temp_arr_ptr->at(match_num).getValueNum() + 12 ==
-        //                            temp_arr_ptr->back().getValueNum())) res = true;
+        //                        temp_arr_ptr = sortCards(*temp_arr_ptr);
+
+        //                        for (unsigned match_num = 0; (combo_ptr.size() - match_num) >= 5; ++match_num)
+        //                        {
+        //                            if ((temp_arr_ptr->at(match_num).getValueNum() + 1 == temp_arr_ptr->at(match_num +
+        //                            1).getValueNum()) &&
+        //                                (temp_arr_ptr->at(match_num).getValueNum() + 2 == temp_arr_ptr->at(match_num +
+        //                                2).getValueNum()) && (temp_arr_ptr->at(match_num).getValueNum() + 3 ==
+        //                                temp_arr_ptr->at(match_num + 3).getValueNum()) &&
+        //                                (temp_arr_ptr->at(match_num).getValueNum() + 4 == temp_arr_ptr->at(match_num +
+        //                                4).getValueNum())) res = true;
+        //                            else if (temp_arr_ptr->at(match_num).getValueNum() == 0)
+        //                            {
+        //                                if ((temp_arr_ptr->at(match_num).getValueNum() + 1 ==
+        //                                temp_arr_ptr->at(match_num + 1).getValueNum()) &&
+        //                                    (temp_arr_ptr->at(match_num).getValueNum() + 2 ==
+        //                                    temp_arr_ptr->at(match_num + 2).getValueNum()) &&
+        //                                    (temp_arr_ptr->at(match_num).getValueNum() + 3 ==
+        //                                    temp_arr_ptr->at(match_num + 3).getValueNum()) &&
+        //                                    (temp_arr_ptr->at(match_num).getValueNum() + 12 ==
+        //                                    temp_arr_ptr->back().getValueNum())) res = true;
+        //                            }
+        //                        }
         //                    }
-        //                }
-        //            }
     }
     return res;
 }
 //---------------------------------------------------------------------------------------------------------------------------
 //проверка на карэ
-bool HandStrength::match_kare( const std::vector< Card > & combo_ptr ) const {
+bool HandStrength::matchKare( const std::vector< Card > & combo_ptr ) const {
     bool res = false;
     int match_true;
 
@@ -179,8 +270,8 @@ bool HandStrength::match_kare( const std::vector< Card > & combo_ptr ) const {
 }
 //---------------------------------------------------------------------------------------------------------------------------
 // проверка на фулл-хаус
-bool HandStrength::match_fullhouse( const std::vector< Card > & combo_ptr ) const {
-    auto temp_arr_ptr = std::make_unique< std::vector< Card > >( *sort_cards( combo_ptr ) );
+bool HandStrength::matchFullhouse( const std::vector< Card > & combo_ptr ) const {
+    auto temp_arr_ptr = std::make_unique< std::vector< Card > >( *sortCards( combo_ptr ) );
     bool res = false;
 
     for ( unsigned count = 0; ( temp_arr_ptr->size() - count ) > 2; ++count ) {
@@ -200,9 +291,9 @@ bool HandStrength::match_fullhouse( const std::vector< Card > & combo_ptr ) cons
 }
 //---------------------------------------------------------------------------------------------------------------------------
 // проверка на флеш
-bool HandStrength::match_flush( const std::vector< Card > & combo_ptr, const uint32_t & combo ) const {
+bool HandStrength::matchFlush( const std::vector< Card > & combo_ptr, const uint32_t & combo ) const {
     bool res = false;
-    uint8_t combo_suit = combo & Card::suit_mask;
+    uint8_t combo_suit = combo & Card::suitMask;
 
     if ( combo_suit == 0x1 || combo_suit == 0x2 || combo_suit == 0x4 || combo_suit == 0x8 )
         res = true;
@@ -234,7 +325,7 @@ bool HandStrength::match_flush( const std::vector< Card > & combo_ptr, const uin
 }
 //---------------------------------------------------------------------------------------------------------------------------
 // проверка на стрит
-bool HandStrength::match_strait( const uint32_t & combo ) const {
+bool HandStrength::matchStrait( const uint32_t & combo ) const {
     return ( ( combo & 0x1F000000 ) == 0x1F000000 || ( combo & 0xF800000 ) == 0xF800000 ||
              ( combo & 0x7C00000 ) == 0x7C00000 || ( combo & 0x3E00000 ) == 0x3E00000 ||
              ( combo & 0x1F00000 ) == 0x1F00000 || ( combo & 0xF80000 ) == 0xF80000 ||
@@ -243,9 +334,9 @@ bool HandStrength::match_strait( const uint32_t & combo ) const {
 }
 //---------------------------------------------------------------------------------------------------------------------------
 // проверка на сет
-bool HandStrength::match_set( const std::vector< Card > & combo_ptr ) const {
+bool HandStrength::matchSet( const std::vector< Card > & combo_ptr ) const {
     std::unique_ptr< std::vector< Card > > temp_arr_ptr( new std::vector< Card > );
-    temp_arr_ptr = sort_cards( combo_ptr );
+    temp_arr_ptr = sortCards( combo_ptr );
     bool res = false;
 
     for ( unsigned count = 0; ( temp_arr_ptr->size() - count ) >= 3; ++count ) {
@@ -258,9 +349,9 @@ bool HandStrength::match_set( const std::vector< Card > & combo_ptr ) const {
 }
 //---------------------------------------------------------------------------------------------------------------------------
 // проверка на две пары
-bool HandStrength::match_twopairs( const std::vector< Card > & combo_ptr ) const {
+bool HandStrength::matchTwopairs( const std::vector< Card > & combo_ptr ) const {
     std::unique_ptr< std::vector< Card > > temp_arr_ptr( new std::vector< Card > );
-    temp_arr_ptr = sort_cards( combo_ptr );
+    temp_arr_ptr = sortCards( combo_ptr );
     bool res = false;
 
     for ( unsigned count = 0; ( temp_arr_ptr->size() - count ) >= 4; ++count ) {
@@ -276,7 +367,7 @@ bool HandStrength::match_twopairs( const std::vector< Card > & combo_ptr ) const
     return res;
 }
 //---------------------------------------------------------------------------------------------------------------------------
-std::unique_ptr< std::vector< Card > > HandStrength::sort_cards( const std::vector< Card > & combo_ptr ) const {
+std::unique_ptr< std::vector< Card > > HandStrength::sortCards( const std::vector< Card > & combo_ptr ) const {
     auto temp_arr_ptr = std::make_unique< std::vector< Card > >( combo_ptr );
     //    *temp_arr_ptr = *combo_ptr;
 
@@ -330,33 +421,45 @@ void HandStrengthList::accumulate( const Hand & hand, const Board & board ) {
     }
 }
 //---------------------------------------------------------------------------------------------------------------------------
-void HandStrengthList::print() const {
+void HandStrengthList::print() {
+    if ( getSum() == 0 )
+        calcPercents();
+    assert( getSum() > 0 && "empty counter values" );
     std::cout << "hi : "
-              << "\t\t\t" << hight << "\t" << static_cast< double >( hight ) / sum_cycle * 100 << "%" << std::endl;
+              << "\t\t\t" << hight << "\t" << hightP * 100 << "%" << std::endl;
     std::cout << "pairs : "
-              << "\t\t" << pair << "\t" << static_cast< double >( pair ) / sum_cycle * 100 << "%" << std::endl;
+              << "\t\t" << pair << "\t" << pairP * 100 << "%" << std::endl;
     std::cout << "sets : "
-              << "\t\t" << set << "\t" << static_cast< double >( set ) / sum_cycle * 100 << "%" << std::endl;
+              << "\t\t" << set << "\t" << setP * 100 << "%" << std::endl;
     std::cout << "two pairs : "
-              << "\t\t" << twopair << "\t" << static_cast< double >( twopair ) / sum_cycle * 100 << "%" << std::endl;
+              << "\t\t" << twopair << "\t" << twopairP * 100 << "%" << std::endl;
     std::cout << "straits : "
-              << "\t\t" << strait << "\t" << static_cast< double >( strait ) / sum_cycle * 100 << "%" << std::endl;
+              << "\t\t" << strait << "\t" << straitP * 100 << "%" << std::endl;
     std::cout << "FLUSHes : "
-              << "\t\t" << flush << "\t" << static_cast< double >( flush ) / sum_cycle * 100 << "%" << std::endl;
+              << "\t\t" << flush << "\t" << flushP * 100 << "%" << std::endl;
     std::cout << "fullhouses : "
-              << "\t\t" << fullhouse << "\t" << static_cast< double >( fullhouse ) / sum_cycle * 100 << "%"
-              << std::endl;
+              << "\t\t" << fullhouse << "\t" << fullhouseP * 100 << "%" << std::endl;
     std::cout << "straitFLUSHes : "
-              << "\t" << straitflush << "\t" << static_cast< double >( straitflush ) / sum_cycle * 100 << "%"
-              << std::endl;
+              << "\t" << straitflush << "\t" << straitflushP * 100 << "%" << std::endl;
     std::cout << "kares : "
-              << "\t\t" << kare << "\t" << static_cast< double >( kare ) / sum_cycle * 100 << "%" << std::endl;
-    std::cout << "sum_cycle : " << sum_cycle << std::endl;
+              << "\t\t" << kare << "\t" << kareP * 100 << "%" << std::endl;
+    std::cout << "sum_cycle : " << getSum() << std::endl;
 }
 //---------------------------------------------------------------------------------------------------------------------------
-void HandStrengthList::calcSum() {
-    sum_cycle = hight + pair + set + twopair + strait + flush + fullhouse + straitflush + kare;
+unsigned long long HandStrengthList::getSum() const {
+    return ( hight + pair + set + twopair + strait + flush + fullhouse + straitflush + kare );
 }
 //---------------------------------------------------------------------------------------------------------------------------
+void HandStrengthList::calcPercents() {
+    hightP = static_cast< float >( hight ) / getSum();
+    pairP = static_cast< float >( pair ) / getSum();
+    setP = static_cast< float >( set ) / getSum();
+    twopairP = static_cast< float >( twopair ) / getSum();
+    straitP = static_cast< float >( strait ) / getSum();
+    flushP = static_cast< float >( flush ) / getSum();
+    fullhouseP = static_cast< float >( fullhouse ) / getSum();
+    straitflushP = static_cast< float >( straitflush ) / getSum();
+    kareP = static_cast< float >( kare ) / getSum();
+}
 
 } // namespace lp
