@@ -39,6 +39,7 @@ SOURCES *= main.cpp
 HEADERS *= include/Board.h \
     include/Card.h \
     include/Deck.h \
+    include/combo.h \
     include/defines.h \
     include/equity.h \
     include/Hand.h \

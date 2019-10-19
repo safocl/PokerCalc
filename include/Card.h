@@ -21,9 +21,9 @@ struct Card final {
     Card();
     Card( const std::string strCard );
     Card( valCard && value, suitCard && suit );
-    Card( const Card & other );
-    Card( Card && other );
-    ~Card();
+    Card( const Card & other ) = default;
+    Card( Card && other ) = default;
+    ~Card() = default;
 
     /**
      * @brief The valCard enum
@@ -65,6 +65,7 @@ struct Card final {
     std::string getString() const noexcept;
     uint8_t getSuitNum() const noexcept;
     uint32_t getValueNum() const noexcept;
+	uint8_t howHigerCards() const noexcept;
 
     /**
      * @brief incVal
@@ -98,7 +99,7 @@ struct Card final {
     bool eqVal() const;
     bool operator==( const Card & other ) const noexcept;
     bool operator!=( const Card & other ) const noexcept;
-    Card & operator=( const Card & other ) noexcept;
+    Card & operator=( const Card & other );
     Card & operator=( Card && other ) noexcept;
     bool operator<( const Card & other ) const noexcept;
     bool operator>( const Card & other ) const noexcept;
@@ -122,7 +123,7 @@ struct Card final {
     uint32_t numCard;
 
     std::string && getSuit() const noexcept;
-    std::string getValue() const noexcept;
+    std::string && getValue() const noexcept;
     bool checkValidValue( const valCard & value ) const;
     bool checkValidSuit( const suitCard & suit ) const;
 };

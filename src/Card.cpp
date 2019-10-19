@@ -20,11 +20,11 @@ Card::Card( valCard && value, suitCard && suit ) : numCard( 0 ) {
     numCard = static_cast< uint32_t >( value ) | static_cast< uint8_t >( suit );
 }
 //---------------------------------------------------------------------------------------------------------------------------
-Card::Card( const Card & other ) : numCard( other.numCard ) {}
+// Card::Card( const Card & other ) : numCard( other.numCard ) {}
 //---------------------------------------------------------------------------------------------------------------------------
-Card::Card( Card && other ) : numCard( other.numCard ) { other.numCard = 0; }
+// Card::Card( Card && other ) : numCard( other.numCard ) { other.numCard = 0; }
 //---------------------------------------------------------------------------------------------------------------------------
-Card::~Card() {}
+// Card::~Card() {}
 //---------------------------------------------------------------------------------------------------------------------------
 void Card::setCard( const std::string strCard ) {
     assert( strCard.length() == 2 && "invalid string length" );
@@ -128,72 +128,70 @@ void Card::setValueNum( const Card::valCard & value ) {
 }
 //---------------------------------------------------------------------------------------------------------------------------
 std::string && Card::getSuit() const noexcept {
-    std::string res;
     switch ( numCard | suitMask ) {
     case static_cast< uint8_t >( Card::suitCard::_c_0x4 ):
-        res = "c";
-        break;
+        return std::move( std::string{"c"} );
+        //        break;
     case static_cast< uint8_t >( Card::suitCard::_h_0x8 ):
-        res = "h";
-        break;
+        return std::move( std::string{"h"} );
+        //        break;
     case static_cast< uint8_t >( Card::suitCard::_d_0x1 ):
-        res = "d";
-        break;
+        return std::move( std::string{"d"} );
+        //        break;
     case static_cast< uint8_t >( Card::suitCard::_s_0x2 ):
-        res = "s";
-        break;
+        return std::move( std::string{"s"} );
+        //        break;
     default:
         assert( false && "an attempt to display the card suit, but the card suit is not defined" );
     }
-    return std::move( res );
+    //    return std::move( res );
 }
 //---------------------------------------------------------------------------------------------------------------------------
-std::string Card::getValue() const noexcept {
-    std::string res;
+std::string && Card::getValue() const noexcept {
     switch ( numCard & valueMask ) {
     case static_cast< uint32_t >( Card::valCard::_2 ):
-        res = "2";
-        break;
+        return std::move( std::string{"2"} );
+        //        break;
     case static_cast< uint32_t >( Card::valCard::_3 ):
-        res = "3";
-        break;
+        return std::move( std::string{"3"} );
+        //        break;
     case static_cast< uint32_t >( Card::valCard::_4 ):
-        res = "4";
-        break;
+        return std::move( std::string{"4"} );
+        //        break;
     case static_cast< uint32_t >( Card::valCard::_5 ):
-        res = "5";
-        break;
+        return std::move( std::string{"5"} );
+        //        break;
     case static_cast< uint32_t >( Card::valCard::_6 ):
-        res = "6";
-        break;
+        return std::move( std::string{"6"} );
+        //        break;
     case static_cast< uint32_t >( Card::valCard::_7 ):
-        res = "7";
-        break;
+        return std::move( std::string{"7"} );
+        //        break;
     case static_cast< uint32_t >( Card::valCard::_8 ):
-        res = "8";
-        break;
+        return std::move( std::string{"8"} );
+        //        break;
     case static_cast< uint32_t >( Card::valCard::_9 ):
-        res = "9";
-        break;
+        return std::move( std::string{"9"} );
+        //        break;
     case static_cast< uint32_t >( Card::valCard::_T ):
-        res = "T";
-        break;
+        return std::move( std::string{"T"} );
+        //        break;
     case static_cast< uint32_t >( Card::valCard::_J ):
-        res = "J";
-        break;
+        return std::move( std::string{"J"} );
+        //        break;
     case static_cast< uint32_t >( Card::valCard::_Q ):
-        res = "Q";
-        break;
+        return std::move( std::string{"Q"} );
+        //        break;
     case static_cast< uint32_t >( Card::valCard::_K ):
-        res = "K";
-        break;
+        return std::move( std::string{"K"} );
+        //        break;
     case static_cast< uint32_t >( Card::valCard::_A ):
-        res = "A";
-        break;
+        return std::move( std::string{"A"} );
+        //        break;
     default:
         assert( false && "an attempt to display the card value, but the card value is not defined" );
     }
-    return res;
+    //    return res;
 }
 //---------------------------------------------------------------------------------------------------------------------------
 std::string Card::getString() const noexcept { return getValue() + getSuit(); }
@@ -202,6 +200,38 @@ uint8_t Card::getSuitNum() const noexcept { return ( numCard & suitMask ); }
 //---------------------------------------------------------------------------------------------------------------------------
 uint32_t Card::getValueNum() const noexcept { return ( numCard & valueMask ); }
 //---------------------------------------------------------------------------------------------------------------------------
+uint8_t Card::howHigerCards() const noexcept {
+    switch ( numCard & valueMask ) {
+    case static_cast< uint32_t >( valCard::_K ):
+        return 1;
+    case static_cast< uint32_t >( valCard::_Q ):
+        return 2;
+    case static_cast< uint32_t >( valCard::_J ):
+        return 3;
+    case static_cast< uint32_t >( valCard::_T ):
+        return 4;
+    case static_cast< uint32_t >( valCard::_9 ):
+        return 5;
+    case static_cast< uint32_t >( valCard::_8 ):
+        return 6;
+    case static_cast< uint32_t >( valCard::_7 ):
+        return 7;
+    case static_cast< uint32_t >( valCard::_6 ):
+        return 8;
+    case static_cast< uint32_t >( valCard::_5 ):
+        return 9;
+    case static_cast< uint32_t >( valCard::_4 ):
+        return 10;
+    case static_cast< uint32_t >( valCard::_3 ):
+        return 11;
+    case static_cast< uint32_t >( valCard::_2 ):
+        return 12;
+
+    default:
+        return 0;
+    }
+}
+
 Card Card::incVal() noexcept {
     //    assert(((numCard & valueMask) < (valueSize - 1)) && "out of range");
     numCard ^= ( numCard & valueMask ) | ( ( numCard & valueMask ) << 1 );
@@ -230,7 +260,7 @@ bool Card::operator==( const Card & other ) const noexcept { return ( this->numC
 //---------------------------------------------------------------------------------------------------------------------------
 bool Card::operator!=( const Card & other ) const noexcept { return !( this->numCard == other.numCard ); }
 //---------------------------------------------------------------------------------------------------------------------------
-Card & Card::operator=( const Card & other ) noexcept {
+Card & Card::operator=( const Card & other ) {
     this->numCard = other.numCard;
     return *this;
 }

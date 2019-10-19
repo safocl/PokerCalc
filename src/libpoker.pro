@@ -38,7 +38,8 @@ QMAKE_CXXFLAGS_RELEASE += -march=native
 
 QMAKE_LFLAGS_SHLIB *= -fPIC
 
-SOURCES *= Board.cpp
+SOURCES *= Board.cpp \
+    combo.cpp
 SOURCES *= Card.cpp
 SOURCES *= Deck.cpp
 SOURCES *= equity.cpp

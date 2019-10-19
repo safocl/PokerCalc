@@ -6,62 +6,73 @@ namespace lp {
 class Eval;
 struct Hand;
 struct Card;
-struct HandStrengthList;
+class HandStrengthList;
+class HandStrength;
 class Board;
 } // namespace lp
 
 //#include "Hand.h"
 #include "defines.h"
-#include <atomic>
+#include <list>
 #include <vector>
 
 namespace lp {
 
-struct HandStrength final {
-    HandStrength( const Hand & hand, const Board & board );
+class HandStrength final {
+    bool hight, pair, twoPairs, set, strait, flush, fullHouse, kare, straitFlush, fd, sd, gutShot, oneOverCard,
+        twoOverCards, backdorFD, backdorSD, backdorGutShot
+        //                         ,royal_flush
+        ;
+
+  public:
+    HandStrength() = delete;
+    HandStrength( const Hand & __hand, const Board & __board );
+    HandStrength( const std::vector< Card > & __combo );
     HandStrength( const HandStrength & other );
-    enum class strength {
-        NODEF = -1,
-        HIGHT,
-        PAIR,
-        TWO_PAIRS,
-        SET,
-        STRAIT,
-        FLUSH,
-        FULL_HOUSE,
-        KARE,
-        STRAIT_FLUSH
-        //                         ,ROYAL_FLUSH
-    };
-    const strength & getCurrStrength() const;
-    strength checkCurrStrength( const Hand & hand, const Board & board );
-    strength checkCurrStrength( const std::vector< Card > & combo );
+
+    bool containHight() const;
+    bool containPair() const;
+    bool containTwoPairs() const;
+    bool containSet() const;
+    bool containStrait() const;
+    bool containFlush() const;
+    bool containFullHouse() const;
+    bool containKare() const;
+    bool containStraitFlush() const;
+    bool containFD() const;
+    bool containSD() const;
+    bool containGutShot() const;
+    bool containOneOverCard() const;
+    bool containTwoOverCards() const;
+    bool containBackdorFD() const;
+    bool containBackdorSD() const;
+    bool containBackdorGutShot() const;
+
+    void calcCurrStrength( const Hand & hand, const Board & board );
+    void calcCurrStrength( const std::vector< Card > & combo );
 
   private:
-    strength curr_strength;
-    bool matchStraitflush( const std::vector< Card > & combo_ptr, const uint32_t & combo ) const;
-    bool matchKare( const std::vector< Card > & combo_ptr ) const;
-    bool matchFullhouse( const std::vector< Card > & combo_ptr ) const;
-    bool matchFlush( const std::vector< Card > & combo_ptr, const uint32_t & combo ) const;
-    bool matchStrait( const uint32_t & combo ) const;
-    bool matchSet( const std::vector< Card > & combo_ptr ) const;
-    bool matchTwopairs( const std::vector< Card > & combo_ptr ) const;
-    std::unique_ptr< std::vector< Card > > sortCards( const std::vector< Card > & combo_ptr ) const;
+    bool matchStraitflush( const std::vector< Card > & combo, const uint32_t & comboN ) const;
+    bool matchKare( const std::vector< Card > & combo ) const;
+    bool matchFullhouse( const std::vector< Card > & combo ) const;
+    bool matchFlush( const std::vector< Card > & combo, const uint32_t & comboN ) const;
+    bool matchStrait( const uint32_t & comboN ) const;
+    bool matchSet( const std::vector< Card > & combo ) const;
+    bool matchTwopairs( const std::vector< Card > & combo ) const;
+    std::vector< Card > sortCards( std::vector< Card > combo ) const;
 };
 
-struct HandStrengthList final {
+class HandStrengthList final {
     HandStrengthList();
     HandStrengthList( const HandStrengthList & other );
-    void accumulate( const Hand & hand, const Board & board );
     void print();
     void calcPercents();
     friend class Eval;
-    unsigned long long getSum() const;
+    uint64_t getSum() const;
 
   private:
     float hightP, pairP, twopairP, setP, straitP, flushP, fullhouseP, kareP, straitflushP;
-    //    unsigned long long sum_cycle;
-    std::atomic< unsigned long long > hight, pair, twopair, set, strait, flush, fullhouse, kare, straitflush;
+    uint64_t sum_cycle, hight, pair, twopair, set, strait, flush, fullhouse, kare, straitflush;
 };
 
 } // namespace lp

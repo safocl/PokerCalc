@@ -8,7 +8,7 @@ class Board;
 struct Card;
 struct Deck;
 struct Hand;
-struct HandStrengthList;
+class HandStrengthList;
 class Eval;
 
 } // namespace lp
@@ -28,28 +28,30 @@ class Board {
 
   public:
     Board();
-    Board( const Board & other );
+    Board( const Board & other ) = default;
+    enum class boardState : uint8_t { PREFLOP, FLOP, TURN, RIVER };
+    boardState getState() const;
     const std::vector< Card > & getBoard() const;
     bool pushNewCardToBoard( const Hand & hero, const Hand & opp, const Card & card );
     bool checkCardOnBoard( const Card & card ) const;
-    void brutforcePreFlop_Flop( Deck & deck, Eval & ev );
+    //    void brutforcePreFlop_Flop( Deck & deck, Eval & ev );
 
   private:
-    void bruteForceCards( Deck & deck, Eval ev, const unsigned int & cyclesCount );
-    template < unsigned int cyclesCount > void bruteForceCardsMT( Deck & deck, Eval & ev );
+    //    void bruteForceCards( Deck & deck, Eval ev, const unsigned int & cyclesCount );
+    //    template < unsigned int cyclesCount > void bruteForceCardsMT( Deck & deck, Eval & ev );
 };
 
-class ParallelGenBoard {
-    int nCpus;
-    int8_t maxPos;
-    std::queue< std::thread > threadQueue;
+// class ParallelGenBoard {
+//    int nCpus;
+//    int8_t maxPos;
+//    std::queue< std::thread > threadQueue;
 
-  public:
-    ParallelGenBoard( const Eval & ev );
-    ~ParallelGenBoard();
-    void start( Eval & ev );
-    void join();
-};
+//  public:
+//    ParallelGenBoard( const Eval & ev );
+//    ~ParallelGenBoard();
+//    void start( Eval & ev );
+//    void join();
+//};
 
 } // namespace lp
 

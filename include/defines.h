@@ -4,6 +4,7 @@
 
 #include <memory>
 #include <stdexcept>
+#include <cstdint>
 //#include <cstddef>
 
 #endif // DEFINES_H
