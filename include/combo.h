@@ -20,6 +20,11 @@ class Combo final {
 
   public:
     Combo( const Hand & hand, const Board & board );
+    explicit Combo( const Combo & other ) = default;
+    Combo( Combo && other ) noexcept = default;
+    Combo & operator=( const Combo & other ) = default;
+    Combo & operator=( Combo && other ) noexcept = default;
+    ~Combo() = default;
     //    bool operator<( const Combo & other );
     //    bool operator>( const Combo & other );
     //    bool operator==( const Combo & other );

@@ -30,23 +30,27 @@ class Eval final {
     //    HandStrengthList heroHsl, oppHsl;
 
   public:
-	Eval( const Hand & hero, const Hand & opp );
+    Eval() = delete;
+    Eval( const Hand & hero, const Hand & opp );
     Eval( Hand && hero, Hand && opp );
-    void setHeroH( const Card::valCard lCardV, const Card::suitCard lCardS, const Card::valCard rCardV,
-                   const Card::suitCard rCardS );
-    void setOppH( const Card::valCard lCardV, const Card::suitCard lCardS, const Card::valCard rCardV,
-                  const Card::suitCard rCardS );
-    void setHeroH( const std::string lCardStr, const std::string rCardStr );
-    void setOppH( const std::string lCardStr, const std::string rCardStr );
+    Eval( const Eval & other ) = delete;
+    Eval( Eval && other ) noexcept = default;
+    Eval & operator=( const Eval & other ) = delete;
+    Eval & operator=( Eval && other ) noexcept = default;
+    ~Eval() = default;
+    void setHeroH( Card::valCard lCardV, Card::suitCard lCardS, Card::valCard rCardV, Card::suitCard rCardS );
+    void setOppH( Card::valCard lCardV, Card::suitCard lCardS, Card::valCard rCardV, Card::suitCard rCardS );
+    void setHeroH( const std::string & lCardStr, const std::string & rCardStr );
+    void setOppH( const std::string & lCardStr, const std::string & rCardStr );
     void setHeroH( const Hand & hero );
     void setOppH( const Hand & opp );
-    const Hand & getHeroH() const;
-    const Hand & getOppH() const;
+    auto getHeroH() const -> const Hand &;
+    auto getOppH() const -> const Hand &;
 
     void calc( const Board & board );
     void print() const;
 
-    bool isEqHands() const;
+    auto isEqHands() const -> bool;
 };
 
 } // namespace lp

@@ -25,20 +25,38 @@ namespace lp {
 class Board {
     static constexpr uint8_t MAX_SIZE = 5;
     std::vector< Card > board;
+    bool _isCalcTraits{false}, _isQuad{false}, _isTripple{false}, _isParied{false}, _isMonotone{false},
+        _isTwoTone{false}, _isRainbow{false}, _isAllConnected{false};
 
   public:
     Board();
     Board( const Board & other ) = default;
+    Board( Board && other ) noexcept = default;
+    ~Board() = default;
+    Board & operator=( const Board & other ) = default;
+    Board & operator=( Board && other ) noexcept = default;
     enum class boardState : uint8_t { PREFLOP, FLOP, TURN, RIVER };
     boardState getState() const;
     const std::vector< Card > & getBoard() const;
     bool pushNewCardToBoard( const Hand & hero, const Hand & opp, const Card & card );
     bool checkCardOnBoard( const Card & card ) const;
-    //    void brutforcePreFlop_Flop( Deck & deck, Eval & ev );
+    void calcTraits();
+    bool isQuad() const;
+    bool isTripple() const;
+    bool isParied() const;
+    bool isMonotone() const;
+    bool isTwoTone() const;
+    bool isRainbow() const;
+    bool isAllConnected() const;
 
   private:
-    //    void bruteForceCards( Deck & deck, Eval ev, const unsigned int & cyclesCount );
-    //    template < unsigned int cyclesCount > void bruteForceCardsMT( Deck & deck, Eval & ev );
+    void __isQuad();
+    void __isTripple();
+    void __isParied();
+    void __isMonotone();
+    void __isTwoTone();
+    void __isRainbow();
+    void __isAllConnected();
 };
 
 // class ParallelGenBoard {

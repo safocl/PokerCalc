@@ -16,20 +16,21 @@ struct Hand;
 #include <utility>
 #include <vector>
 
-
 namespace lp {
 
 struct Deck final {
     Deck();
     //    Deck( const int minPos, const int maxPos );
     //    Deck( Deck && other );
-    Deck( Deck && other ) = default;
+    Deck( Deck && other ) noexcept = default;
     Deck( const Deck & other ) = delete;
-    Deck & operator=( Deck && other );
+    ~Deck();
+    auto operator=( Deck && other ) noexcept -> Deck &;
+    auto operator=( const Deck & other ) -> Deck & = delete;
     void gen( const Board & board, const Hand & hero, const Hand & opp );
     //    const int & capacity() const;
-    unsigned long size() const;
-    const std::vector< Card > & getDeckArr() const;
+    auto size() const -> unsigned long;
+    auto getDeckArr() const -> const std::vector< Card > &;
     //    int getMinPos() const;
     //    int getMaxPos() const;
 

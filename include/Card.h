@@ -19,10 +19,10 @@ struct Card final {
     enum class suitCard : uint8_t;
 
     Card();
-    Card( const std::string strCard );
+    explicit Card( const std::string & strCard );
     Card( valCard && value, suitCard && suit );
     Card( const Card & other ) = default;
-    Card( Card && other ) = default;
+    Card( Card && other ) noexcept = default;
     ~Card() = default;
 
     /**
@@ -59,13 +59,13 @@ struct Card final {
         _h_0x8 = 0x8
     }; // 0b1000
 
-    void setCard( const std::string strCard );
+    void setCard( const std::string & strCard );
     void setCard( const Card & card );
     void setCard( const valCard & value, const suitCard & suit );
     std::string getString() const noexcept;
     uint8_t getSuitNum() const noexcept;
     uint32_t getValueNum() const noexcept;
-	uint8_t howHigerCards() const noexcept;
+    uint8_t howHigerCards() const noexcept;
 
     /**
      * @brief incVal
@@ -122,10 +122,10 @@ struct Card final {
   private:
     uint32_t numCard;
 
-    std::string && getSuit() const noexcept;
-    std::string && getValue() const noexcept;
-    bool checkValidValue( const valCard & value ) const;
-    bool checkValidSuit( const suitCard & suit ) const;
+    std::string getSuit() const noexcept;
+    std::string getValue() const noexcept;
+    static bool checkValidValue( const valCard & value );
+    static bool checkValidSuit( const suitCard & suit );
 };
 
 } // namespace lp

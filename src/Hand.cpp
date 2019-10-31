@@ -4,11 +4,11 @@
 #include <cassert>
 
 namespace lp {
-Hand::Hand( const Hand & other ) : lCard( other.lCard ), rCard( other.rCard ){};
+// Hand::Hand( const Hand & other ) : , = default;;
 //---------------------------------------------------------------------------------------------------------------------------
 // Hand::Hand() : lCard( std::make_unique< Card >() ), rCard( std::make_unique< Card >() ) {}
 //---------------------------------------------------------------------------------------------------------------------------
-Hand::Hand( Hand && other ) : lCard( std::move( other.lCard ) ), rCard( std::move( other.rCard ) ) {
+Hand::Hand( Hand && other ) noexcept : lCard( std::move( other.lCard ) ), rCard( std::move( other.rCard ) ) {
     other.lCard.setCard( Card::valCard::NODEF, Card::suitCard::NODEF );
     other.rCard.setCard( Card::valCard::NODEF, Card::suitCard::NODEF );
 }
@@ -16,16 +16,18 @@ Hand::Hand( Hand && other ) : lCard( std::move( other.lCard ) ), rCard( std::mov
 Hand::Hand( Card::valCard && __lCardV, Card::suitCard && __lCardS, Card::valCard && __rCardV,
             Card::suitCard && __rCardS )
     : lCard( std::move( __lCardV ), std::move( __lCardS ) ), rCard( std::move( __rCardV ), std::move( __rCardS ) ) {
-    assert( ( ( __lCardV != __rCardV ) || ( __lCardS != __rCardS ) ) && "identical cards" );
+    //    assert( ( ( __lCardV != __rCardV ) || ( __lCardS != __rCardS ) ) && "identical cards" );
+    // Access of moved variable '__lCardV'. [accessMoved]
 }
 //---------------------------------------------------------------------------------------------------------------------------
-Hand::Hand( const std::string __lCardStr, const std::string __rCardStr ) : lCard( __lCardStr ), rCard( __rCardStr ) {
+Hand::Hand( const std::string & __lCardStr, const std::string & __rCardStr )
+    : lCard( __lCardStr ), rCard( __rCardStr ) {
     assert( __lCardStr != __rCardStr && "identical cards" );
 }
 //---------------------------------------------------------------------------------------------------------------------------
-Hand::~Hand() {}
+//Hand::~Hand() = default;
 //---------------------------------------------------------------------------------------------------------------------------
-void Hand::setHand( const std::string __lCard, const std::string __rCard ) {
+void Hand::setHand( const std::string & __lCard, const std::string & __rCard ) {
     lCard.setCard( __lCard );
     rCard.setCard( __rCard );
 }
@@ -51,33 +53,33 @@ void Hand::getCards( Card & __lCard, Card & __rCard ) const {
     __rCard.setCard( rCard );
 }
 //---------------------------------------------------------------------------------------------------------------------------
-const Card & Hand::getLCard() const { return lCard; }
+auto Hand::getLCard() const -> const Card & { return lCard; }
 //---------------------------------------------------------------------------------------------------------------------------
-const Card & Hand::getRCard() const { return rCard; }
+auto Hand::getRCard() const -> const Card & { return rCard; }
 //---------------------------------------------------------------------------------------------------------------------------
-const Card & Hand::getHigerCard() const { return lCard.getValueNum() > rCard.getValueNum() ? lCard : rCard; }
+auto Hand::getHigerCard() const -> const Card & { return lCard.getValueNum() > rCard.getValueNum() ? lCard : rCard; }
 //---------------------------------------------------------------------------------------------------------------------------
-bool Hand::isPair() const noexcept { return lCard.getValueNum() == rCard.getValueNum(); }
+auto Hand::isPair() const noexcept -> bool { return lCard.getValueNum() == rCard.getValueNum(); }
 //---------------------------------------------------------------------------------------------------------------------------
-bool Hand::operator==( const Hand & other ) const {
+auto Hand::operator==( const Hand & other ) const -> bool {
     return ( ( ( this->lCard == other.lCard ) && ( this->rCard == other.rCard ) ) ||
              ( ( this->lCard == other.rCard ) && ( this->rCard == other.lCard ) ) );
 }
 //---------------------------------------------------------------------------------------------------------------------------
-bool Hand::operator!=( const Hand & other ) const {
+auto Hand::operator!=( const Hand & other ) const -> bool {
     return !( ( ( this->lCard == other.lCard ) && ( this->rCard == other.rCard ) ) ||
               ( ( this->lCard == other.rCard ) && ( this->rCard == other.lCard ) ) );
 }
 //---------------------------------------------------------------------------------------------------------------------------
-Hand & Hand::operator=( const Hand & other ) {
+//auto Hand::operator=( const Hand & other ) -> Hand & {
+//    this->lCard.setCard( other.lCard );
+//    this->rCard.setCard( other.rCard );
+//    return *this;
+//}
+//---------------------------------------------------------------------------------------------------------------------------
+auto Hand::operator=( Hand && other ) noexcept -> Hand & {
     this->lCard.setCard( other.lCard );
     this->rCard.setCard( other.rCard );
-    return *this;
-}
-//---------------------------------------------------------------------------------------------------------------------------
-Hand & Hand::operator=( Hand && other ) {
-    this->lCard.setCard( std::move( other.lCard ) );
-    this->rCard.setCard( std::move( other.rCard ) );
     other.lCard.setCard( Card::valCard::NODEF, Card::suitCard::NODEF );
     other.rCard.setCard( Card::valCard::NODEF, Card::suitCard::NODEF );
     return *this;

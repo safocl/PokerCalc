@@ -7,16 +7,18 @@
 namespace lp {
 
 Deck::Deck() : deckArr() { deckArr.reserve( Deck::capacity ); }
+
+Deck::~Deck() {}
 //---------------------------------------------------------------------------------------------------------------------------
-Deck & Deck::operator=( Deck && other ) {
+auto Deck::operator=( Deck && other ) noexcept -> Deck & {
     this->deckArr = other.deckArr;
     other.deckArr.clear();
     return *this;
 }
 //---------------------------------------------------------------------------------------------------------------------------
-const std::vector< Card > & Deck::getDeckArr() const { return deckArr; }
+auto Deck::getDeckArr() const -> const std::vector< Card > & { return deckArr; }
 //---------------------------------------------------------------------------------------------------------------------------
-unsigned long Deck::size() const { return deckArr.size(); }
+auto Deck::size() const -> unsigned long { return deckArr.size(); }
 //---------------------------------------------------------------------------------------------------------------------------
 void Deck::gen( const Board & board, const Hand & hero, const Hand & opp ) {
     if ( !deckArr.empty() )
