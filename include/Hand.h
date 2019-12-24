@@ -1,14 +1,22 @@
-//#pragma once
-#ifndef HAND_H
-#define HAND_H
+
+//#ifndef HAND_H
+//#define HAND_H
 
 namespace lp {
-struct Hand;
-class Board;
 struct Card;
+struct Deck;
+class Board;
+class Combo;
+struct EV;
+class Eval;
+struct Hand;
+class HandStrength;
 } // namespace lp
 
+#pragma once
+
 #include "Card.h"
+#include "Hand.h"
 #include "defines.h"
 #include <vector>
 
@@ -19,13 +27,14 @@ struct Hand final {
     Hand() = delete;
     Hand( const Hand & other ) = delete;
     Hand( Hand && other ) noexcept;
-    Hand( Card::valCard && __lCardV, Card::suitCard && __lCardS, Card::valCard && __rCardV,
-          Card::suitCard && __rCardS );
+    Hand( Card::valCard __lCardV, Card::suitCard __lCardS,
+            Card::valCard __rCardV, Card::suitCard __rCardS );
     Hand( const std::string & __lCardStr, const std::string & __rCardStr );
     ~Hand() = default;
 
     void setHand( const std::string & __lCard, const std::string & __rCard );
-    void setHand( Card::valCard __lCardV, Card::suitCard __lCardS, Card::valCard __rCardV, Card::suitCard __rCardS );
+    void setHand( Card::valCard __lCardV, Card::suitCard __lCardS,
+                    Card::valCard __rCardV, Card::suitCard __rCardS );
     void setHand( const Card & __lCard, const Card & __rCard );
 
     /**
@@ -36,9 +45,12 @@ struct Hand final {
     void getHand( std::string & __lCardStr, std::string & __rCardStr ) const;
     void getCards( Card & __lCard, Card & __rCard ) const;
     auto isPair() const noexcept -> bool;
+    auto isSuited() const noexcept -> bool;
     auto getLCard() const -> const Card &;
     auto getRCard() const -> const Card &;
     auto getHigerCard() const -> const Card &;
+    auto getLowerCard() const -> const Card &;
+    auto getFlushCard(const uint32_t matchingCardSuitN) const -> const Card &;
     auto operator==( const Hand & other ) const -> bool;
     auto operator!=( const Hand & other ) const -> bool;
     Hand & operator=( const Hand & other ) = delete;
@@ -50,4 +62,4 @@ struct Hand final {
 
 } // namespace lp
 
-#endif // HAND_H
+//#endif // HAND_H

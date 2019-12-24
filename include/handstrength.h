@@ -1,17 +1,24 @@
-//#pragma once
-#ifndef HANDSTRENGTH_H
-#define HANDSTRENGTH_H
+
+//#ifndef HANDSTRENGTH_H
+//#define HANDSTRENGTH_H
 
 namespace lp {
+struct Card;
+struct Deck;
+class Board;
+class Combo;
+struct EV;
 class Eval;
 struct Hand;
-struct Card;
-class HandStrengthList;
 class HandStrength;
-class Board;
 } // namespace lp
 
-//#include "Hand.h"
+#pragma once
+
+#include "Card.h"
+#include "Hand.h"
+#include "Board.h"
+#include "equity.h"
 #include "defines.h"
 #include <list>
 #include <vector>
@@ -53,19 +60,20 @@ class HandStrength final {
     void calcCurrStrength( const Hand & __hand, const Board & __board );
     void calcCurrStrength( const std::vector< Card > & __combo );
 
-    static std::vector< Card > sortCards( std::vector< Card > combo );
+//    static std::vector< Card > sortCards( std::vector< Card > combo );
 
   private:
-    static bool matchStraitflush( const std::vector< Card > & combo, const uint32_t & comboN );
-    static bool matchKare( const std::vector< Card > & combo );
-    static bool matchFullhouse( const std::vector< Card > & combo );
-    static bool matchFlush( const std::vector< Card > & combo, const uint32_t & comboN );
-    static bool matchStrait( const uint32_t & comboN );
-    static bool matchSet( const std::vector< Card > & combo );
-    static bool matchTwopairs( const std::vector< Card > & combo );
+//    static bool matchStraitflush( const std::vector< Card > & combo, const uint32_t & comboN );
+//    static bool matchKare( const std::vector< Card > & combo );
+//    static bool matchFullhouse( const std::vector< Card > & combo );
+//    static bool matchFlush( const std::vector< Card > & combo, const uint32_t & comboN );
+//    static bool matchStrait( const uint32_t & comboN );
+//    static bool matchSet( const std::vector< Card > & combo );
+//    static bool matchTwopairs( const std::vector< Card > & combo );
 };
 
 class HandStrengthList final {
+public:
     HandStrengthList() = default;
     HandStrengthList( const HandStrengthList & other ) = default;
     HandStrengthList( HandStrengthList && other ) = default;
@@ -83,4 +91,4 @@ class HandStrengthList final {
 
 } // namespace lp
 
-#endif // HANDSTRENGTH_H
+//#endif // HANDSTRENGTH_H

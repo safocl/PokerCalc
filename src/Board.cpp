@@ -1,7 +1,19 @@
+namespace lp {
+struct Card;
+struct Deck;
+class Board;
+class Combo;
+struct EV;
+class Eval;
+struct Hand;
+class HandStrength;
+} // namespace lp
+
 #include "Board.h"
 #include "Card.h"
 #include "Deck.h"
 #include "Hand.h"
+#include "combo.h"
 #include "equity.h"
 #include "handstrength.h"
 #include <algorithm>
@@ -12,16 +24,29 @@
 
 namespace lp {
 
+static bool isQuadImpl( const Board & board );
+static bool isTrippleImpl( const Board & board );
+static bool isPariedImpl( const Board & board );
+static bool isMonotoneImpl( const Board & board );
+static bool isTwoToneImpl( const Board & board );
+static bool isRainbowImpl( const Board & board );
+static bool isAllConnectedImpl( const Board & board );
+
 //---------------------------------------------------------------------------------------------------------------------------
 Board::Board()
-    : board( std::vector< Card >{} )/*, _isCalcTraits( false ), _isQuad( false ), _isTripple( false ), _isParied( false ),
-      _isMonotone( false ), _isTwoTone( false ), _isRainbow( false ), _isAllConnected( false )*/ {
+    : board( std::vector< Card >{} ) /*, _isCalcTraits( false ), _isQuad( false ), _isTripple( false ), _isParied( false
+       ), _isMonotone( false ), _isTwoTone( false ), _isRainbow( false ), _isAllConnected( false )*/
+{
     board.reserve( MAX_SIZE );
 }
 //---------------------------------------------------------------------------------------------------------------------------
 // Board::Board( const Board & other ) : board( std::vector< Card >{other.getBoard()} ) {}
 //---------------------------------------------------------------------------------------------------------------------------
-const std::vector< Card > & Board::getBoard() const { return board; }
+const std::vector< Card > & Board::getBoard() const {
+    if ( getState() == boardState::INVALID )
+        throw std::runtime_error( "invalid board" );
+    return board;
+}
 //---------------------------------------------------------------------------------------------------------------------------
 Board::boardState Board::getState() const {
     switch ( board.size() ) {
@@ -34,13 +59,14 @@ Board::boardState Board::getState() const {
     case 5:
         return boardState::RIVER;
     default:
-        throw std::runtime_error( "invalid board" );
+        return boardState::INVALID;
+        //        throw std::runtime_error( "invalid board" );
     }
 }
 //---------------------------------------------------------------------------------------------------------------------------
 bool Board::pushNewCardToBoard( const Hand & hero, const Hand & opp, const Card & card ) {
     if ( !checkCardOnBoard( card ) && card != hero.getLCard() && card != hero.getRCard() && card != opp.getLCard() &&
-         card != opp.getRCard() ) {
+         card != opp.getRCard() && getState() != boardState::RIVER ) {
         board.push_back( card );
         return true;
     }
@@ -65,131 +91,233 @@ bool Board::checkCardOnBoard( const Card & card ) const {
     return false;
 }
 //---------------------------------------------------------------------------------------------------------------------------
-void Board::__isQuad() {
-    if ( static_cast< uint8_t >( getState() ) < static_cast< uint8_t >( boardState::TURN ) )
-        throw std::runtime_error( "checking with not valid board size" );
-    else {
-        uint8_t match = 0;
-        for ( uint8_t count1 = 0; count1 < board.size() - 4; ++count1 ) {
-            match = 0;
-            for ( uint8_t count2 = count1 + 1; count2 < board.size(); ++count2 ) {
-                if ( board.at( count1 ).getValueNum() == board.at( count2 ).getValueNum() )
-                    ++match;
-            }
-        }
-        _isQuad = match == 3;
-    }
-}
-//---------------------------------------------------------------------------------------------------------------------------
-void Board::__isTripple() {
-    if ( static_cast< uint8_t >( getState() ) < static_cast< uint8_t >( boardState::FLOP ) )
-        throw std::runtime_error( "checking with not valid board size" );
-    else {
-        uint8_t match = 0;
-        for ( uint8_t count1 = 0; count1 < board.size() - 3; ++count1 ) {
-            match = 0;
-            for ( uint8_t count2 = count1 + 1; count2 < board.size(); ++count2 ) {
-                if ( board.at( count1 ).getValueNum() == board.at( count2 ).getValueNum() )
-                    ++match;
-            }
-        }
-        _isTripple = match == 2;
-    }
-}
-//---------------------------------------------------------------------------------------------------------------------------
-void Board::__isParied() {
-    if ( static_cast< uint8_t >( getState() ) < static_cast< uint8_t >( boardState::FLOP ) )
-        throw std::runtime_error( "checking with not valid board size" );
-    else {
-        uint8_t match = 0;
-        for ( uint8_t count1 = 0; count1 < board.size() - 2; ++count1 ) {
-            match = 0;
-            for ( uint8_t count2 = count1 + 1; count2 < board.size(); ++count2 ) {
-                if ( board.at( count1 ).getValueNum() == board.at( count2 ).getValueNum() )
-                    ++match;
-            }
-        }
-        _isParied = match == 1;
-    }
-}
-//---------------------------------------------------------------------------------------------------------------------------
-void Board::__isMonotone() {
-    if ( static_cast< uint8_t >( getState() ) < static_cast< uint8_t >( boardState::FLOP ) )
-        throw std::runtime_error( "checking with not valid board size" );
-    else {
-        _isMonotone = true;
-        for ( uint8_t count = 1; count < board.size(); ++count ) {
-            if ( board.at( 0 ).getSuitNum() != board.at( count ).getSuitNum() )
-                _isMonotone = false;
-        }
-    }
-}
-//---------------------------------------------------------------------------------------------------------------------------
-void Board::__isTwoTone() {
-    if ( static_cast< uint8_t >( getState() ) < static_cast< uint8_t >( boardState::TURN ) )
-        throw std::runtime_error( "checking with not valid board size" );
-    else {
-        switch ( getState() ) {
-        case boardState::TURN:
-            _isTwoTone = ( board.at( 0 ).getSuitNum() == board.at( 1 ).getSuitNum() &&
-                           board.at( 2 ).getSuitNum() == board.at( 3 ).getSuitNum() ) ||
-                         ( board.at( 0 ).getSuitNum() == board.at( 2 ).getSuitNum() &&
-                           board.at( 1 ).getSuitNum() == board.at( 3 ).getSuitNum() ) ||
-                         ( board.at( 0 ).getSuitNum() == board.at( 3 ).getSuitNum() &&
-                           board.at( 1 ).getSuitNum() == board.at( 2 ).getSuitNum() );
-            break;
+void Board::calcTraits() {
+    _isQuad = isQuadImpl( *this );
+    if ( !_isQuad ) {
+        _isTripple = isTrippleImpl( *this );
+        if ( !_isTripple ) {
+            _isParied = isPariedImpl( *this );
 
-        case boardState::RIVER:
-            _isTwoTone = ( board.at( 0 ).getSuitNum() == board.at( 1 ).getSuitNum() == board.at( 2 ).getSuitNum() &&
-                           board.at( 3 ).getSuitNum() == board.at( 4 ).getSuitNum() ) ||
-                         ( board.at( 1 ).getSuitNum() == board.at( 2 ).getSuitNum() == board.at( 3 ).getSuitNum() &&
-                           board.at( 0 ).getSuitNum() == board.at( 4 ).getSuitNum() ) ||
-                         ( board.at( 2 ).getSuitNum() == board.at( 3 ).getSuitNum() == board.at( 4 ).getSuitNum() &&
-                           board.at( 0 ).getSuitNum() == board.at( 2 ).getSuitNum() ) ||
-                         ( board.at( 0 ).getSuitNum() == board.at( 2 ).getSuitNum() == board.at( 3 ).getSuitNum() &&
-                           board.at( 1 ).getSuitNum() == board.at( 4 ).getSuitNum() ) ||
-                         ( board.at( 1 ).getSuitNum() == board.at( 3 ).getSuitNum() == board.at( 4 ).getSuitNum() &&
-                           board.at( 0 ).getSuitNum() == board.at( 2 ).getSuitNum() ) ||
-                         ( board.at( 0 ).getSuitNum() == board.at( 1 ).getSuitNum() == board.at( 3 ).getSuitNum() &&
-                           board.at( 2 ).getSuitNum() == board.at( 4 ).getSuitNum() ) ||
-                         ( board.at( 1 ).getSuitNum() == board.at( 2 ).getSuitNum() == board.at( 4 ).getSuitNum() &&
-                           board.at( 0 ).getSuitNum() == board.at( 3 ).getSuitNum() ) ||
-                         ( board.at( 0 ).getSuitNum() == board.at( 2 ).getSuitNum() == board.at( 4 ).getSuitNum() &&
-                           board.at( 1 ).getSuitNum() == board.at( 3 ).getSuitNum() );
-            break;
+            if ( !( _isParied ) ) {
+                _isMonotone = isMonotoneImpl( *this );
+                _isAllConnected = isAllConnectedImpl( *this );
+
+                if ( !_isMonotone )
+                    _isTwoTone = isTwoToneImpl( *this );
+            }
+        }
+    }
+    if ( !( _isMonotone || _isTwoTone ) )
+        _isRainbow = isRainbowImpl( *this );
+    _isCalcTraits = true;
+}
+//---------------------------------------------------------------------------------------------------------------------------
+static bool isQuadImpl( const Board & board ) {
+    if ( static_cast< uint8_t >( board.getState() ) < static_cast< uint8_t >( Board::boardState::TURN ) )
+        throw std::runtime_error( "checking with not valid board size" );
+    else {
+        uint8_t match = 0;
+        for ( uint8_t count1 = 0; count1 < board.getBoard().size() - 4; ++count1 ) {
+            match = 0;
+            for ( uint8_t count2 = count1 + 1; count2 < board.getBoard().size(); ++count2 ) {
+                if ( board.getBoard().at( count1 ).getValueNum() == board.getBoard().at( count2 ).getValueNum() )
+                    ++match;
+            }
+        }
+        return match == 3;
+    }
+}
+//---------------------------------------------------------------------------------------------------------------------------
+static bool isTrippleImpl( const Board & board ) {
+    if ( static_cast< uint8_t >( board.getState() ) < static_cast< uint8_t >( Board::boardState::FLOP ) )
+        throw std::runtime_error( "checking with not valid board size" );
+    else {
+        uint8_t match = 0;
+        for ( uint8_t count1 = 0; count1 < board.getBoard().size() - 3; ++count1 ) {
+            match = 0;
+            for ( uint8_t count2 = count1 + 1; count2 < board.getBoard().size(); ++count2 ) {
+                if ( board.getBoard().at( count1 ).getValueNum() == board.getBoard().at( count2 ).getValueNum() )
+                    ++match;
+            }
+        }
+        return match == 2;
+    }
+}
+//---------------------------------------------------------------------------------------------------------------------------
+static bool isPariedImpl( const Board & board ) {
+    if ( static_cast< uint8_t >( board.getState() ) < static_cast< uint8_t >( Board::boardState::FLOP ) )
+        throw std::runtime_error( "checking with not valid board size" );
+    else {
+        uint8_t match = 0;
+        for ( uint8_t count1 = 0; count1 < board.getBoard().size() - 2; ++count1 ) {
+            match = 0;
+            for ( uint8_t count2 = count1 + 1; count2 < board.getBoard().size(); ++count2 ) {
+                if ( board.getBoard().at( count1 ).getValueNum() == board.getBoard().at( count2 ).getValueNum() )
+                    ++match;
+            }
+        }
+        return match == 1;
+    }
+}
+//---------------------------------------------------------------------------------------------------------------------------
+static bool isMonotoneImpl( const Board & board ) {
+    if ( static_cast< uint8_t >( board.getState() ) < static_cast< uint8_t >( Board::boardState::FLOP ) )
+        throw std::runtime_error( "checking with not valid board size" );
+    else {
+        for ( uint8_t count = 1; count < board.getBoard().size(); ++count ) {
+            if ( board.getBoard().at( 0 ).getSuitNum() != board.getBoard().at( count ).getSuitNum() )
+                return false;
+        }
+    }
+    return true;
+}
+//---------------------------------------------------------------------------------------------------------------------------
+static bool isTwoToneImpl( const Board & board ) {
+    if ( static_cast< uint8_t >( board.getState() ) < static_cast< uint8_t >( Board::boardState::TURN ) )
+        throw std::runtime_error( "checking with not valid board size" );
+    else {
+        switch ( board.getState() ) {
+        case Board::boardState::TURN:
+            return ( ( board.getBoard().at( 0 ).getSuitNum() == board.getBoard().at( 1 ).getSuitNum() ) &&
+                     ( board.getBoard().at( 2 ).getSuitNum() == board.getBoard().at( 3 ).getSuitNum() ) ) ||
+                   ( ( board.getBoard().at( 0 ).getSuitNum() == board.getBoard().at( 2 ).getSuitNum() ) &&
+                     ( board.getBoard().at( 1 ).getSuitNum() == board.getBoard().at( 3 ).getSuitNum() ) ) ||
+                   ( ( board.getBoard().at( 0 ).getSuitNum() == board.getBoard().at( 3 ).getSuitNum() ) &&
+                     ( board.getBoard().at( 1 ).getSuitNum() == board.getBoard().at( 2 ).getSuitNum() ) );
+        case Board::boardState::RIVER:
+            return ( 
+                    (
+                     (
+                      board.getBoard().at( 0 ).getSuitNum() == 
+                      board.getBoard().at( 1 ).getSuitNum()
+                     ) &&  
+                     (
+                      board.getBoard().at( 2 ).getSuitNum() ==
+                      board.getBoard().at( 0 ).getSuitNum()
+                     ) 
+                    ) &&
+                    (
+                     board.getBoard().at( 3 ).getSuitNum() == 
+                     board.getBoard().at( 4 ).getSuitNum() 
+                    )
+                   ) ||
+                   (
+                    (
+                     (
+                      board.getBoard().at( 1 ).getSuitNum() == 
+                      board.getBoard().at( 2 ).getSuitNum()
+                     ) &&
+                     (
+                      board.getBoard().at( 3 ).getSuitNum() ==
+                      board.getBoard().at( 1 ).getSuitNum()
+                     ) 
+                    ) &&
+                    ( 
+                     board.getBoard().at( 0 ).getSuitNum() == 
+                     board.getBoard().at( 4 ).getSuitNum() 
+                    )
+                   ) ||
+                   (
+                    (
+                     board.getBoard().at( 2 ).getSuitNum() ==
+                     board.getBoard().at( 3 ).getSuitNum() &&
+                     board.getBoard().at( 4 ).getSuitNum() ==
+                     board.getBoard().at( 2 ).getSuitNum()
+                    ) &&
+                    (board.getBoard().at( 0 ).getSuitNum() ==
+                     board.getBoard().at( 2 ).getSuitNum() 
+                    )
+                   ) ||
+                   (
+                    (
+                     board.getBoard().at( 0 ).getSuitNum() ==
+                     board.getBoard().at( 2 ).getSuitNum() &&
+                     board.getBoard().at( 3 ).getSuitNum() ==
+                     board.getBoard().at( 0 ).getSuitNum()
+                    ) &&
+                    (
+                     board.getBoard().at( 1 ).getSuitNum() ==
+                     board.getBoard().at( 4 ).getSuitNum()
+                    )
+                   ) ||
+                   (
+                    (
+                     board.getBoard().at( 1 ).getSuitNum() ==
+                     board.getBoard().at( 3 ).getSuitNum() &&
+                     board.getBoard().at( 4 ).getSuitNum() ==
+                     board.getBoard().at( 1 ).getSuitNum()
+                    ) &&
+                    (
+                     board.getBoard().at( 0 ).getSuitNum() == 
+                     board.getBoard().at( 2 ).getSuitNum() 
+                    )
+                   ) ||
+                   (
+                    (
+                     board.getBoard().at( 0 ).getSuitNum() ==
+                     board.getBoard().at( 1 ).getSuitNum() &&
+                     board.getBoard().at( 3 ).getSuitNum() ==
+                     board.getBoard().at( 0 ).getSuitNum()
+                    ) &&
+                    (
+                     board.getBoard().at( 2 ).getSuitNum() ==
+                     board.getBoard().at( 4 ).getSuitNum() 
+                    )
+                   ) ||
+                   (
+                    (
+                     board.getBoard().at( 1 ).getSuitNum() ==
+                     board.getBoard().at( 2 ).getSuitNum() &&
+                     board.getBoard().at( 4 ).getSuitNum() ==
+                     board.getBoard().at( 1 ).getSuitNum()
+                    ) &&
+                    (
+                     board.getBoard().at( 0 ).getSuitNum() ==
+                     board.getBoard().at( 3 ).getSuitNum() 
+                    )
+                   ) ||
+                   (
+                    (
+                     board.getBoard().at( 0 ).getSuitNum() ==
+                     board.getBoard().at( 2 ).getSuitNum() &&
+                     board.getBoard().at( 4 ).getSuitNum() ==
+                     board.getBoard().at( 0 ).getSuitNum()
+                    ) &&
+                    (
+                     board.getBoard().at( 1 ).getSuitNum() ==
+                     board.getBoard().at( 3 ).getSuitNum() 
+                    )
+                   );
 
         default:
-            break;
+            return false;
         }
     }
 }
 //---------------------------------------------------------------------------------------------------------------------------
-void Board::__isRainbow() {
-    switch ( getState() ) {
-    case boardState::RIVER:
-        _isRainbow = false;
-        break;
+static bool isRainbowImpl( const Board & board ) {
+    switch ( board.getState() ) {
+    case Board::boardState::RIVER:
+        return false;
 
     default:
         uint8_t match = 0;
-        for ( uint8_t count1 = 0; count1 < board.size() - 1; ++count1 ) {
-            for ( uint8_t count2 = count1 + 1; count2 < board.size(); ++count2 ) {
-                if ( board.at( count1 ) == board.at( count2 ) )
+        for ( uint8_t count1 = 0; count1 < board.getBoard().size() - 1; ++count1 ) {
+            for ( uint8_t count2 = count1 + 1; count2 < board.getBoard().size(); ++count2 ) {
+                if ( board.getBoard().at( count1 ) == board.getBoard().at( count2 ) )
                     ++match;
             }
         }
-        _isRainbow = match == 0;
-        break;
+        return match == 0;
     }
 }
 //---------------------------------------------------------------------------------------------------------------------------
-void Board::__isAllConnected() {
-    _isAllConnected = false;
-    if ( getState() != boardState::PREFLOP ) {
-        auto sortArrPtr = std::make_unique< std::vector< Card > >( HandStrength::sortCards( board ) );
+static bool isAllConnectedImpl( const Board & board ) {
+    if ( board.getState() != Board::boardState::PREFLOP ) {
+        auto sortArrPtr = std::make_unique< std::vector< Card > >( sortCards( board.getBoard() ) );
 
-        switch ( getState() ) {
-        case boardState::FLOP: {
+        switch ( board.getState() ) {
+        case Board::boardState::FLOP: {
             uint32_t sortCombo = static_cast< uint32_t >( sortArrPtr->at( 0 ).getValueNum() ) |
                                  static_cast< uint32_t >( sortArrPtr->at( 1 ).getValueNum() ) |
                                  static_cast< uint32_t >( sortArrPtr->at( 2 ).getValueNum() );
@@ -202,14 +330,13 @@ void Board::__isAllConnected() {
 
             for ( ; connected < connectedMAX; connected <<= 1 ) {
                 if ( sortCombo == connected ) {
-                    _isAllConnected = true;
-                    break;
+                    return true;
                 }
             }
 
             break;
         }
-        case boardState::TURN: {
+        case Board::boardState::TURN: {
             uint32_t sortCombo = static_cast< uint32_t >( sortArrPtr->at( 0 ).getValueNum() ) |
                                  static_cast< uint32_t >( sortArrPtr->at( 1 ).getValueNum() ) |
                                  static_cast< uint32_t >( sortArrPtr->at( 2 ).getValueNum() ) |
@@ -224,13 +351,12 @@ void Board::__isAllConnected() {
 
             for ( ; connected < connectedMAX; connected <<= 1 ) {
                 if ( sortCombo == connected ) {
-                    _isAllConnected = true;
-                    break;
+                    return true;
                 }
             }
             break;
         }
-        case boardState::RIVER: {
+        case Board::boardState::RIVER: {
             uint32_t sortCombo = static_cast< uint32_t >( sortArrPtr->at( 0 ).getValueNum() ) |
                                  static_cast< uint32_t >( sortArrPtr->at( 1 ).getValueNum() ) |
                                  static_cast< uint32_t >( sortArrPtr->at( 2 ).getValueNum() ) |
@@ -252,12 +378,11 @@ void Board::__isAllConnected() {
                 static_cast< uint32_t >( Card::valCard::_5 );
 
             if ( sortCombo == connectedA5 )
-                _isAllConnected = true;
+                return true;
 
             for ( ; connected26 < connectedMAX; connected26 <<= 1 ) {
                 if ( sortCombo == connected26 ) {
-                    _isAllConnected = true;
-                    break;
+                    return true;
                 }
             }
             break;
@@ -266,6 +391,32 @@ void Board::__isAllConnected() {
             break;
         }
     }
+    return false;
+}
+//---------------------------------------------------------------------------------------------------------------------------
+bool Board::isQuad() const { return _isQuad; }
+//---------------------------------------------------------------------------------------------------------------------------
+bool Board::isTripple() const { return _isTripple; }
+//---------------------------------------------------------------------------------------------------------------------------
+bool Board::isParied() const { return _isParied; }
+//---------------------------------------------------------------------------------------------------------------------------
+bool Board::isMonotone() const { return _isMonotone; }
+//---------------------------------------------------------------------------------------------------------------------------
+bool Board::isTwoTone() const { return _isTwoTone; }
+//---------------------------------------------------------------------------------------------------------------------------
+bool Board::isRainbow() const { return _isRainbow; }
+//---------------------------------------------------------------------------------------------------------------------------
+bool Board::isAllConnected() const { return _isAllConnected; }
+//---------------------------------------------------------------------------------------------------------------------------
+bool Board::isCalcTraits() const { return _isCalcTraits; }
+
+const Card & Board::getLowerCard() const {
+    auto card = std::make_unique< Card >( Card::valCard::_A, Card::suitCard::NODEF );
+    for ( const auto & el : board ) {
+        if ( el < card.operator*() )
+            card.operator*() = el;
+    }
+    return card.operator*();
 }
 //---------------------------------------------------------------------------------------------------------------------------
 // ParallelGenBoard::ParallelGenBoard( const Eval & ev )

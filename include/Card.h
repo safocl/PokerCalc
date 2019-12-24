@@ -1,11 +1,21 @@
-//#pragma once
-#ifndef CARD_H
-#define CARD_H
+
+//#ifndef CARD_H
+//#define CARD_H
 
 namespace lp {
 struct Card;
+struct Deck;
+class Board;
+class Combo;
+struct EV;
+class Eval;
+struct Hand;
+class HandStrength;
 } // namespace lp
 
+#pragma once
+
+//#include "Deck.h"
 #include "defines.h"
 #include <cstdint>
 #include <string>
@@ -65,7 +75,8 @@ struct Card final {
     std::string getString() const noexcept;
     uint8_t getSuitNum() const noexcept;
     uint32_t getValueNum() const noexcept;
-    uint8_t howHigerCards() const noexcept;
+    uint8_t howHigerValues() const noexcept;
+    uint8_t howLowerValues() const noexcept;
 
     /**
      * @brief incVal
@@ -122,11 +133,19 @@ struct Card final {
   private:
     uint32_t numCard;
 
-    std::string getSuit() const noexcept;
-    std::string getValue() const noexcept;
-    static bool checkValidValue( const valCard & value );
-    static bool checkValidSuit( const suitCard & suit );
+    //    std::string getSuit() const noexcept;
+    //    std::string getValue() const noexcept;
+    //    static bool checkValidValue( const valCard & value );
+    //    static bool checkValidSuit( const suitCard & suit );
+};
+
+class calcForCards final {
+    Card card;
+
+  public:
+    calcForCards( const Card & __card ) : card( __card ) {}
+    auto howHighterCards( const Deck & deck ) const -> int8_t;
 };
 
 } // namespace lp
-#endif
+//#endif

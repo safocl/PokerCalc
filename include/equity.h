@@ -1,37 +1,41 @@
-//#pragma once
-#ifndef EQUITY_H
-#define EQUITY_H
+
+//#ifndef EQUITY_H
+//#define EQUITY_H
 
 namespace lp {
-
-struct Hand;
-// class HandStrengthList;
-// class Combo;
-class Eval;
 struct Card;
+struct Deck;
 class Board;
-
+class Combo;
+struct EV;
+class Eval;
+struct Hand;
+class HandStrength;
 } // namespace lp
 
-//#include <atomic>
-//#include <functional>
-//#include "Board.h"
+#pragma once
+
+#include "Card.h"
 #include "Hand.h"
+#include "Board.h"
 #include "defines.h"
-//#include "handstrength.h"
 #include <memory>
 #include <vector>
 
 namespace lp {
 
+struct EV {
+    float heroEV{0}, oppEV{0}, tieEV{0};
+};
+
 class Eval final {
-    float heroEquity, oppEquity, tieEquity;
+    std::unique_ptr< EV > ev;
     Hand hero, opp;
     //    HandStrengthList heroHsl, oppHsl;
 
   public:
     Eval() = delete;
-    Eval( const Hand & hero, const Hand & opp );
+    //    Eval( const Hand & hero, const Hand & opp );
     Eval( Hand && hero, Hand && opp );
     Eval( const Eval & other ) = delete;
     Eval( Eval && other ) noexcept = default;
@@ -42,12 +46,12 @@ class Eval final {
     void setOppH( Card::valCard lCardV, Card::suitCard lCardS, Card::valCard rCardV, Card::suitCard rCardS );
     void setHeroH( const std::string & lCardStr, const std::string & rCardStr );
     void setOppH( const std::string & lCardStr, const std::string & rCardStr );
-    void setHeroH( const Hand & hero );
-    void setOppH( const Hand & opp );
+    void setHeroH( Hand && hero );
+    void setOppH( Hand && opp );
     auto getHeroH() const -> const Hand &;
     auto getOppH() const -> const Hand &;
 
-    void calc( const Board & board );
+    void calc( const Board & __board );
     void print() const;
 
     auto isEqHands() const -> bool;
@@ -55,4 +59,4 @@ class Eval final {
 
 } // namespace lp
 
-#endif // EQUITY_H
+//#endif // EQUITY_H

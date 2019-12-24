@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.5)
 
+set(CMAKE_CXX_COMPILER /usr/bin/clang++)
+
 project(poker LANGUAGES CXX)
 
 include_directories(../include)
@@ -9,6 +11,9 @@ include_directories(../include)
 add_definitions(-Wall)
 add_definitions(-Wextra)
 add_definitions(-Werror)
+#add_definitions(-Wno-parentheses)
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)

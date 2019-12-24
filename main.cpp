@@ -15,10 +15,11 @@
 int main() {
     lp::Board board{};
     lp::Card card{};
-    lp::Deck deck{};
+    
     lp::Hand hero{"Kd", "Qh"};
     lp::Hand opp{"Tc", "Jd"};
-    lp::Eval ev{hero, opp};
+	lp::Deck deck{board,hero,opp};
+    lp::Eval ev{std::move(hero),std::move(opp)};
     lp::Combo combo{hero, board};
     lp::HandStrength hs{hero, board};
 

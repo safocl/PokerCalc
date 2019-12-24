@@ -1,8 +1,25 @@
+namespace lp {
+struct Card;
+struct Deck;
+class Board;
+class Combo;
+struct EV;
+class Eval;
+struct Hand;
+class HandStrength;
+} // namespace lp
+
 #include "Card.h"
+#include "Deck.h"
 // #define NDEBUG
 #include <cassert>
 
 namespace lp {
+
+static bool checkValidValue( const Card::valCard & value );
+static bool checkValidSuit( const Card::suitCard & suit );
+static std::string getSuit( const uint32_t numCard ) noexcept; 
+static std::string getValue( const uint32_t numCard ) noexcept;
 
 //---------------------------------------------------------------------------------------------------------------------------
 Card::Card()
@@ -127,8 +144,8 @@ void Card::setValueNum( const Card::valCard & value ) {
         numCard |= static_cast< uint32_t >( value );
 }
 //---------------------------------------------------------------------------------------------------------------------------
-std::string Card::getSuit() const noexcept {
-    switch ( numCard & suitMask ) {
+static std::string getSuit( const uint32_t numCard ) noexcept {
+    switch ( numCard & Card::suitMask ) {
     case static_cast< uint8_t >( Card::suitCard::_c_0x4 ):
         return std::string{"c"};
         //        break;
@@ -147,8 +164,8 @@ std::string Card::getSuit() const noexcept {
     //    return std::move( res );
 }
 //---------------------------------------------------------------------------------------------------------------------------
-std::string Card::getValue() const noexcept {
-    switch ( numCard & valueMask ) {
+static std::string getValue( const uint32_t numCard ) noexcept {
+    switch ( numCard & Card::valueMask ) {
     case static_cast< uint32_t >( Card::valCard::_2 ):
         return std::string{"2"};
         //        break;
@@ -194,14 +211,16 @@ std::string Card::getValue() const noexcept {
     //    return res;
 }
 //---------------------------------------------------------------------------------------------------------------------------
-std::string Card::getString() const noexcept { return getValue() + getSuit(); }
+std::string Card::getString() const noexcept { return getValue( numCard ) + getSuit( numCard ); }
 //---------------------------------------------------------------------------------------------------------------------------
 uint8_t Card::getSuitNum() const noexcept { return ( numCard & suitMask ); }
 //---------------------------------------------------------------------------------------------------------------------------
 uint32_t Card::getValueNum() const noexcept { return ( numCard & valueMask ); }
 //---------------------------------------------------------------------------------------------------------------------------
-uint8_t Card::howHigerCards() const noexcept {
+uint8_t Card::howHigerValues() const noexcept {
     switch ( numCard & valueMask ) {
+    case static_cast< uint32_t >( valCard::_A ):
+        return 0;
     case static_cast< uint32_t >( valCard::_K ):
         return 1;
     case static_cast< uint32_t >( valCard::_Q ):
@@ -231,6 +250,43 @@ uint8_t Card::howHigerCards() const noexcept {
         return 0;
     }
 }
+
+
+uint8_t Card::howLowerValues() const noexcept {
+    switch ( numCard & valueMask ) {
+    case static_cast< uint32_t >( valCard::_A ):
+        return 12;
+    case static_cast< uint32_t >( valCard::_K ):
+        return 11;
+    case static_cast< uint32_t >( valCard::_Q ):
+        return 10;
+    case static_cast< uint32_t >( valCard::_J ):
+        return 9;
+    case static_cast< uint32_t >( valCard::_T ):
+        return 8;
+    case static_cast< uint32_t >( valCard::_9 ):
+        return 7;
+    case static_cast< uint32_t >( valCard::_8 ):
+        return 6;
+    case static_cast< uint32_t >( valCard::_7 ):
+        return 5;
+    case static_cast< uint32_t >( valCard::_6 ):
+        return 4;
+    case static_cast< uint32_t >( valCard::_5 ):
+        return 3;
+    case static_cast< uint32_t >( valCard::_4 ):
+        return 2;
+    case static_cast< uint32_t >( valCard::_3 ):
+        return 1;
+    case static_cast< uint32_t >( valCard::_2 ):
+        return 0;
+
+    default:
+        return 0;
+    }
+}
+
+
 
 Card Card::incVal() noexcept {
     //    assert(((numCard & valueMask) < (valueSize - 1)) && "out of range");
@@ -275,22 +331,31 @@ bool Card::operator<( const Card & other ) const noexcept { return ( this->getVa
 //---------------------------------------------------------------------------------------------------------------------------
 bool Card::operator>( const Card & other ) const noexcept { return ( this->getValueNum() > other.getValueNum() ); }
 //---------------------------------------------------------------------------------------------------------------------------
-bool Card::checkValidValue( const Card::valCard & value ) {
-    uint32_t check;
+static bool checkValidValue( const Card::valCard & value ) {
+    uint32_t check = 0;
     for ( check = static_cast< uint32_t >( Card::valCard::_2 );
-          ( check < valueSize ) && ( static_cast< uint32_t >( value ) != check ); check <<= 1 )
+          ( check < Card::valueSize ) && ( static_cast< uint32_t >( value ) != check ); check <<= 1 )
         ;
     //    assert( static_cast< uint32_t >( value ) == check );
     return static_cast< uint32_t >( value ) == check;
 }
 //---------------------------------------------------------------------------------------------------------------------------
-bool Card::checkValidSuit( const Card::suitCard & suit ) {
-    uint8_t check;
+static bool checkValidSuit( const Card::suitCard & suit ) {
+    uint8_t check = 0;
     for ( check = static_cast< uint8_t >( Card::suitCard::_d_0x1 );
-          ( check < suitSize ) && ( static_cast< uint8_t >( suit ) != check ); check <<= 1 )
+          ( check < Card::suitSize ) && ( static_cast< uint8_t >( suit ) != check ); check <<= 1 )
         ;
     //    assert( static_cast< uint8_t >( suit ) == check );
     return static_cast< uint8_t >( suit ) == check;
+}
+
+auto calcForCards::howHighterCards( const Deck & deck ) const -> int8_t {
+    int8_t countHighterCards = 0;
+    for ( const auto & remainingCard : deck.getDeckArr() )
+        if ( remainingCard.getValueNum() > card.getValueNum() )
+            ++countHighterCards;
+return countHighterCards;
+
 }
 
 } // namespace lp

@@ -1,19 +1,29 @@
-#ifndef COMBO_H
-#define COMBO_H
+
+//#ifndef COMBO_H
+//#define COMBO_H
 
 namespace lp {
-struct Hand;
-class Combo;
 struct Card;
+struct Deck;
 class Board;
+class Combo;
+struct EV;
+class Eval;
+struct Hand;
+class HandStrength;
 } // namespace lp
 
-#include "Board.h"
+#pragma once
+
 #include "Card.h"
 #include "Hand.h"
+#include "Board.h"
+#include "combo.h"
 #include <vector>
 
 namespace lp {
+
+std::vector< Card > sortCards( std::vector< Card > combo );
 
 class Combo final {
     std::vector< Card > combo;
@@ -32,4 +42,4 @@ class Combo final {
 
 } // namespace lp
 
-#endif // COMBO_H
+//#endif // COMBO_H

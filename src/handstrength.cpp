@@ -1,12 +1,32 @@
+namespace lp {
+struct Card;
+struct Deck;
+class Board;
+class Combo;
+struct EV;
+class Eval;
+struct Hand;
+class HandStrength;
+} // namespace lp
+
 #include "handstrength.h"
 #include "Board.h"
 #include "Card.h"
 #include "Hand.h"
+#include "combo.h"
 #include <cassert>
 #include <iostream>
 #include <numeric>
 
 namespace lp {
+
+static bool matchStraitflush( const std::vector< Card > & combo, const uint32_t & comboN );
+static bool matchKare( const std::vector< Card > & combo );                                
+static bool matchFullhouse( const std::vector< Card > & combo );                           
+static bool matchFlush( const std::vector< Card > & combo, const uint32_t & comboN );      
+static bool matchStrait( const uint32_t & comboN );                                        
+static bool matchSet( const std::vector< Card > & combo );                                 
+static bool matchTwopairs( const std::vector< Card > & combo );                            
 
 // HandStrengthList::HandStrengthList()
 //    : hightP( 0 ), pairP( 0 ), twopairP( 0 ), setP( 0 ), straitP( 0 ), flushP( 0 ), fullhouseP( 0 ), kareP( 0 ),
@@ -187,7 +207,7 @@ void HandStrength::calcCurrStrength( const std::vector< Card > & __combo ) {
 }
 //---------------------------------------------------------------------------------------------------------------------------
 // проверка на стрит-флеш
-bool HandStrength::matchStraitflush( const std::vector< Card > & combo, const uint32_t & comboN ) {
+bool matchStraitflush( const std::vector< Card > & combo, const uint32_t & comboN ) {
     bool res = false;
     uint32_t combo_val = comboN & Card::valueMask;
     uint8_t combo_suit = comboN & Card::suitMask;
@@ -256,7 +276,7 @@ bool HandStrength::matchStraitflush( const std::vector< Card > & combo, const ui
 }
 //---------------------------------------------------------------------------------------------------------------------------
 //проверка на карэ
-bool HandStrength::matchKare( const std::vector< Card > & combo ) {
+bool matchKare( const std::vector< Card > & combo ) {
     bool res = false;
 
     for ( uint8_t count = 0; ( combo.size() - count ) > 3; ++count ) {
@@ -277,7 +297,7 @@ bool HandStrength::matchKare( const std::vector< Card > & combo ) {
 }
 //---------------------------------------------------------------------------------------------------------------------------
 // проверка на фулл-хаус
-bool HandStrength::matchFullhouse( const std::vector< Card > & combo ) {
+bool matchFullhouse( const std::vector< Card > & combo ) {
     auto tmpCombo = std::make_unique< std::vector< Card > >( sortCards( combo ) );
     bool res = false;
 
@@ -298,7 +318,7 @@ bool HandStrength::matchFullhouse( const std::vector< Card > & combo ) {
 }
 //---------------------------------------------------------------------------------------------------------------------------
 // проверка на флеш
-bool HandStrength::matchFlush( const std::vector< Card > & combo, const uint32_t & comboN ) {
+bool matchFlush( const std::vector< Card > & combo, const uint32_t & comboN ) {
     bool res = false;
     uint8_t combo_suit = comboN & Card::suitMask;
 
@@ -332,7 +352,7 @@ bool HandStrength::matchFlush( const std::vector< Card > & combo, const uint32_t
 }
 //---------------------------------------------------------------------------------------------------------------------------
 // проверка на стрит
-bool HandStrength::matchStrait( const uint32_t & comboN ) {
+bool matchStrait( const uint32_t & comboN ) {
     return ( ( comboN & 0x1F000000 ) == 0x1F000000 || ( comboN & 0xF800000 ) == 0xF800000 ||
              ( comboN & 0x7C00000 ) == 0x7C00000 || ( comboN & 0x3E00000 ) == 0x3E00000 ||
              ( comboN & 0x1F00000 ) == 0x1F00000 || ( comboN & 0xF80000 ) == 0xF80000 ||
@@ -341,7 +361,7 @@ bool HandStrength::matchStrait( const uint32_t & comboN ) {
 }
 //---------------------------------------------------------------------------------------------------------------------------
 // проверка на сет
-bool HandStrength::matchSet( const std::vector< Card > & combo ) {
+bool matchSet( const std::vector< Card > & combo ) {
     auto tmpCombo = std::make_unique< std::vector< Card > >( sortCards( combo ) );
     bool res = false;
 
@@ -355,7 +375,7 @@ bool HandStrength::matchSet( const std::vector< Card > & combo ) {
 }
 //---------------------------------------------------------------------------------------------------------------------------
 // проверка на две пары
-bool HandStrength::matchTwopairs( const std::vector< Card > & combo ) {
+bool matchTwopairs( const std::vector< Card > & combo ) {
     auto tmpCombo = std::make_unique< std::vector< Card > >( sortCards( combo ) );
 
     for ( uint8_t count = 0; ( tmpCombo->size() - count ) >= 4; ++count ) {
@@ -371,21 +391,21 @@ bool HandStrength::matchTwopairs( const std::vector< Card > & combo ) {
     return false;
 }
 //---------------------------------------------------------------------------------------------------------------------------
-std::vector< Card > HandStrength::sortCards( std::vector< Card > combo ) {
-    Card temp_card;
+//std::vector< Card > sortCards( std::vector< Card > combo ) {
+//    Card temp_card;
 
-    for ( uint8_t count = 0; count < combo.size(); ++count ) {
-        for ( uint8_t subcount = count + 1; subcount < combo.size(); ++subcount ) {
-            if ( combo.at( count ) > combo.at( subcount ) ) {
-                temp_card = combo.at( count );
-                combo.at( count ) = combo.at( subcount );
-                combo.at( subcount ) = temp_card;
-            }
-        }
-    }
+//    for ( uint8_t count = 0; count < combo.size(); ++count ) {
+//        for ( uint8_t subcount = count + 1; subcount < combo.size(); ++subcount ) {
+//            if ( combo.at( count ) > combo.at( subcount ) ) {
+//                temp_card = combo.at( count );
+//                combo.at( count ) = combo.at( subcount );
+//                combo.at( subcount ) = temp_card;
+//            }
+//        }
+//    }
 
-    return combo;
-}
+//    return combo;
+//}
 //---------------------------------------------------------------------------------------------------------------------------
 bool HandStrength::containHight() const { return hight; }
 //---------------------------------------------------------------------------------------------------------------------------
